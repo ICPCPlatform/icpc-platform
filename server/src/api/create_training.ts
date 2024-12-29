@@ -1,6 +1,6 @@
 "use server";
 
-import { Trainings } from "../util/db/schema/Training";
+import { Trainings } from "../util/db/schema/Trainings";
 import { db } from "../util/db/index";
 
 type Training = typeof Trainings.$inferInsert;
