@@ -16,6 +16,9 @@ src/                        # All source code
 ├── app/                    # Next.js App Router
 │   ├── api/               # Backend API endpoints
 │   │   ├── auth/         # Authentication endpoints
+│   │   │   ├── route.ts  # Auth API implementation
+│   │   │   └── __tests__/# API tests and documentation
+│   │   │       └── auth.rest # REST API tests
 │   │   └── training/     # Training management API
 │   │
 │   ├── (routes)/         # Frontend pages
@@ -48,8 +51,11 @@ drizzle/                 # Database management
 The main application code using Next.js App Router:
 
 - **`api/`**: Backend API endpoints
-  - Each folder (auth, training) represents a feature domain
-  - Uses Next.js Route Handlers for API implementation
+  - Each feature domain (auth, training) contains:
+    - `route.ts`: API implementation
+    - `__tests__/`: Tests and API documentation
+    - `*.rest`: HTTP request examples
+  - Uses Next.js Route Handlers
   - Example: `training/route.ts` handles training CRUD operations
 
 - **`(routes)/`**: Frontend pages
