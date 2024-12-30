@@ -1,5 +1,26 @@
-import { createTraining } from "@/api/create_training";
 import styles from "./page.module.css";
+
+async function handleCreateTraining(training: any) {
+  try {
+    const response = await fetch('/api/training', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(training),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create training');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
 
 export default function Home() {
   return (
@@ -27,19 +48,15 @@ export default function Home() {
               return;
             }
 
-            createTraining(
-              {
-                name: formdata.get("name")?.toString() ?? "Default Name",
-                description:
-                  formdata.get("description")?.toString() ??
-                  "No description provided",
-                startDate:
-                  formdata.get("start-date")?.toString() ?? "1970-01-01", // Use an appropriate default or null
-
-                endDate: formdata.get("end-date")?.toString() ?? "1970-01-01",
-              },
-              "",
-            );
+            handleCreateTraining({
+              name: formdata.get("name")?.toString() ?? "Default Name",
+              description:
+                formdata.get("description")?.toString() ??
+                "No description provided",
+              startDate:
+                formdata.get("start-date")?.toString() ?? "1970-01-01",
+              endDate: formdata.get("end-date")?.toString() ?? "1970-01-01",
+            });
           }}
         >
           <label htmlFor="name">Name:</label>
