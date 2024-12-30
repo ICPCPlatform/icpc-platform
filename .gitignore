@@ -1,33 +1,51 @@
-# Dependencies
-node_modules/
-*/node_modules/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-*/env/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Build outputs
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
 /build
-/dist
-*/build
-*/dist
 
-# Logs
-logs
-*.log
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
 # IDE and editor files
 .idea/
 .vscode/
 *.swp
 *.swo
+*~
 
 # OS generated files
 .DS_Store
@@ -38,19 +56,17 @@ yarn-error.log*
 ehthumbs.db
 Thumbs.db
 
-# Optional npm cache directory
-.npm
+# Local development
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Optional eslint cache
-.eslintcache
+# Database
+*.sqlite
+*.sqlite3
 
-# Coverage directory
-coverage/
-
-# Production build folder
-/client/build/
-/client/dist/
-
-# Server build
-/server/dist/
-/server/build/ 
+# Build output
+dist/
+.cache/
