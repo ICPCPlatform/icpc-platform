@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ICPC Platform
+
+A full-stack Next.js application for managing ICPC-style programming competitions. Built with modern web technologies and following Next.js 13+ App Router conventions.
+
+## Tech Stack
+
+- **Framework**: Next.js 13+ (App Router)
+- **Database**: PostgreSQL with Drizzle ORM
+- **Styling**: CSS Modules
+- **Authentication**: [Add auth provider]
+
+## Project Structure
+
+```
+src/                        # All source code
+├── app/                    # Next.js App Router
+│   ├── api/               # Backend API endpoints
+│   │   ├── auth/         # Authentication endpoints
+│   │   └── training/     # Training management API
+│   │
+│   ├── (routes)/         # Frontend pages
+│   │   ├── create-training/  # Training creation page
+│   │   └── profile/         # User profile pages
+│   │
+│   ├── layout.tsx        # Root layout
+│   └── page.tsx          # Home page
+
+├── lib/                   # Shared utilities
+│   └── db/               # Database layer
+│       ├── schema/       # Database tables & relationships
+│       └── index.ts      # Database connection
+
+└── components/           # React components
+    ├── ui/              # Basic UI components
+    └── features/        # Feature-specific components
+
+public/                   # Static assets
+└── images/              # Image files
+
+drizzle/                 # Database management
+├── migrations/          # Database migrations
+└── schema.ts           # Main schema file
+```
+
+## Key Directories Explained
+
+### `src/app` - Application Core
+The main application code using Next.js App Router:
+
+- **`api/`**: Backend API endpoints
+  - Each folder (auth, training) represents a feature domain
+  - Uses Next.js Route Handlers for API implementation
+  - Example: `training/route.ts` handles training CRUD operations
+
+- **`(routes)/`**: Frontend pages
+  - Each folder is a route in the application
+  - `page.tsx` defines the page content
+  - `layout.tsx` for shared layouts
+  - CSS Modules for styling
+
+### `src/lib` - Shared Code
+Common utilities and business logic:
+
+- **`db/`**: Database layer
+  - `schema/`: Table definitions and relationships
+  - `index.ts`: Database connection and configuration
+  - Uses Drizzle ORM for type-safe database operations
+
+### `src/components` - React Components
+Reusable UI components:
+
+- **`ui/`**: Basic components (buttons, inputs, cards)
+- **`features/`**: Complex, feature-specific components
+
+### `drizzle/` - Database Management
+Database version control and schema:
+
+- **`migrations/`**: Track database changes
+- **`schema.ts`**: Central schema definition
+
+## File Naming Conventions
+
+- `page.tsx`: Next.js page components
+- `layout.tsx`: Layout components
+- `route.ts`: API route handlers
+- `*.module.css`: CSS Modules for styling
+- `index.ts`: Barrel exports
 
 ## Getting Started
 
-First, run the development server:
+[Add setup instructions here]
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Development Workflow
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[Add development workflow instructions here]
