@@ -1,0 +1,34 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+
+### Create a new training
+POST {{baseUrl}}/training
+Content-Type: {{contentType}}
+
+{
+    "name": "ICPC Training Session 1",
+    "description": "Introduction to Competitive Programming",
+    "startDate": "2024-01-15",
+    "endDate": "2024-01-16"
+}
+
+### Get all trainings
+GET {{baseUrl}}/training
+
+### Get a specific training
+GET {{baseUrl}}/training/1
+
+### Update a training
+PUT {{baseUrl}}/training/1
+Content-Type: {{contentType}}
+
+{
+    "name": "Updated Training Session",
+    "description": "Updated description",
+    "startDate": "2024-01-15",
+    "endDate": "2024-01-16"
+}
+
+### Delete a training
+DELETE {{baseUrl}}/training/1 
