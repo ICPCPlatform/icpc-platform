@@ -171,3 +171,66 @@
     transform: translateY(0);
   }
 }
+
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background-color: white;
+  color: #2d3748;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.googleButton:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
+}
+
+.googleButton:active {
+  transform: translateY(0);
+}
+
+.googleButton:disabled {
+  background-color: #f7fafc;
+  border-color: #e2e8f0;
+  color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.googleIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #718096;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.divider span {
+  margin: 0 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: 500;
+}

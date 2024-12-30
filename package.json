@@ -9,11 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/core": "^0.37.4",
+    "@auth/nextjs": "^0.0.0-380f8d56",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
     "drizzle-kit": "^0.30.1",
     "drizzle-orm": "^0.38.3",
     "next": "15.1.0",
+    "next-auth": "^4.24.11",
     "pg": "^8.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
