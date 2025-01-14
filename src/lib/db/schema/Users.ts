@@ -21,4 +21,5 @@ export const Users = pgTable("users", {
     password: varchar().notNull(),
     isVerified: boolean().default(false).notNull(),
     phoneNumber: char({ length: 11 }).notNull(),
+    deleted: boolean().default(false).notNull(),
 });
