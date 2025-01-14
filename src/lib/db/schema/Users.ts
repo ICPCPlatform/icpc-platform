@@ -1,21 +1,24 @@
 import {
-  pgTable,
-  serial,
-  varchar,
-  timestamp,
-  pgEnum,
+    pgTable,
+    serial,
+    varchar,
+    timestamp,
+    boolean,
+    char
 } from "drizzle-orm/pg-core";
 
-export const UserRoleEnum = pgEnum("user_role", ["user", "mentor", "admin"]);
+import {
+    role_type
+} from "./enums";
 
 export const Users = pgTable("users", {
-  id: serial().primaryKey(),
-  firstName: varchar().notNull(),
-  lastName: varchar().notNull(),
-  email: varchar().notNull().unique(),
-  googleId: varchar().unique(),
-  password: varchar(),
-  role: UserRoleEnum().default("user").notNull(),
-  createdAt: timestamp().defaultNow().notNull(),
-  updatedAt: timestamp().defaultNow().notNull(),
+    userId: serial().primaryKey(),
+    username: varchar().notNull(),
+    gmail: varchar().notNull().unique(),
+    role: role_type().notNull(),
+    cfHandle: varchar().notNull(),
+    lastOnline: timestamp().defaultNow(),
+    password: varchar().notNull(),
+    isVerified: boolean().default(false).notNull(),
+    phoneNumber: char({ length: 11 }).notNull(),
 });
