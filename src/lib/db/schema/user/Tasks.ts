@@ -6,10 +6,10 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-import { Trainings } from "./Trainings";
-import { task_state } from "./enums";
-import { Trainees } from "./Trainees";
-import { Staff } from "./Staff";
+import { Trainings } from "../training/Trainings";
+import { task_state } from "../enums";
+import { Trainees } from "../training/Trainees";
+import { Staff } from "../training/Staff";
 export const Tasks = pgTable("tasks", {
   taskId: serial().primaryKey(),
   title: varchar().notNull(),

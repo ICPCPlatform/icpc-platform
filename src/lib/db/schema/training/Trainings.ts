@@ -9,10 +9,10 @@ import {
 
 import{
     Users
-} from "./Users";
+} from "../user/Users";
 import{
     training_state
-}   from "./enums";
+}   from "../enums";
 
 export const Trainings = pgTable("trainings", {
     trainingId: serial().primaryKey(),

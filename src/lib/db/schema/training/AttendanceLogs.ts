@@ -6,7 +6,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { attendance_log_type } from "./enums";
+import { attendance_log_type } from "../enums";
 import { Staff } from "./Staff";
 import { Trainees } from "./Trainees";
 import { Trainings } from "./Trainings";

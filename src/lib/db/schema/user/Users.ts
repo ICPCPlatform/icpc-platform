@@ -9,7 +9,7 @@ import {
 
 import {
     role_type
-} from "./enums";
+} from "../enums";
 
 export const Users = pgTable("users", {
     userId: serial().primaryKey(),

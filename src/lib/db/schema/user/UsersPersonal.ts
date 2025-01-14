@@ -11,7 +11,7 @@ import{
 } from "./Users";
 import{
     gender_type
-}   from "./enums";
+}   from "../enums";
 
 export const UsersPersonal = pgTable("users_personal", {
     userId: integer().primaryKey().references(()=>Users.userId),

@@ -1,6 +1,6 @@
 import { boolean, integer, pgTable, serial } from "drizzle-orm/pg-core";
 
-import { Users } from "./Users";
+import { Users } from "../user/Users";
 import { Trainings } from "./Trainings";
 
 export const Staff = pgTable("staff", {
