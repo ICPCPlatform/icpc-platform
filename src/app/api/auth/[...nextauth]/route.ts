@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/lib/db";
-import { Users } from "@/lib/db/schema/Users";
+import { Users } from "@/lib/db/schema/user/Users";
 import { eq } from "drizzle-orm";
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {

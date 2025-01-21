@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Trainings } from "@/lib/db/schema/Trainings";
+import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { db } from "@/lib/db/index";
 
 type Training = typeof Trainings.$inferInsert;
