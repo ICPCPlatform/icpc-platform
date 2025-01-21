@@ -3,11 +3,8 @@ POST http://localhost:3000/api/auth
 Content-Type: application/json
 
 {
-    "firstName": "Omar",
-    "lastName": "Abbas",
-    "email": "Oma2r@example.com",
-    "password": "password123",
-    "action": "signup"
+    "username": "omar",
+    "password": "12345678",
 }
 
 ### Login
