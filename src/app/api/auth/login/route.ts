@@ -1,15 +1,28 @@
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
 import { encryptSession } from "@/lib/session";
 import { eq } from "drizzle-orm";
-import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
 
-export async function POST(request: Request) {
+export const expectBody = z.object({
+  username: z.string(),
+  password: z.string(),
+});
+const errorResponse = NextResponse.json(
+  { error: "Invalid username or password" },
+  { status: 401 },
+);
+export async function POST(request: NextRequest) {
   try {
     // Extracting credentials from the request body
-    const { username, password } = await request.json();
-    console.log(`Attempting login for username: ${username}`);
+
+    const parseResult = expectBody.safeParse(await request.json());
+    if (!parseResult.success) return errorResponse;
+
+    const { username, password } = parseResult.data;
+    console.log(`${username} is trying to logging`);
 
     // Querying the database for the user
     const users = await db
@@ -18,18 +31,14 @@ export async function POST(request: Request) {
       .where(eq(Users.username, username))
       .execute();
 
-    if (users.length === 0) {
-      // Invalid username or password
-      return new Response("Invalid username or password", { status: 401 });
-    }
+    if (users.length === 0) return errorResponse;
 
     const user = users[0];
 
     // Verifying the password
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return new Response("Invalid username or password", { status: 401 });
-    }
+
+    if (!isPasswordValid) return errorResponse;
 
     // Preparing user data for the session
     const userJson = {
@@ -41,23 +50,16 @@ export async function POST(request: Request) {
     // Encrypting the session data
     const session = await encryptSession(userJson);
 
-    // Setting the session cookie
-    const cookieStore = cookies();
-    const sessionExpiresAt = Date.now() + 1000 * 60 * 60 * 24 * 7; // 7 days
-
-    cookieStore.set("session", session, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      expires: new Date(sessionExpiresAt),
-      sameSite: "lax",
-      path: "/",
-    });
-
     // Redirecting to the home page
-    return Response.redirect("/");
-
+    return NextResponse.json(
+      { message: "authenticated" },
+      {
+        status: 307,
+        headers: { "Set-Cookie": `token=${session}`, Location: "/" },
+      },
+    );
   } catch (error) {
     console.error("Error logging in:", error);
-    return new Response("Failed to log in", { status: 500 });
+    return NextResponse.json({ message: "Failed to log in" }, { status: 500 });
   }
 }

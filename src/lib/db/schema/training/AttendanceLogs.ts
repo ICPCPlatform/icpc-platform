@@ -6,11 +6,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { attendance_log_type } from "../enums";
 import { Staff } from "./Staff";
 import { Trainees } from "./Trainees";
 import { Trainings } from "./Trainings";
 import { Sessions } from "./Sessions";
+type logType = "checkin" | "checkout";
 
 export const AttendanceLogs = pgTable("attendance_logs", {
   attendanceLogId: serial().primaryKey(),
@@ -27,7 +27,7 @@ export const AttendanceLogs = pgTable("attendance_logs", {
     .references(() => Sessions.sessionId)
     .notNull(),
 
-  logType: attendance_log_type(),
+  logType: varchar({ length: 40 }).$type<logType>().notNull(),
   logTime: timestamp().defaultNow(),
   logRemarks: varchar(),
 });
