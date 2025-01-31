@@ -1,25 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
-import { encryptSession } from "@/lib/session";
 import { eq, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import expectedBody from "./expectedBody";
 import { z } from "zod";
-
-export const expectedBody = z.object({
-  username: z.string(),
-  password: z.string(),
-  gmail: z
-    .string()
-    .email()
-    .regex(/@gmail.com$/),
-  phoneNumber: z
-    .string()
-    .min(11)
-    .max(11)
-    .regex(/^01\d+$/),
-  cfHandle: z.string(),
-});
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,16 +42,17 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
 
-    const { _status, result } = await handleRes.json();
+    const { status: _status, result } = await handleRes.json();
+    console.log(result);
     if (!result)
       return NextResponse.json(
         { error: "Invalid Codeforces handle or codefoces error" },
         { status: 400 },
       );
 
-    const handle = z.string().parse(result.handle);
+    const { handle } = result[0];
 
-    if (handle.toLowerCase() === registerData.cfHandle.toLowerCase())
+    if (handle.toLowerCase() !== registerData.cfHandle.toLowerCase())
       return NextResponse.json(
         { error: "Invalid Codeforces handle or codefoces error" },
         { status: 400 },
@@ -74,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     registerData.password = await bcrypt.hash(
       registerData.password,
-      process.env.HASH_SALT ?? 10,
+       10,
     );
 
     await db.insert(Users).values(registerData).execute();

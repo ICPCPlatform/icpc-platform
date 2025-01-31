@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { serialize } from "cookie";
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
 import { encryptSession } from "@/lib/session";
@@ -48,14 +49,22 @@ export async function POST(request: NextRequest) {
     };
 
     // Encrypting the session data
-    const session = await encryptSession(userJson);
+    const encryptedSessionData = await encryptSession(userJson);
+    const cookie = serialize("session", encryptedSessionData, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 7, // One week
+      path: "/",
+    });
 
     // Redirecting to the home page
     return NextResponse.json(
       { message: "authenticated" },
       {
         status: 307,
-        headers: { "Set-Cookie": `token=${session}`, Location: "/" },
+        headers: {
+          "Set-Cookie": cookie, // 7d
+        },
       },
     );
   } catch (error) {
