@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-export const expectBody = z.object({
+const expectBody = z.object({
   username: z.string(),
   password: z.string(),
 });
