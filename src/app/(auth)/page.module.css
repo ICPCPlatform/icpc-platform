@@ -4,14 +4,15 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+  background: var(--background);
 }
 
 .formWrapper {
-  background: white;
+  background: var(--content-bg);
+  color: var(--text-primary);
   padding: 2.5rem;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 30px rgba(var(--border-color), 0.08);
   width: 100%;
   max-width: 440px;
   transition: transform 0.2s ease;
@@ -24,7 +25,7 @@
 .formWrapper h1 {
   margin-bottom: 2rem;
   text-align: center;
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-size: 2rem;
   font-weight: 600;
 }
@@ -43,23 +44,23 @@
 
 .inputGroup label {
   font-size: 0.95rem;
-  color: #4a5568;
+  color: var(--text-primary);
   font-weight: 500;
   margin-left: 0.2rem;
 }
 
 .inputGroup input {
   padding: 0.9rem 1rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-color-secondary);
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s ease;
-  background-color: #f8fafc;
+  background-color: var(--accent-color);
   color: #1a202c;
 }
 
 .inputGroup input::placeholder {
-  color: #a0aec0;
+  color: var(--text-tertiary);
   opacity: 1;
 }
 
@@ -107,8 +108,8 @@
 .error {
   padding: 1rem;
   margin-bottom: 1.5rem;
-  background-color: #fff5f5;
-  border: 2px solid #fed7d7;
+  /* background-color: #fff5f5; */
+  /* border: 2px solid #fed7d7; */
   border-radius: 8px;
   color: #c53030;
   font-size: 0.95rem;
@@ -132,7 +133,7 @@
   margin-top: 2rem;
   text-align: center;
   font-size: 0.95rem;
-  color: #4a5568;
+  color: var(--text-secondary);
 }
 
 .loginLink a {
