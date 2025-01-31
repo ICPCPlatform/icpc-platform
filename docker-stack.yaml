@@ -1,0 +1,11 @@
+version: '3.8'
+service:
+  web:
+    image: ghcr.io/ICPCPlatform/next:latest
+    env-file: .web-env
+    volumes:
+        - .:/app
+        - /app/node_modules
+        - /app/.next
+    ports:
+      - "8000:3000"
