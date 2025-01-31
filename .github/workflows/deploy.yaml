@@ -25,8 +25,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/ICPCPlatform/next/:latest
-            ghcr.io/ICPCPlatform/next:${{ github.sha }}
+            ghcr.io/icpcplatform/next:latest
+            ghcr.io/icpcplatform/next:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
