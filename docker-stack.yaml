@@ -2,13 +2,17 @@ services:
   web:
     image: ghcr.io/icpcplatform/icpc-platform:latest
     env_file: .web-env
-    volumes:
-      - /var/app:/app
-      - /app/node_modules
-      - /app/.next
     ports:
       - "8000:3000"
     deploy:
       replicas: 1
     network_mode: host
+    networks:
+      - web_network
 
+networks:
+  web_network:
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24

@@ -47,35 +47,11 @@ export default function RegisterPage() {
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="firstName">First Name</label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              required
-              placeholder="Omar"
-              disabled={loading}
-            />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              required
-              placeholder="Abbas"
-              disabled={loading}
-            />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="gmail">Gmail</label>
             <input
               type="email"
-              id="email"
-              name="email"
+              id="gmail"
+              name="gmail"
               required
               placeholder="omar_abbas@example.com"
               disabled={loading}
@@ -148,6 +124,7 @@ export default function RegisterPage() {
 
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
+    console.log(data);
 
     const { success, data: payload } = expectedBody.safeParse(data);
 
