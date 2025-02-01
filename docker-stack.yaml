@@ -1,17 +1,14 @@
-version: '3.8'
-service:
+services:
   web:
     image: ghcr.io/icpcplatform/icpc-platform:latest
-    env-file: .web-env
+    env_file: .web-env
     volumes:
-        - .:/app
-        - /app/node_modules
-        - /app/.next
+      - /var/app:/app
+      - /app/node_modules
+      - /app/.next
     ports:
       - "8000:3000"
-    heathcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]  # Change this to your app's health endpoint
-      interval: 30s  # How often to run the check
-      retries: 3     # How many times it should retry before failing
-      start_period: 5s  # Delay before starting the checks
-      timeout: 10s
+    deploy:
+      replicas: 1
+    network_mode: host
+
