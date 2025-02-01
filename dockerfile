@@ -1,34 +1,38 @@
-FROM node:23 as base
+# Use official Node.js image as a base
+FROM node:18-alpine AS builder
 
-
-RUN apk add --no-cache g++ make py3-pip libc6-compat
-WORKDIR /app
-COPY package*.json ./
-EXPOSE 3000
-
-FROM base as builder
-WORKDIR /app
-COPY . .
-
-RUN npm run build
-
-
-FROM base as production
-
+# Set working directory
 WORKDIR /app
 
-ENV NODE_ENV=production
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
+
+# Install dependencies
 RUN npm ci
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-USER nextjs
+# Copy the rest of the application
+COPY . .
 
+# Build the Next.js application
+RUN npm run build
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
+# Install only production dependencies
+RUN npm ci --omit=dev
 
+# Use a lightweight image for production
+FROM node:18-alpine AS runner
 
-CMD npm start
+# Set working directory
+WORKDIR /app
+
+# Copy built files from the builder stage
+COPY --from=builder /app ./
+
+# Set environment variable to production
+ENV NODE_ENV=production
+
+# Expose the Next.js default port
+EXPOSE 3000
+
+# Start the Next.js application
+CMD ["npm", "run", "start"]
