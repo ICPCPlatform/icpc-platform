@@ -37,6 +37,7 @@ jobs:
     - name: create env file
       run: |
         echo "${{ secrets.WEB_ENV }}" >> .web-env
+        echo "GIT_SHA=${{ github.sha }}" >> .stack-env
 
     - name: Docker Stack Deploy
       uses: cssnr/stack-deploy-action@v1
@@ -46,5 +47,5 @@ jobs:
         host: ${{ secrets.HOST }}
         user: github-deploy
         ssh_key: ${{ secrets.SSHKEY }}
-        env_file: .web-env 
+        env_file: .stack-env
  

@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/icpcplatform/icpc-platform:latest
+    image: ghcr.io/icpcplatform/icpc-platform:${GIT_SHA:-latest}
     env_file: .web-env
     ports:
       - "8000:3000"
