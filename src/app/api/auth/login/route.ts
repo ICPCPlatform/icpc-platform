@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Preparing user data for the session
     const userJson = {
-      userId: user.userId.toString(),
+      userId: user.userId,
       username: user.username,
       role: user.role,
     };
