@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { userData } from "@/lib/session";
 import adminOnly from "@/middelwares/adminOnly";
 import expectedBody from "./_expectedBody";
