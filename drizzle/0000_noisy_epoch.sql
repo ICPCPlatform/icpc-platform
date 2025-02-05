@@ -1,15 +1,10 @@
-CREATE TYPE "public"."attendance_log_type" AS ENUM('in', 'out');--> statement-breakpoint
-CREATE TYPE "public"."gender_type" AS ENUM('male', 'female');--> statement-breakpoint
-CREATE TYPE "public"."role_type" AS ENUM('admin', 'coach', 'user');--> statement-breakpoint
-CREATE TYPE "public"."task_state" AS ENUM('pending', 'in_progress', 'done', 'deleted');--> statement-breakpoint
-CREATE TYPE "public"."training_state" AS ENUM('active', 'inactive');--> statement-breakpoint
 CREATE TABLE "attendance_logs" (
 	"attendance_log_id" serial PRIMARY KEY NOT NULL,
 	"staff_id" integer NOT NULL,
 	"trainee_id" integer NOT NULL,
 	"training_id" integer NOT NULL,
 	"session_id" integer NOT NULL,
-	"log_type" "attendance_log_type",
+	"log_type" varchar(40) NOT NULL,
 	"log_time" timestamp DEFAULT now(),
 	"log_remarks" varchar
 );
@@ -45,7 +40,7 @@ CREATE TABLE "trainings" (
 	"description" varchar NOT NULL,
 	"start_date" date NOT NULL,
 	"duration" integer,
-	"status" "training_state"
+	"status" varchar(40) DEFAULT 'active' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "tasks" (
@@ -55,7 +50,7 @@ CREATE TABLE "tasks" (
 	"training_id" integer DEFAULT 0,
 	"trainee_id" integer NOT NULL,
 	"staff_id" integer NOT NULL,
-	"state" "task_state",
+	"state" varchar(40) DEFAULT 'pending' NOT NULL,
 	"creation_time" timestamp DEFAULT now(),
 	"deadline" timestamp NOT NULL
 );
@@ -63,13 +58,13 @@ CREATE TABLE "tasks" (
 CREATE TABLE "users" (
 	"user_id" serial PRIMARY KEY NOT NULL,
 	"username" varchar NOT NULL,
-	"gmail" varchar NOT NULL,
-	"role" "role_type" NOT NULL,
-	"cf_handle" varchar NOT NULL,
-	"last_online" timestamp DEFAULT now(),
 	"password" varchar NOT NULL,
-	"is_verified" boolean DEFAULT false NOT NULL,
+	"gmail" varchar NOT NULL,
+	"cf_handle" varchar NOT NULL,
 	"phone_number" char(11) NOT NULL,
+	"role" varchar(40) DEFAULT 'user' NOT NULL,
+	"last_online" timestamp DEFAULT now(),
+	"is_verified" boolean DEFAULT false NOT NULL,
 	"deleted" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "users_gmail_unique" UNIQUE("gmail")
 );
@@ -80,11 +75,7 @@ CREATE TABLE "users_academic" (
 	"faculty" varchar,
 	"department" varchar,
 	"academic_year" date,
-	"graduation_year" date
-);
---> statement-breakpoint
-CREATE TABLE "users_handle" (
-	"user_id" integer PRIMARY KEY NOT NULL,
+	"graduation_year" date,
 	"vjudge" varchar,
 	"atcoder" varchar,
 	"topcoder" varchar,
@@ -92,11 +83,7 @@ CREATE TABLE "users_handle" (
 	"codechef" varchar,
 	"csacademy" varchar,
 	"leetcode" varchar,
-	"cses" varchar
-);
---> statement-breakpoint
-CREATE TABLE "users_personal" (
-	"user_id" integer PRIMARY KEY NOT NULL,
+	"cses" varchar,
 	"name_en_first" varchar,
 	"name_en_last" varchar,
 	"name_ar_1" varchar,
@@ -107,12 +94,8 @@ CREATE TABLE "users_personal" (
 	"country" varchar,
 	"city" varchar,
 	"birthdate" date,
-	"gender" "gender_type",
-	"image_url" varchar
-);
---> statement-breakpoint
-CREATE TABLE "users_socials" (
-	"user_id" integer PRIMARY KEY NOT NULL,
+	"is_male" boolean,
+	"image_url" varchar,
 	"facebook" varchar,
 	"linked_in" varchar,
 	"twitter" varchar,
@@ -132,7 +115,4 @@ ALTER TABLE "trainings" ADD CONSTRAINT "trainings_head_id_users_user_id_fk" FORE
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_trainee_id_trainees_trainee_id_fk" FOREIGN KEY ("trainee_id") REFERENCES "public"."trainees"("trainee_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_staff_id_staff_staff_id_fk" FOREIGN KEY ("staff_id") REFERENCES "public"."staff"("staff_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "users_academic" ADD CONSTRAINT "users_academic_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "users_handle" ADD CONSTRAINT "users_handle_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "users_personal" ADD CONSTRAINT "users_personal_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "users_socials" ADD CONSTRAINT "users_socials_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "users_academic" ADD CONSTRAINT "users_academic_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;

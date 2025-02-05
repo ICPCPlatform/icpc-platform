@@ -1,17 +1,16 @@
-import { JWTPayload, KeyLike, SignJWT, jwtVerify } from "jose";
-import { JWTOptions } from "next-auth/jwt";
+import { JWTPayload, SignJWT, jwtVerify } from "jose";
 
 // Encrypting a payload
 //
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
-type _userData = {
-  userId: string;
+export type userData = {
+  userId: number;
   username: string;
   role: string;
 };
 
-export async function encryptSession(data: _userData) {
+export async function encryptSession(data: userData) {
   const session = await new SignJWT(data)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -20,23 +19,22 @@ export async function encryptSession(data: _userData) {
   return session;
 }
 
-/** Decrypting a payload
-  * return a `{ userId: string, username: string, role: string }` object 
-  */
+/** Decrypting a payload it doesn't access cookies
+ * return a `{ userId: string, username: string, role: string }` object
+ */
 export async function decryptSession(
   session: string | undefined,
-): Promise<(JWTPayload & _userData) | null> {
-
+): Promise<(JWTPayload & userData) | null> {
   if (!session) return null;
 
   // bad
-  const { payload }: { payload: any } = await jwtVerify(session, encodedKey, {
+  const { payload } = (await jwtVerify(session, encodedKey, {
     algorithms: ["HS256"],
-  }).catch((_error) => {
+  }).catch(() => {
     return {
       payload: null,
     };
-  });
+  })) as { payload: (JWTPayload & userData) | null };
 
   return payload;
 }

@@ -1,8 +1,4 @@
-import {
-  integer,
-  pgTable,
-  serial,
-} from "drizzle-orm/pg-core";
+import { integer, pgTable, serial } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
 import { Trainings } from "./Trainings";

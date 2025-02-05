@@ -31,12 +31,14 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/bcryptjs": "^2.4.6",
+    "@types/eslint__eslintrc": "^2.1.2",
     "@types/node": "^20",
     "@types/pg": "^8.11.10",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.0",
+    "eslint-config-prettier": "^10.0.1",
     "jiti": "^2.4.2",
     "prettier": "^3.4.2",
     "typescript": "^5"

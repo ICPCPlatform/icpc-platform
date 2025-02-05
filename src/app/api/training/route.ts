@@ -5,20 +5,23 @@ import { db } from "@/lib/db/index";
 type Training = typeof Trainings.$inferInsert;
 
 export async function POST(request: NextRequest) {
-    try {
-        const training: Training = await request.json();
+  try {
+    const training: Training = await request.json();
 
-        // TODO: Add user authentication check
-        // TODO: Add validation
+    // TODO: Add user authentication check
+    // TODO: Add validation
 
-        await db.insert(Trainings).values(training).execute();
+    await db.insert(Trainings).values(training).execute();
 
-        return NextResponse.json({ message: "Training created successfully" }, { status: 201 });
-    } catch (error) {
-        console.error("Error creating training:", error);
-        return NextResponse.json(
-            { error: "Failed to create training" },
-            { status: 500 }
-        );
-    }
-} 
+    return NextResponse.json(
+      { message: "Training created successfully" },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error("Error creating training:", error);
+    return NextResponse.json(
+      { error: "Failed to create training" },
+      { status: 500 },
+    );
+  }
+}

@@ -12,6 +12,7 @@ export const Users = pgTable("users", {
   userId: serial().primaryKey(),
   username: varchar().notNull(),
   password: varchar().notNull(),
+
   gmail: varchar().notNull().unique(),
   cfHandle: varchar().notNull(),
   phoneNumber: char({ length: 11 }).notNull(),

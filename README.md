@@ -48,9 +48,11 @@ drizzle/                 # Database management
 ## Key Directories Explained
 
 ### `src/app` - Application Core
+
 The main application code using Next.js App Router:
 
 - **`api/`**: Backend API endpoints
+
   - Each feature domain (auth, training) contains:
     - `route.ts`: API implementation
     - `__tests__/`: Tests and API documentation
@@ -65,6 +67,7 @@ The main application code using Next.js App Router:
   - CSS Modules for styling
 
 ### `src/lib` - Shared Code
+
 Common utilities and business logic:
 
 - **`db/`**: Database layer
@@ -73,12 +76,14 @@ Common utilities and business logic:
   - Uses Drizzle ORM for type-safe database operations
 
 ### `src/components` - React Components
+
 Reusable UI components:
 
 - **`ui/`**: Basic components (buttons, inputs, cards)
 - **`features/`**: Complex, feature-specific components
 
 ### `drizzle/` - Database Management
+
 Database version control and schema:
 
 - **`migrations/`**: Track database changes

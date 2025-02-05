@@ -31,21 +31,20 @@ jobs:
     needs:
       - build-and-push-image
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: create env file
-      run: |
-        echo "${{ secrets.WEB_ENV }}" >> .web-env
-        echo "GIT_SHA=${{ github.sha }}" >> .stack-env
+      - name: create env file
+        run: |
+          echo "${{ secrets.WEB_ENV }}" >> .web-env
+          echo "GIT_SHA=${{ github.sha }}" >> .stack-env
 
-    - name: Docker Stack Deploy
-      uses: cssnr/stack-deploy-action@v1
-      with:
-        name: web
-        file: docker-stack.yaml
-        host: ${{ secrets.HOST }}
-        user: github-deploy
-        ssh_key: ${{ secrets.SSHKEY }}
-        env_file: .stack-env
- 
+      - name: Docker Stack Deploy
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: web
+          file: docker-stack.yaml
+          host: ${{ secrets.HOST }}
+          user: github-deploy
+          ssh_key: ${{ secrets.SSHKEY }}
+          env_file: .stack-env

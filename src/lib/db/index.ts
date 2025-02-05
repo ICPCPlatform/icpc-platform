@@ -1,9 +1,7 @@
+import "server-only";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-import * as fs from "fs";
-import * as path from "path";
-import { PgTable } from "drizzle-orm/pg-core";
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });

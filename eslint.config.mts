@@ -1,22 +1,24 @@
-import { dirname } from "path";
+import path from "path";
 import { fileURLToPath } from "url";
 import type { Linter } from "eslint";
 import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
 const eslintConfig = [
-  {
-    ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.config({
+    extends: ['next','prettier'],
     rules: {
-      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      'react/no-unescaped-entities': 'off',
+      '@next/next/no-page-custom-font': 'off',
+      '@typescript-eslint/no-unused-vars': ["error", { argsIgnorePattern: "^_" }],
     },
-  },
+  }),
 ] satisfies Linter.Config[];
 
 export default eslintConfig;
