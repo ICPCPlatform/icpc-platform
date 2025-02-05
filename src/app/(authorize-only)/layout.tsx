@@ -1,8 +1,9 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { cookies } from "next/headers";
-import { decryptSession } from "@/lib/session";
+import { decryptSession, userData } from "@/lib/session";
 import { redirect } from "next/navigation";
 import UserProvider from "@/providers/user";
 import "@/app/page.module.css";
@@ -25,7 +26,7 @@ export default async function RootLayout({
   if (!validation) {
     redirect("/login");
   }
-  const user = validation as { userId: string; username: string; role: string };
+  const user = validation as userData;
   return (
     <html lang="en">
       <body className={inter.className}>
