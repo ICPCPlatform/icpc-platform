@@ -3,7 +3,8 @@ import { decryptSession, type userData } from "@/lib/session";
 
 /**
  * this is a clouser function that takes a function as an argument and returns a function
- * How to use `
+ * How to use 
+ * `
  * async function POST(request: NextRequest, user: userData) {}
  * module.exports = { POST: adminOnly(POST) };
  * `
