@@ -1,5 +1,5 @@
 {
-  "id": "42d061d7-eb79-456c-b10a-efe6192b55ef",
+  "id": "4b4c9235-5610-48fe-ad2a-9c1424ab5acb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -40,10 +40,9 @@
         },
         "log_type": {
           "name": "log_type",
-          "type": "attendance_log_type",
-          "typeSchema": "public",
+          "type": "varchar(40)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "log_time": {
           "name": "log_time",
@@ -363,10 +362,10 @@
         },
         "status": {
           "name": "status",
-          "type": "training_state",
-          "typeSchema": "public",
+          "type": "varchar(40)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'active'"
         }
       },
       "indexes": {},
@@ -434,10 +433,10 @@
         },
         "state": {
           "name": "state",
-          "type": "task_state",
-          "typeSchema": "public",
+          "type": "varchar(40)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'pending'"
         },
         "creation_time": {
           "name": "creation_time",
@@ -517,16 +516,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "gmail": {
-          "name": "gmail",
+        "password": {
+          "name": "password",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
-        "role": {
-          "name": "role",
-          "type": "role_type",
-          "typeSchema": "public",
+        "gmail": {
+          "name": "gmail",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -536,6 +534,19 @@
           "primaryKey": false,
           "notNull": true
         },
+        "phone_number": {
+          "name": "phone_number",
+          "type": "char(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'user'"
+        },
         "last_online": {
           "name": "last_online",
           "type": "timestamp",
@@ -543,24 +554,12 @@
           "notNull": false,
           "default": "now()"
         },
-        "password": {
-          "name": "password",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "is_verified": {
           "name": "is_verified",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
           "default": false
-        },
-        "phone_number": {
-          "name": "phone_number",
-          "type": "char(11)",
-          "primaryKey": false,
-          "notNull": true
         },
         "deleted": {
           "name": "deleted",
@@ -625,39 +624,6 @@
           "type": "date",
           "primaryKey": false,
           "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "users_academic_user_id_users_user_id_fk": {
-          "name": "users_academic_user_id_users_user_id_fk",
-          "tableFrom": "users_academic",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.users_handle": {
-      "name": "users_handle",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
         },
         "vjudge": {
           "name": "vjudge",
@@ -706,39 +672,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "users_handle_user_id_users_user_id_fk": {
-          "name": "users_handle_user_id_users_user_id_fk",
-          "tableFrom": "users_handle",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.users_personal": {
-      "name": "users_personal",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
         },
         "name_en_first": {
           "name": "name_en_first",
@@ -800,10 +733,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "gender": {
-          "name": "gender",
-          "type": "gender_type",
-          "typeSchema": "public",
+        "is_male": {
+          "name": "is_male",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": false
         },
@@ -812,39 +744,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "users_personal_user_id_users_user_id_fk": {
-          "name": "users_personal_user_id_users_user_id_fk",
-          "tableFrom": "users_personal",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.users_socials": {
-      "name": "users_socials",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
         },
         "facebook": {
           "name": "facebook",
@@ -873,9 +772,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_socials_user_id_users_user_id_fk": {
-          "name": "users_socials_user_id_users_user_id_fk",
-          "tableFrom": "users_socials",
+        "users_academic_user_id_users_user_id_fk": {
+          "name": "users_academic_user_id_users_user_id_fk",
+          "tableFrom": "users_academic",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -894,51 +793,7 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {
-    "public.attendance_log_type": {
-      "name": "attendance_log_type",
-      "schema": "public",
-      "values": [
-        "in",
-        "out"
-      ]
-    },
-    "public.gender_type": {
-      "name": "gender_type",
-      "schema": "public",
-      "values": [
-        "male",
-        "female"
-      ]
-    },
-    "public.role_type": {
-      "name": "role_type",
-      "schema": "public",
-      "values": [
-        "admin",
-        "coach",
-        "user"
-      ]
-    },
-    "public.task_state": {
-      "name": "task_state",
-      "schema": "public",
-      "values": [
-        "pending",
-        "in_progress",
-        "done",
-        "deleted"
-      ]
-    },
-    "public.training_state": {
-      "name": "training_state",
-      "schema": "public",
-      "values": [
-        "active",
-        "inactive"
-      ]
-    }
-  },
+  "enums": {},
   "schemas": {},
   "sequences": {},
   "roles": {},
