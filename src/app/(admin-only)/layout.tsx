@@ -25,9 +25,9 @@ export default async function RootLayout({
   if (!validation) {
     redirect("/login");
   }
-  const user = validation as  userData;
+  const user = validation as userData;
   if (user.role !== "admin") {
-    // unauthorized access 
+    // unauthorized access
     redirect("/profile");
   }
   return (

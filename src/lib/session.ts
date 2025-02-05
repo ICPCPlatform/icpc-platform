@@ -1,5 +1,4 @@
-import { JWTPayload, KeyLike, SignJWT, jwtVerify } from "jose";
-import { JWTOptions } from "next-auth/jwt";
+import { JWTPayload, SignJWT, jwtVerify } from "jose";
 
 // Encrypting a payload
 //
@@ -21,22 +20,21 @@ export async function encryptSession(data: userData) {
 }
 
 /** Decrypting a payload it doesn't access cookies
-  * return a `{ userId: string, username: string, role: string }` object 
-  */
+ * return a `{ userId: string, username: string, role: string }` object
+ */
 export async function decryptSession(
   session: string | undefined,
 ): Promise<(JWTPayload & userData) | null> {
-
   if (!session) return null;
 
   // bad
-  const { payload }: { payload: any } = await jwtVerify(session, encodedKey, {
+  const { payload } = (await jwtVerify(session, encodedKey, {
     algorithms: ["HS256"],
   }).catch((_error) => {
     return {
       payload: null,
     };
-  });
+  })) as { payload: (JWTPayload & userData) | null };
 
   return payload;
 }

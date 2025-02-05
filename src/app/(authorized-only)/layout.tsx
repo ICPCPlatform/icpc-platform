@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
@@ -30,7 +29,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <h1> {validation.userId} </h1>
         <UserProvider user={user}>{children}</UserProvider>
       </body>
     </html>

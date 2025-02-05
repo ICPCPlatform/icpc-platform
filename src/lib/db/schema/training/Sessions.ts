@@ -1,5 +1,4 @@
 import {
-  bigint,
   timestamp,
   integer,
   pgTable,

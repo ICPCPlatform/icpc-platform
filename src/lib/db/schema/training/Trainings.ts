@@ -1,13 +1,7 @@
-import {
-  integer,
-  pgTable,
-  varchar,
-  date,
-  serial,
-} from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, date, serial } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
-type Status = "active" | "inactive"; 
+type Status = "active" | "inactive";
 export const Trainings = pgTable("trainings", {
   trainingId: serial().primaryKey(),
   headId: integer()
@@ -17,5 +11,5 @@ export const Trainings = pgTable("trainings", {
   description: varchar().notNull(),
   startDate: date().notNull(),
   duration: integer(), // number of weeks/days
-  status: varchar({length:40}) .$type<Status>().notNull().default("active"),
+  status: varchar({ length: 40 }).$type<Status>().notNull().default("active"),
 });

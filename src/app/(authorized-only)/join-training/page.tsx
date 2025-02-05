@@ -11,7 +11,7 @@ import TrainingComp from "./_trainingComp";
 // };
 
 export default async function Page() {
-  const trainings = await db
+  const trainings = (await db
     .select({
       id: Trainings.trainingId,
       title: Trainings.title,
@@ -21,7 +21,7 @@ export default async function Page() {
     })
     .from(Trainings)
     .where(eq(Trainings.status, "active"))
-    .execute() satisfies (Array<TrainingType>);
+    .execute()) satisfies Array<TrainingType>;
   return (
     <>
       <h1> Training </h1>

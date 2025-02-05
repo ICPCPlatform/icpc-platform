@@ -32,7 +32,7 @@ export const UserFullData = pgTable("users_academic", {
   cses: varchar(),
 
   /* Personal */
-  nameEnFirst: varchar(), 
+  nameEnFirst: varchar(),
   nameEnLast: varchar(),
   nameAR1: varchar(),
   nameAR2: varchar(),
@@ -43,8 +43,8 @@ export const UserFullData = pgTable("users_academic", {
   city: varchar(),
   birthdate: date(),
   isMale: boolean(),
-  ImageURL: varchar(), 
-  
+  ImageURL: varchar(),
+
   /* Socials */
   facebook: varchar(), // link to facebook profile
   linkedIn: varchar(), // link to linkedIn profile

@@ -10,7 +10,7 @@ import { Trainings } from "../training/Trainings";
 import { Trainees } from "../training/Trainees";
 import { Staff } from "../training/Staff";
 
-type States = "pending"| "in_progress"| "done"| "deleted"
+type States = "pending" | "in_progress" | "done" | "deleted";
 export const Tasks = pgTable("tasks", {
   taskId: serial().primaryKey(),
   title: varchar().notNull(),

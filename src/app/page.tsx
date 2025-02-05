@@ -11,11 +11,11 @@ export default function Home() {
           <a href="mailto:icpcplatform@gmail.com"> icpcplatform@gmail.com </a>
         </h2>
         <hr />
-        
+
         <h3 className={styles.title}>
           {" "}
-          For now you can be a good person {"😊"} by just signing in and showing you
-          commitment to the community
+          For now you can be a good person {"😊"} by just signing in and showing
+          you commitment to the community
         </h3>
         <div className={styles.grid}>
           <a href="/login" className={styles.card}>

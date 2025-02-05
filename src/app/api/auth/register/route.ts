@@ -4,7 +4,6 @@ import { Users } from "@/lib/db/schema/user/Users";
 import { eq, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import expectedBody from "./expectedBody";
-import { z } from "zod";
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,10 +57,7 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
 
-    registerData.password = await bcrypt.hash(
-      registerData.password,
-       10,
-    );
+    registerData.password = await bcrypt.hash(registerData.password, 10);
 
     await db.insert(Users).values(registerData).execute();
 
