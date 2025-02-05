@@ -1,9 +1,10 @@
 "use client";
 import React, { useContext } from "react";
 import { useState } from "react";
-const UserContext = React.createContext({} as any);
+import { type User } from "./page";
+const UserContext = React.createContext({} as User);
 
-export default function Profile({ user }: any) {
+export default function Profile({ user }: { user: User }) {
   const [activeTab, setActiveTab] = useState("cp");
 
   return (

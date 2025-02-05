@@ -25,6 +25,7 @@ const user = {
   facebook: "facebook.com/cgmoreda",
   telegram: "t.me/cgmoreda",
 };
+export type User = typeof user;
 
 export default async function ProfilePage() {
   return (

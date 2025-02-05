@@ -30,7 +30,7 @@ export async function decryptSession(
   // bad
   const { payload } = (await jwtVerify(session, encodedKey, {
     algorithms: ["HS256"],
-  }).catch((_error) => {
+  }).catch(() => {
     return {
       payload: null,
     };

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
 
-    const { status: _status, result } = await handleRes.json();
+    const { result } = await handleRes.json();
     console.log(result);
     if (!result)
       return NextResponse.json(

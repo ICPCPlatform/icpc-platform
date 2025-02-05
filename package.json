@@ -31,6 +31,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/bcryptjs": "^2.4.6",
+    "@types/eslint__eslintrc": "^2.1.2",
     "@types/node": "^20",
     "@types/pg": "^8.11.10",
     "@types/react": "^19",
