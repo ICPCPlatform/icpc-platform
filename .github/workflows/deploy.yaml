@@ -40,7 +40,7 @@ jobs:
           echo "GIT_SHA=${{ github.sha }}" >> .stack-env
 
       - name: Docker Stack Deploy
-        uses: kitconcept/docker-stack-deploy@v1.0.1
+        uses: kitconcept/docker-stack-deploy@v1.2.0
         with:
           registry: "ghcr.io"
           username: ${{ secrets.GHCR_USERNAME }}
