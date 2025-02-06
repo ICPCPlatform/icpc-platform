@@ -5,7 +5,7 @@ import { userData } from "@/lib/session";
 import adminOnly from "@/middelwares/adminOnly";
 import expectedBody from "./_expectedBody";
 
-async function POST(request: NextRequest, user: userData) {
+async function POSTfn(request: NextRequest, user: userData) {
   try {
     const { success, data: trainingData } = expectedBody.safeParse(
       await request.json(),
@@ -25,4 +25,5 @@ async function POST(request: NextRequest, user: userData) {
   }
 }
 
-module.exports = { POST: adminOnly(POST) };
+const POST = adminOnly(POSTfn);
+export { POST } ;

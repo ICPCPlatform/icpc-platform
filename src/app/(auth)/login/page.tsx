@@ -1,6 +1,4 @@
 "use client";
-
-import { NextURL } from "next/dist/server/web/next-url";
 import styles from "../page.module.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

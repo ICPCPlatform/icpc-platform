@@ -76,9 +76,16 @@ export default function Page() {
     try {
       const form = event.currentTarget;
       const formData = new FormData(form);
+      const givenBody = Object.fromEntries(formData.entries());
+      const givenData = {
+        ...givenBody,
+        duration: Number(givenBody.duration),
+      }
+
+      const sessionCookie = getCookie('session');
 
       const { success, data } = expectedBody.safeParse(
-        Object.fromEntries(formData.entries()),
+        givenData
       );
 
       if (!success) {
@@ -90,6 +97,7 @@ export default function Page() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Cookie": `session=${sessionCookie}`,
         },
         body: JSON.stringify(data),
       });
@@ -100,7 +108,7 @@ export default function Page() {
       } else {
         throw new Error('Failed to create training');
       }
-    } catch (error) {
+    } catch  {
       alert("An error occurred while creating the training");
     } finally {
       setIsSubmitting(false);
