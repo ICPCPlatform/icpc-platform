@@ -4,7 +4,6 @@ import { useState } from "react";
 import styles from "../page.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
@@ -12,74 +11,56 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleGoogleSignIn = async () => {
-    setError("google sing");
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
         <h1>Create Account</h1>
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          className={styles.googleButton}
-          disabled={loading}
-        >
-          <Image src={"google.svg"} alt="google-icon" width={24} height={24} />
-          Continue with Google
-        </button>
-
-        <div className={styles.divider}>
-          <span>or</span>
-        </div>
+        <p className={styles.subtitle}>Join our competitive programming community</p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputGroup}>
-            <label htmlFor="username">username</label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               id="username"
               name="username"
               required
-              placeholder="omar2"
+              placeholder="Choose a username"
               disabled={loading}
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="gmail">Gmail</label>
+            <label htmlFor="gmail">Email Address</label>
             <input
               type="email"
               id="gmail"
               name="gmail"
               required
-              placeholder="omar_abbas@example.com"
+              placeholder="Enter your email"
               disabled={loading}
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="phoneNumber">phone number</label>
+            <label htmlFor="phoneNumber">Phone Number</label>
             <input
               type="text"
               id="phoneNumber"
               name="phoneNumber"
               required
-              placeholder="01001001000"
+              placeholder="01XXXXXXXXX"
               disabled={loading}
               pattern="^01[0125]\d{8}$"
             />
           </div>
 
-          {/* cfHandle */}
-
           <div className={styles.inputGroup}>
-            <label htmlFor="cfHandle">codeforces handle</label>
+            <label htmlFor="cfHandle">Codeforces Handle</label>
             <input
               type="text"
               id="cfHandle"
               name="cfHandle"
               required
-              placeholder="mohamed_reda"
+              placeholder="Enter your Codeforces handle"
               disabled={loading}
             />
           </div>
@@ -91,7 +72,7 @@ export default function RegisterPage() {
               id="password"
               name="password"
               required
-              placeholder="••••••••"
+              placeholder="Choose a strong password"
               minLength={8}
               disabled={loading}
             />
@@ -110,11 +91,12 @@ export default function RegisterPage() {
         {success && <div className={styles.success}>{success}</div>}
 
         <p className={styles.loginLink}>
-          Already have an account? <Link href="/login">Log in</Link>
+          Already have an account? <Link href="/login">Sign in</Link>
         </p>
       </div>
     </div>
   );
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (loading) return; // don't flod with requestes

@@ -10,24 +10,32 @@
 .formWrapper {
   background: var(--content-bg);
   color: var(--text-primary);
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(var(--border-color), 0.08);
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(var(--border-color), 0.12);
   width: 100%;
   max-width: 440px;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .formWrapper:hover {
   transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(var(--border-color), 0.16);
 }
 
 .formWrapper h1 {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   text-align: center;
   color: var(--text-primary);
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1rem;
 }
 
 .form {
@@ -45,33 +53,33 @@
 .inputGroup label {
   font-size: 0.95rem;
   color: var(--text-primary);
-  font-weight: 500;
+  font-weight: 600;
   margin-left: 0.2rem;
 }
 
 .inputGroup input {
-  padding: 0.9rem 1rem;
+  padding: 1rem 1.2rem;
   border: 2px solid var(--border-color-secondary);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
   transition: all 0.2s ease;
   background-color: var(--accent-color);
-  color: #1a202c;
+  color: var(--text-primary);
 }
 
 .inputGroup input::placeholder {
   color: var(--text-tertiary);
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .inputGroup input:hover {
-  border-color: #cbd5e0;
+  border-color: #3182ce;
 }
 
 .inputGroup input:focus {
   outline: none;
   border-color: #3182ce;
-  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.15);
   background-color: white;
 }
 
@@ -81,7 +89,7 @@
   background-color: #3182ce;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -91,7 +99,7 @@
 }
 
 .submitButton:hover {
-  background-color: #2c5282;
+  background-color: #2b6cb0;
   transform: translateY(-1px);
 }
 
@@ -107,11 +115,11 @@
 
 .error {
   padding: 1rem;
-  margin-bottom: 1.5rem;
-  /* background-color: #fff5f5; */
-  /* border: 2px solid #fed7d7; */
-  border-radius: 8px;
-  color: #c53030;
+  margin-top: 1rem;
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: 10px;
+  color: #DC2626;
   font-size: 0.95rem;
   font-weight: 500;
   animation: shake 0.5s ease-in-out;
@@ -119,11 +127,11 @@
 
 .success {
   padding: 1rem;
-  margin-bottom: 1.5rem;
-  background-color: #f0fff4;
-  border: 2px solid #c6f6d5;
-  border-radius: 8px;
-  color: #2f855a;
+  margin-top: 1rem;
+  background-color: #F0FDF4;
+  border: 1px solid #86EFAC;
+  border-radius: 10px;
+  color: #16A34A;
   font-size: 0.95rem;
   font-weight: 500;
   animation: slideDown 0.3s ease-out;
@@ -145,21 +153,14 @@
 }
 
 .loginLink a:hover {
-  color: #2c5282;
+  color: #2b6cb0;
   text-decoration: underline;
 }
 
 @keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  75% {
-    transform: translateX(5px);
-  }
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
 @keyframes slideDown {
