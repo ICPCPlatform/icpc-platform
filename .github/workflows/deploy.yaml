@@ -44,6 +44,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:           
           host: ${{ secrets.HOST }}
+          key: ${{ secrets.SSHKEY }}
           username: github-deploy
           script: |
             docker pull ghcr.io/icpcplatform/icpc-platform:${{ github.sha }}
