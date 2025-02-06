@@ -82,7 +82,6 @@ export default function Page() {
         duration: Number(givenBody.duration),
       }
 
-      const sessionCookie = getCookie('session');
 
       const { success, data } = expectedBody.safeParse(
         givenData
@@ -97,8 +96,8 @@ export default function Page() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Cookie": `session=${sessionCookie}`,
         },
+        credentials: "include",
         body: JSON.stringify(data),
       });
 
