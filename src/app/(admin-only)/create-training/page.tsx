@@ -1,5 +1,8 @@
+'use client';
+
 import expectedBody from "@/app/api/create-training/_expectedBody";
 import { NextURL } from "next/dist/server/web/next-url";
+
 export default function Page() {
   return (
     <div>
@@ -19,6 +22,7 @@ export default function Page() {
       </form>
     </div>
   );
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -31,13 +35,11 @@ export default function Page() {
       alert("Invalid form data");
       return;
     }
-    fetch(new NextURL("/api/create-training"), {
+    fetch('/api/create-training', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      redirect: "follow",
-      credentials: "include",
       body: JSON.stringify(data),
     }).then((response) => {
       if (response.status === 201) {
