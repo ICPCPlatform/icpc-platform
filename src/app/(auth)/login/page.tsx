@@ -1,6 +1,5 @@
 "use client";
 
-import { NextURL } from "next/dist/server/web/next-url";
 import styles from "../page.module.css";
 import { useRouter } from "next/navigation";
 
@@ -45,7 +44,7 @@ export default function LoginPage() {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    fetch(new NextURL("/api/auth/login"), {
+    fetch("/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +54,6 @@ export default function LoginPage() {
       body: JSON.stringify(data),
     }).then((response) => {
       if (response.status === 200 || response.status === 307) {
-        console.log("hi");
         router.push("/profile");
       }
     });

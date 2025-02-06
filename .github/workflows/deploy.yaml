@@ -36,15 +36,18 @@ jobs:
 
       - name: create env file
         run: |
-          echo "${{ secrets.WEB_ENV }}" >> .web-env
+          echo "${{ secrets.WEB_ENV }}" >> .stack-env
           echo "GIT_SHA=${{ github.sha }}" >> .stack-env
 
       - name: Docker Stack Deploy
-        uses: cssnr/stack-deploy-action@v1
+        uses: kitconcept/docker-stack-deploy@v1.0.1
         with:
-          name: web
-          file: docker-stack.yaml
-          host: ${{ secrets.HOST }}
-          user: github-deploy
-          ssh_key: ${{ secrets.SSHKEY }}
+          registry: "ghcr.io"
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+          stack_name: web
+          stack_file: docker-stack.yaml
+          remote_host: ${{ secrets.HOST }}
+          remote_user: github-deploy
+          remote_private_key: ${{ secrets.SSHKEY }}
           env_file: .stack-env
