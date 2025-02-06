@@ -45,7 +45,7 @@ export default function LoginPage() {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    fetch(new NextURL("/api/auth/login"), {
+    fetch("/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
