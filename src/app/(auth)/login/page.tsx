@@ -1,4 +1,5 @@
 "use client";
+
 import styles from "../page.module.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -58,7 +59,6 @@ export default function LoginPage() {
       body: JSON.stringify(data),
     }).then((response) => {
       if (response.status === 200 || response.status === 307) {
-        console.log("hi");
         router.push("/profile");
       }
     });

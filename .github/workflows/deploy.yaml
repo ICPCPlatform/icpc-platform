@@ -1,4 +1,5 @@
 name: pipeline
+
 on:
   push:
     branches:
@@ -36,8 +37,17 @@ jobs:
 
       - name: create env file
         run: |
-          echo "${{ secrets.WEB_ENV }}" >> .web-env
+          echo "${{ secrets.WEB_ENV }}" >> .stack-env
           echo "GIT_SHA=${{ github.sha }}" >> .stack-env
+
+      - name: pull container image
+        uses: appleboy/ssh-action@v1.2.0
+        with:           
+          host: ${{ secrets.HOST }}
+          key: ${{ secrets.SSHKEY }}
+          username: github-deploy
+          script: |
+            docker pull ghcr.io/icpcplatform/icpc-platform:${{ github.sha }}
 
       - name: Docker Stack Deploy
         uses: cssnr/stack-deploy-action@v1

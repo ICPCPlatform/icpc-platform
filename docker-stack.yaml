@@ -1,12 +1,15 @@
+version: '3'
+
 services:
   web:
     image: ghcr.io/icpcplatform/icpc-platform:${GIT_SHA:-latest}
-    env_file: .web-env
     ports:
       - "8000:3000"
     deploy:
       replicas: 1
-    network_mode: host
+    environment:
+        DATABASE_URL: ${DATABASE_URL}
+        SESSION_SECRET: ${SESSION_SECRET}
     networks:
       - web_network
 
