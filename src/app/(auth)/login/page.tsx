@@ -3,38 +3,43 @@
 import { NextURL } from "next/dist/server/web/next-url";
 import styles from "../page.module.css";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
-        <h1> Login </h1>
+        <h1>Welcome Back</h1>
+        <p className={styles.subtitle}>Please enter your credentials to continue</p>
         <form onSubmit={onSubmit}>
           <div className={styles.inputGroup}>
-            <label htmlFor="username">username</label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               id="username"
               name="username"
               required
-              placeholder="omar2"
+              placeholder="Enter your username"
             />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="password">password</label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
               name="password"
               required
-              placeholder="********"
+              placeholder="Enter your password"
             />
           </div>
           <button type="submit" className={styles.submitButton}>
-            Login
+            Sign In
           </button>
         </form>
+        <p className={styles.loginLink}>
+          Don't have an account? <Link href="/register">Sign up</Link>
+        </p>
       </div>
     </div>
   );
