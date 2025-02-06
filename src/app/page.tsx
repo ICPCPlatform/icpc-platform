@@ -1,6 +1,7 @@
 import styles from "./page.module.css";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { redirect } from 'next/navigation'
 export default async function Home() {
   const cookie = await cookies();
   const isLoggedIn = !!cookie.get("session");
@@ -24,15 +25,22 @@ export default async function Home() {
             </Link>
             {isLoggedIn ? (
               <button
-                onClick={() => {
-                  window.location.reload();
+                onClick={async () => {
+                  "use server"
+                  const cookie = await cookies();
+                  cookie.delete("session");
+                  redirect("/");
                 }}
-                className={`${styles.cta} ${styles.secondary}`} />
+                className={`${styles.cta} ${styles.secondary}`} >
+                Sign Out
+                </button>
             ) : (
               <Link
                 href="/login"
                 className={`${styles.cta} ${styles.secondary}`}
-              ></Link>
+              >
+                  Sign In
+                </Link>
             )}
           </div>
         </section>
