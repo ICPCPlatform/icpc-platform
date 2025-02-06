@@ -11,7 +11,6 @@ pool
   .connect()
   .then(() => {
     console.log("🚀 Connected to PostgreSQL database");
-    console.log("📍 Database URL:", process.env.DATABASE_URL?.split("@")[1]); // Only show host part for security
   })
   .catch((err) => {
     console.error("❌ Database connection error:", err.message);
