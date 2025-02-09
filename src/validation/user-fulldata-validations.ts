@@ -7,8 +7,8 @@ const faculty = z.enum(faculties);
 const department = z.enum(departments);
 const academicYear = z.number({message:" Academic Year must be Number"})
     .positive({message:" Academic Year must be Positive"})
-    .max(5,{message:" Academic Year must be between 1 and 5"});
-const gradYear = z.string().date();
+    .max(5,{message:" Academic Year must be between 1 and 5"}).optional();
+const gradYear = z.string().date().optional();
 
 
 // handles
@@ -26,7 +26,7 @@ const handle = z
     .min(3, { message: "Username too short" })
     .regex(/^[a-zA-Z0-9_]+$/, {
         message: "Username must contain only letters, numbers, and underscores",
-    });
+    }).optional();
 
 
 // personal
@@ -36,13 +36,13 @@ const EnglishName = z
     .trim()
     .min(3, {message: "too short"})
     .regex(/^[a-zA-Z]+$/)
-    .nullable();
+    .optional();
 const ArabicName = z
     .string()
     .trim()
     .min(2, {message: "too short"})
     .regex(/^[ء-ي]+$/)
-    .nullable();
+    .optional();
 
 const nationalId = z
     .string()
@@ -53,17 +53,17 @@ const nationalId = z
     .refine(() => {
         //TODO checksome
         return true;
-    }, "Checksum validation failed");
+    }, "Checksum validation failed").optional();
 
 const countryName = z.enum(country);
-const city = z.string().nullable();
-const isMale = z.boolean().nullable();
-const imageURL = z.string().url().nullable();
+const city = z.string().optional();
+const isMale = z.boolean().optional();
+const imageURL = z.string().url().optional();
 
-const facebook = z.string().url().nullable();
-const linkedIn = z.string().url().nullable();
-const github = z.string().url().nullable();
-const twitter = z.string().url().nullable();
+const facebook = z.string().url().optional();
+const linkedIn = z.string().url().optional();
+const github = z.string().url().optional();
+const twitter = z.string().url().optional();
 
 
 function govNumber(id: string) {

@@ -2,7 +2,7 @@ import styles from "./page.module.css";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 export default async function Home() {
   const cookie = await cookies();

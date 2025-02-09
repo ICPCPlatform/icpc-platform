@@ -4,115 +4,153 @@ import { useState } from "react";
 import styles from "../page.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Card } from "@/components/ui/card";
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const form = useForm<z.infer<typeof expectedBody>>({
+    resolver: zodResolver(expectedBody),
+    defaultValues: {
+      username: "",
+    },
+  });
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formWrapper}>
-        <h1>Create Account</h1>
-        <p className={styles.subtitle}>Join our competitive programming community</p>
+    <Card style={{ width: 350 }}>
+      <h1>Create Account</h1>
+      <p className={styles.subtitle}>
+        Join our competitive programming community
+      </p>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.inputGroup}>
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              required
-              placeholder="Choose a username"
-              disabled={loading}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <label htmlFor="gmail">Email Address</label>
-            <input
-              type="email"
-              id="gmail"
-              name="gmail"
-              required
-              placeholder="Enter your email"
-              disabled={loading}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <label htmlFor="phoneNumber">Phone Number</label>
-            <input
-              type="text"
-              id="phoneNumber"
-              name="phoneNumber"
-              required
-              placeholder="01XXXXXXXXX"
-              disabled={loading}
-              pattern="^01[0125]\d{8}$"
-            />
-          </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="username123" {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="gmail"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gmail</FormLabel>
+                <FormControl>
+                  <Input placeholder="example@gmail.com" {...field} />
+                </FormControl>
+                <FormDescription>
+                  this is your email address. only gmail is allowed.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="cfHandle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>codeforces handle</FormLabel>
+                <FormControl>
+                  <Input placeholder="mohamed_reda" {...field} />
+                </FormControl>
+                <FormDescription>this is your phone number.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="cfHandle">Codeforces Handle</label>
-            <input
-              type="text"
-              id="cfHandle"
-              name="cfHandle"
-              required
-              placeholder="Enter your Codeforces handle"
-              disabled={loading}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone number</FormLabel>
+                <FormControl>
+                  <Input placeholder="01001001000" {...field} />
+                </FormControl>
+                <FormDescription>this is your phone number.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              placeholder="Choose a strong password"
-              minLength={8}
-              disabled={loading}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className={styles.submitButton}
-            disabled={loading}
-          >
-            {loading ? "Creating Account..." : "Create Account"}
-          </button>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>password</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="*****" {...field} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                at least 8 characters with a mix of letters, numbers, and
+                symbols.
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
+              control={form.control}
+              name="confPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="*****" {...field} />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+          <Button type="submit">Create Account</Button>
         </form>
+      </Form>
 
-        {error && <div className={styles.error}>{error}</div>}
-        {success && <div className={styles.success}>{success}</div>}
+      {error && <div className={styles.error}>{error}</div>}
+      {success && <div className={styles.success}>{success}</div>}
 
-        <p className={styles.loginLink}>
-          Already have an account? <Link href="/login">Sign in</Link>
-        </p>
-      </div>
-    </div>
+      <p className={styles.loginLink}>
+        Already have an account? <Link href="/login">Sign in</Link>
+      </p>
+    </Card>
   );
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (loading) return; // don't flod with requestes
+  async function onSubmit(data: z.infer<typeof expectedBody>) {
     setError("");
     setSuccess("");
-    setLoading(true);
-
-    const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    console.log(data);
-
-    const { success, data: payload } = expectedBody.safeParse(data);
 
     if (!success) {
       setError("Invalid input");
-      setLoading(false);
       return;
     }
 
@@ -121,7 +159,7 @@ export default function RegisterPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(data),
     })
       .catch((err) => {
         setError(err instanceof Error ? err.message : "Something went wrong");
@@ -138,9 +176,6 @@ export default function RegisterPage() {
         setTimeout(() => {
           router.push("/profile");
         }, 2000);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }
 }

@@ -9,7 +9,7 @@ import {
 
 import { Users } from "./Users";
 
-export const UserFullData = pgTable("users_academic", {
+export const UserFullData = pgTable("users_full_data", {
   userId: integer()
     .primaryKey()
     .references(() => Users.userId),
