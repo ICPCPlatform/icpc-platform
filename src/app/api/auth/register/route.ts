@@ -151,7 +151,7 @@ function emailActivation(registerData: typeof Users.$inferInsert,randomToken: st
             <div class="content">
                 <p>Dear ${registerData.username},</p>
                 <p>Thank you for registering on the ICPC Training Platform! To complete your registration and start your learning journey, please activate your account by clicking the button below.</p>
-                <a href="https://${process.env.URL}/api/auth/verify?token=${randomToken}" class="button">Activate My Account</a>
+                <a href="https://${process.env.URL ?? ""}/api/auth/verify?token=${randomToken}" class="button">Activate My Account</a>
                 <p>Our platform helps you:</p>
                 <ul style="text-align: left; padding-left: 20px;">
                     <li>Sign up, track tasks, and attend training sessions seamlessly.</li>
@@ -163,7 +163,7 @@ function emailActivation(registerData: typeof Users.$inferInsert,randomToken: st
                 <p>If you did not sign up, you can ignore this email.</p>
             </div>
             <div class="footer">
-                Need help? Contact us at <a href="mailto:support@${process.env.URL}">support@icpcplatform.com</a>
+                Need help? Contact us at <a href="mailto:support@${process.env.URL?? "" }">support@icpcplatform.com</a>
             </div>
         </div>
     </body>
