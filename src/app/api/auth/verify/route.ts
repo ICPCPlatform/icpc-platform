@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
 import { Users } from "@/lib/db/schema/user/Users";
 import { eq } from "drizzle-orm";
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import { redirect } from "next/navigation";
 
 export async function GET(request: NextRequest) {
