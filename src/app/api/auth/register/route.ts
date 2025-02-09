@@ -4,6 +4,8 @@ import { Users } from "@/lib/db/schema/user/Users";
 import { eq, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import expectedBody from "./expectedBody";
+import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
+import sendEmail from "@/lib/email/sendEmail";
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,7 +61,32 @@ export async function POST(request: NextRequest) {
 
     registerData.password = await bcrypt.hash(registerData.password, 10);
 
-    await db.insert(Users).values(registerData).execute();
+    const randomToken = (Math.random() * 200).toString(36).substring(2, 15);
+    const userId = (await db.insert(Users).values(registerData).returning())[0]
+      .userId;
+    await db
+      .insert(EmailAuth)
+      .values({
+        userId: userId,
+        token: randomToken,
+      })
+      .execute();
+    sendEmail({
+      to: [registerData.gmail],
+      subject: "Verify your email",
+      html:
+`<h1>Hello ${registerData.username},</h1>
+
+<p>
+Thank you for registering with us! To complete your registration and activate your account, please verify your email address by clicking the link below:
+
+https://icpcpassiut.tech/api/auth/verify?token=${randomToken}
+
+If you didn't create an account with us, please ignore this message.
+
+Best regards,
+The Icpc Assiut Team</p>`.toString(),
+    });
 
     return NextResponse.json(
       { message: "registered" },
