@@ -1,6 +1,6 @@
 'use client';
 
-import expectedBody from "@/app/api/create-training/_expectedBody";
+import expectedBody from "../api/create-training/_expectedBody";
 import styles from './page.module.css';
 import { useState } from 'react';
 
