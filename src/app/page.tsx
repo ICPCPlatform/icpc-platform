@@ -1,7 +1,9 @@
 import styles from "./page.module.css";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 export default async function Home() {
   const cookie = await cookies();
   const isLoggedIn = !!cookie.get("session");
@@ -10,8 +12,8 @@ export default async function Home() {
       <main className={styles.main}>
         {/* Hero Section */}
         <section className={styles.hero}>
-          <h1 className={styles.title}>Welcome to ICPC Training Platform</h1>
-          <p className={styles.heroText}>
+          <TypographyH1>Welcome to ICPC Training Platform</TypographyH1>
+          <p className="leading-7 [&:not(:first-child)]:mt-6">
             Elevate your competitive programming skills with structured
             training, real-time contests, and a supportive community of problem
             solvers.
@@ -26,28 +28,31 @@ export default async function Home() {
             {isLoggedIn ? (
               <button
                 onClick={async () => {
-                  "use server"
+                  "use server";
                   const cookie = await cookies();
                   cookie.delete("session");
                   redirect("/");
                 }}
-                className={`${styles.cta} ${styles.secondary}`} >
+                className={`${styles.cta} ${styles.secondary}`}
+              >
                 Sign Out
-                </button>
+              </button>
             ) : (
               <Link
                 href="/login"
                 className={`${styles.cta} ${styles.secondary}`}
               >
-                  Sign In
-                </Link>
+                Sign In
+              </Link>
             )}
           </div>
         </section>
 
         {/* Features Section */}
         <section className={styles.features}>
-          <h2 className={styles.sectionTitle}>Why Choose Our Platform?</h2>
+          <TypographyH2 >
+            Why Choose Our Platform?
+          </TypographyH2>
           <div className={styles.featureGrid}>
             <div className={styles.featureCard}>
               <div className={styles.featureIcon}>📚</div>
@@ -85,7 +90,7 @@ export default async function Home() {
 
         {/* Call to Action Section */}
         <section className={styles.joinSection}>
-          <h2>Ready to Begin Your Journey?</h2>
+          <TypographyH2>Ready to Begin Your Journey?</TypographyH2>
           <p>
             Join thousands of programmers who are already improving their skills
           </p>
