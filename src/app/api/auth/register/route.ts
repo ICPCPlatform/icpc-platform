@@ -163,12 +163,11 @@ function emailActivation(registerData: typeof Users.$inferInsert,randomToken: st
                 <p>If you did not sign up, you can ignore this email.</p>
             </div>
             <div class="footer">
-                Need help? Contact us at <a href="mailto:support@icpcplatform.com">support@icpcplatform.com</a>
+                Need help? Contact us at <a href="mailto:support@${process.env.URL}">support@icpcplatform.com</a>
             </div>
         </div>
     </body>
     </html>
     `.toString(),
   });
-
 }
