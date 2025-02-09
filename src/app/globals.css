@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   /* --background: #ffffff; */
   /* --foreground: #171717; */
@@ -20,6 +24,16 @@
   --border-color: #333333;
 
   --accent-color: #e0e0e0;
+
+  /* Add common colors */
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-50: #eff6ff;
+  --gray-900: #111827;
+  --gray-700: #374151;
+  --gray-600: #4b5563;
+  --gray-100: #f3f4f6;
+  --white: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
