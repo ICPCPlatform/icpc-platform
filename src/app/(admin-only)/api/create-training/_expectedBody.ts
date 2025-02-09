@@ -4,7 +4,7 @@ const expectedBody = z.object({
   title: z.string(),
   description: z.string(),
   startDate: z.string().date(),
-  duration: z.number(),
+  duration: z.number().int().positive(),
 });
 
 export default expectedBody;

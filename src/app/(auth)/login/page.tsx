@@ -2,14 +2,24 @@
 import styles from "../page.module.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const usernameInput = document.getElementById(
+      "username",
+    ) as HTMLInputElement;
+    usernameInput.value = searchParams.get("username") ?? "";
+  }, [searchParams]);
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
         <h1>Welcome Back</h1>
-        <p className={styles.subtitle}>Please enter your credentials to continue</p>
+        <p className={styles.subtitle}>
+          Please enter your credentials to continue
+        </p>
         <form onSubmit={onSubmit}>
           <div className={styles.inputGroup}>
             <label htmlFor="username">Username</label>
