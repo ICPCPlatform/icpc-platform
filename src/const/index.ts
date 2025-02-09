@@ -4,4 +4,4 @@ import country from "@/const/country-list";
 import validGovernorateCodes from "@/const/governorate-codes";
 import universities from "@/const/universities";
 
-export {faculties, departments, country, validGovernorateCodes, universities};
+export { faculties, departments, country, validGovernorateCodes, universities };

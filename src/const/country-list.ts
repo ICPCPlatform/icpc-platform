@@ -1,4 +1,3 @@
-
 const Country = [
   "Afghanistan",
   "Aland Islands",
@@ -204,6 +203,5 @@ const Country = [
   "Yemen",
   "Zimbabwe",
 ] as const;
-
 
 export default Country;
