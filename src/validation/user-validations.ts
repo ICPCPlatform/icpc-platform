@@ -1,6 +1,4 @@
-import { z, ZodError } from "zod";
-import country from "@/const/country-list";
-import validGovernorateCodes from "@/const/governorate-codes";
+import { z } from "zod";
 
 const username = z
   .string()
@@ -42,7 +40,7 @@ const phone = z
   )
   .nullable();
 
-const user = z.object({
+export const user = z.object({
   username,
   password,
   gmail,
