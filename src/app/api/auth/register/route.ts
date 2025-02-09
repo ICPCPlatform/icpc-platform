@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 <p>
 Thank you for registering with us! To complete your registration and activate your account, please verify your email address by clicking the link below:
 
-https://icpcpassiut.tech/api/auth/verify?token=${randomToken}
+https://${process.env.URL}/api/auth/verify?token=${randomToken}
 
 If you didn't create an account with us, please ignore this message.
 
