@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card } from "@/components/ui/card";
+import { useTheme } from 'next-themes';
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
@@ -31,16 +32,22 @@ export default function RegisterPage() {
     },
   });
 
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center p-11">
-      <Card style={{ width: 350 }}>
-        <h1>Create Account</h1>
-        <p className={styles.subtitle}>
+    <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
+      <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10">
+        <h1 className="text-2xl font-bold mb-4 text-center">Create Account</h1>
+        <p className="text-sm text-muted-foreground mb-6 text-center">
           Join our competitive programming community
         </p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="username"
@@ -48,7 +55,7 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="username123" {...field} />
+                    <Input placeholder="username123" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
                   </FormControl>
                   <FormDescription>
                     This is your public display name.
@@ -64,10 +71,10 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Gmail</FormLabel>
                   <FormControl>
-                    <Input placeholder="example@gmail.com" {...field} />
+                    <Input placeholder="example@gmail.com" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
                   </FormControl>
                   <FormDescription>
-                    this is your email address. only gmail is allowed.
+                    This is your email address. Only Gmail is allowed.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -78,11 +85,11 @@ export default function RegisterPage() {
               name="cfHandle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>codeforces handle</FormLabel>
+                  <FormLabel>Codeforces Handle</FormLabel>
                   <FormControl>
-                    <Input placeholder="mohamed_reda" {...field} />
+                    <Input placeholder="mohamed_reda" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
                   </FormControl>
-                  <FormDescription>this is your phone number.</FormDescription>
+                  <FormDescription>This is your Codeforces handle.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -93,11 +100,11 @@ export default function RegisterPage() {
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone number</FormLabel>
+                  <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="01001001000" {...field} />
+                    <Input placeholder="01001001000" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
                   </FormControl>
-                  <FormDescription>this is your phone number.</FormDescription>
+                  <FormDescription>This is your phone number.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -108,40 +115,26 @@ export default function RegisterPage() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>password</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="*****" {...field} />
+                    <Input type="password" placeholder="*****" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
                   </FormControl>
-                  <FormDescription></FormDescription>
-                  at least 8 characters with a mix of letters, numbers, and
-                  symbols.
+                  <FormDescription>
+                    At least 8 characters with a mix of letters, numbers, and symbols.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="confPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="*****" {...field} />
-                  </FormControl>
-                  <FormDescription></FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-            <Button type="submit">Create Account</Button>
+            <Button type="submit" className="w-full bg-black text-white py-2 rounded-md">Create Account</Button>
           </form>
         </Form>
 
-        {error && <div className={styles.error}>{error}</div>}
-        {success && <div className={styles.success}>{success}</div>}
+        {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
+        {success && <div className="text-green-500 mt-4 text-center">{success}</div>}
 
-        <p className={styles.loginLink}>
-          Already have an account? <Link href="/login">Sign in</Link>
+        <p className="text-sm text-center mt-6">
+          Already have an account? <Link href="/login" className="text-primary">Sign in</Link>
         </p>
       </Card>
     </div>
@@ -150,7 +143,6 @@ export default function RegisterPage() {
   async function onSubmit(data: z.infer<typeof expectedBody>) {
     setError("");
     setSuccess("");
-
 
     fetch("/api/auth/register", {
       method: "POST",
