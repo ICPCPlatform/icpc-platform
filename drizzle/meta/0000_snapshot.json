@@ -1,5 +1,5 @@
 {
-  "id": "4b4c9235-5610-48fe-ad2a-9c1424ab5acb",
+  "id": "bae82096-3ad3-437e-95a0-e56dbd5a91fa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -64,8 +64,12 @@
           "name": "attendance_logs_staff_id_staff_staff_id_fk",
           "tableFrom": "attendance_logs",
           "tableTo": "staff",
-          "columnsFrom": ["staff_id"],
-          "columnsTo": ["staff_id"],
+          "columnsFrom": [
+            "staff_id"
+          ],
+          "columnsTo": [
+            "staff_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -73,8 +77,12 @@
           "name": "attendance_logs_trainee_id_trainees_trainee_id_fk",
           "tableFrom": "attendance_logs",
           "tableTo": "trainees",
-          "columnsFrom": ["trainee_id"],
-          "columnsTo": ["trainee_id"],
+          "columnsFrom": [
+            "trainee_id"
+          ],
+          "columnsTo": [
+            "trainee_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -82,8 +90,12 @@
           "name": "attendance_logs_training_id_trainings_training_id_fk",
           "tableFrom": "attendance_logs",
           "tableTo": "trainings",
-          "columnsFrom": ["training_id"],
-          "columnsTo": ["training_id"],
+          "columnsFrom": [
+            "training_id"
+          ],
+          "columnsTo": [
+            "training_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -91,8 +103,12 @@
           "name": "attendance_logs_session_id_sessions_session_id_fk",
           "tableFrom": "attendance_logs",
           "tableTo": "sessions",
-          "columnsFrom": ["session_id"],
-          "columnsTo": ["session_id"],
+          "columnsFrom": [
+            "session_id"
+          ],
+          "columnsTo": [
+            "session_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -144,8 +160,12 @@
           "name": "sessions_training_id_trainings_training_id_fk",
           "tableFrom": "sessions",
           "tableTo": "trainings",
-          "columnsFrom": ["training_id"],
-          "columnsTo": ["training_id"],
+          "columnsFrom": [
+            "training_id"
+          ],
+          "columnsTo": [
+            "training_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -213,8 +233,12 @@
           "name": "staff_user_id_users_user_id_fk",
           "tableFrom": "staff",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -222,8 +246,12 @@
           "name": "staff_training_id_trainings_training_id_fk",
           "tableFrom": "staff",
           "tableTo": "trainings",
-          "columnsFrom": ["training_id"],
-          "columnsTo": ["training_id"],
+          "columnsFrom": [
+            "training_id"
+          ],
+          "columnsTo": [
+            "training_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -263,8 +291,12 @@
           "name": "trainees_user_id_users_user_id_fk",
           "tableFrom": "trainees",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -272,8 +304,12 @@
           "name": "trainees_training_id_trainings_training_id_fk",
           "tableFrom": "trainees",
           "tableTo": "trainings",
-          "columnsFrom": ["training_id"],
-          "columnsTo": ["training_id"],
+          "columnsFrom": [
+            "training_id"
+          ],
+          "columnsTo": [
+            "training_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -338,14 +374,58 @@
           "name": "trainings_head_id_users_user_id_fk",
           "tableFrom": "trainings",
           "tableTo": "users",
-          "columnsFrom": ["head_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "head_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.email_auth": {
+      "name": "email_auth",
+      "schema": "",
+      "columns": {
+        "token": {
+          "name": "token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now() + interval '7 day'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "email_auth_expiresAt_unique": {
+          "name": "email_auth_expiresAt_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "expires_at"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -418,8 +498,12 @@
           "name": "tasks_training_id_trainings_training_id_fk",
           "tableFrom": "tasks",
           "tableTo": "trainings",
-          "columnsFrom": ["training_id"],
-          "columnsTo": ["training_id"],
+          "columnsFrom": [
+            "training_id"
+          ],
+          "columnsTo": [
+            "training_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -427,8 +511,12 @@
           "name": "tasks_trainee_id_trainees_trainee_id_fk",
           "tableFrom": "tasks",
           "tableTo": "trainees",
-          "columnsFrom": ["trainee_id"],
-          "columnsTo": ["trainee_id"],
+          "columnsFrom": [
+            "trainee_id"
+          ],
+          "columnsTo": [
+            "trainee_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -436,8 +524,12 @@
           "name": "tasks_staff_id_staff_staff_id_fk",
           "tableFrom": "tasks",
           "tableTo": "staff",
-          "columnsFrom": ["staff_id"],
-          "columnsTo": ["staff_id"],
+          "columnsFrom": [
+            "staff_id"
+          ],
+          "columnsTo": [
+            "staff_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -524,15 +616,17 @@
         "users_gmail_unique": {
           "name": "users_gmail_unique",
           "nullsNotDistinct": false,
-          "columns": ["gmail"]
+          "columns": [
+            "gmail"
+          ]
         }
       },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users_academic": {
-      "name": "users_academic",
+    "public.users_full_data": {
+      "name": "users_full_data",
       "schema": "",
       "columns": {
         "user_id": {
@@ -561,7 +655,7 @@
         },
         "academic_year": {
           "name": "academic_year",
-          "type": "date",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -659,7 +753,7 @@
           "name": "national_id",
           "type": "char(14)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "country": {
           "name": "country",
@@ -670,12 +764,6 @@
         "city": {
           "name": "city",
           "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "birthdate": {
-          "name": "birthdate",
-          "type": "date",
           "primaryKey": false,
           "notNull": false
         },
@@ -718,12 +806,16 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_academic_user_id_users_user_id_fk": {
-          "name": "users_academic_user_id_users_user_id_fk",
-          "tableFrom": "users_academic",
+        "users_full_data_user_id_users_user_id_fk": {
+          "name": "users_full_data_user_id_users_user_id_fk",
+          "tableFrom": "users_full_data",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
