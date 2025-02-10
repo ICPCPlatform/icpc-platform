@@ -6,6 +6,7 @@ import { decryptSession, type userData } from "@/lib/session";
 import { redirect } from "next/navigation";
 import UserProvider from "@/providers/user";
 import "@/app/page.module.css";
+import { ThemeProvider } from 'next-themes';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +34,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <UserProvider user={user}>{children}</UserProvider>
+        <ThemeProvider attribute="class">
+          <UserProvider user={user}>{children}</UserProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
