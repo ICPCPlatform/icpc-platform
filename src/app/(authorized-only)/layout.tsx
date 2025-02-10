@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import UserProvider from "@/providers/user";
 import "@/app/page.module.css";
 import { ThemeProvider } from 'next-themes';
+import { Navbar } from '@/components/NavBar';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ThemeProvider attribute="class">
+          <Navbar />
           <UserProvider user={user}>{children}</UserProvider>
         </ThemeProvider>
       </body>
