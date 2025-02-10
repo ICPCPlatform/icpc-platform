@@ -14,34 +14,35 @@ import {
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTheme } from 'next-themes';
+import { TypographyH1 } from "@/components/ui/typography";
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-row justify-around" >
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ml-auto">
-        <div className="flex h-14 items-center justify-between">
-          <div className="flex items-center gap-10">
-            <Link href="/" className="flex items-center space-x-2">
-              <Code2 className="h-6 w-6" />
-              <span className="hidden font-bold sm:inline-block">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-12 items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center space-x-1">
+              <Code2 className="h-4 w-4" />
+              <TypographyH1 className="hidden text-base font-semibold sm:inline-block">
                 ICPC Assiut
-              </span>
+              </TypographyH1>
             </Link>
-            <NavigationMenu className="hidden sm:ml-6 sm:flex gap-7">
-              <NavigationMenuList className="flex flex-row gap-7">
+            <NavigationMenu className="hidden sm:ml-4 sm:flex gap-5">
+              <NavigationMenuList className="flex flex-row gap-5">
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Training</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid  p-4 w-[300px]">
+                    <ul className="grid p-3 w-[280px]">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link1 href="/trainings">
                             <div className="text-sm font-medium leading-none">
                               All Trainings
                             </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
                               Browse all available training programs.
                             </p>
                           </Link1>
@@ -53,7 +54,7 @@ export function Navbar() {
                             <div className="text-sm font-medium leading-none">
                               My Trainings
                             </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
                               View your enrolled and completed trainings.
                             </p>
                           </Link1>
@@ -65,7 +66,7 @@ export function Navbar() {
                             <div className="text-sm font-medium leading-none">
                               Applications
                             </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1">
+                            <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
                               Track your training applications.
                             </p>
                           </Link1>
@@ -76,10 +77,8 @@ export function Navbar() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link href="/about" legacyBehavior passHref className="ml-6">
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                    >
+                  <Link href="/about" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                       About Us
                     </NavigationMenuLink>
                   </Link>
@@ -87,27 +86,22 @@ export function Navbar() {
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          <div className="flex items-center space-x-2">
-            <nav className="flex items-center space-x-1 sm:space-x-2 gap-7">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hidden sm:inline-flex"
-                asChild
-              >
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button size="sm" className="hidden sm:inline-flex" asChild>
-                <Link href="/register">Register</Link>
-              </Button>
-              <Button variant="ghost" size="icon" className="sm:hidden" asChild>
-                <Link href="/login">
-                  <span className="sr-only">Login</span>
-                  <User className="h-5 w-5" />
-                </Link>
-              </Button>
+          <div className="flex items-center space-x-1">
+            <nav className="flex items-center space-x-1 sm:space-x-2 gap-5">
+              <Link href="/login">
+                <Button variant="default" className="flex items-center space-x-1">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm">Login</span>
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button variant="default" className="flex items-center space-x-1">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm">Register</span>
+                </Button>
+              </Link>
               <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
             </nav>
           </div>
@@ -117,7 +111,7 @@ export function Navbar() {
   );
 }
 
-const Link1 = ({ children, href }: { children: any; href: string }) => (
+const Link1 = ({ children, href }: { children: React.ReactNode; href: string }) => (
   <Link
     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
     href={href}
