@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Code2, User } from "lucide-react";
+import { Code2, User, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -12,8 +12,12 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useTheme } from 'next-themes';
 
 export function Navbar() {
+  const { theme, setTheme } = useTheme();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex flex-row justify-around" >
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ml-auto">
@@ -101,6 +105,9 @@ export function Navbar() {
                   <span className="sr-only">Login</span>
                   <User className="h-5 w-5" />
                 </Link>
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
             </nav>
           </div>
