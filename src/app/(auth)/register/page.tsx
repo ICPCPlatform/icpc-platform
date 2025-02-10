@@ -151,10 +151,6 @@ export default function RegisterPage() {
     setError("");
     setSuccess("");
 
-    if (!success) {
-      setError("Invalid input");
-      return;
-    }
 
     fetch("/api/auth/register", {
       method: "POST",
