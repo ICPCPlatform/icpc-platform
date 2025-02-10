@@ -32,93 +32,94 @@ export default function RegisterPage() {
   });
 
   return (
-    <Card style={{ width: 350 }}>
-      <h1>Create Account</h1>
-      <p className={styles.subtitle}>
-        Join our competitive programming community
-      </p>
+    <div className="flex flex-col items-center justify-center p-11">
+      <Card style={{ width: 350 }}>
+        <h1>Create Account</h1>
+        <p className={styles.subtitle}>
+          Join our competitive programming community
+        </p>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="username123" {...field} />
-                </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gmail</FormLabel>
-                <FormControl>
-                  <Input placeholder="example@gmail.com" {...field} />
-                </FormControl>
-                <FormDescription>
-                  this is your email address. only gmail is allowed.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="cfHandle"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>codeforces handle</FormLabel>
-                <FormControl>
-                  <Input placeholder="mohamed_reda" {...field} />
-                </FormControl>
-                <FormDescription>this is your phone number.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="username123" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gmail</FormLabel>
+                  <FormControl>
+                    <Input placeholder="example@gmail.com" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    this is your email address. only gmail is allowed.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="cfHandle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>codeforces handle</FormLabel>
+                  <FormControl>
+                    <Input placeholder="mohamed_reda" {...field} />
+                  </FormControl>
+                  <FormDescription>this is your phone number.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone number</FormLabel>
-                <FormControl>
-                  <Input placeholder="01001001000" {...field} />
-                </FormControl>
-                <FormDescription>this is your phone number.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone number</FormLabel>
+                  <FormControl>
+                    <Input placeholder="01001001000" {...field} />
+                  </FormControl>
+                  <FormDescription>this is your phone number.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="*****" {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                at least 8 characters with a mix of letters, numbers, and
-                symbols.
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* <FormField
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="*****" {...field} />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  at least 8 characters with a mix of letters, numbers, and
+                  symbols.
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <FormField
               control={form.control}
               name="confPassword"
               render={({ field }) => (
@@ -132,17 +133,18 @@ export default function RegisterPage() {
                 </FormItem>
               )}
             /> */}
-          <Button type="submit">Create Account</Button>
-        </form>
-      </Form>
+            <Button type="submit">Create Account</Button>
+          </form>
+        </Form>
 
-      {error && <div className={styles.error}>{error}</div>}
-      {success && <div className={styles.success}>{success}</div>}
+        {error && <div className={styles.error}>{error}</div>}
+        {success && <div className={styles.success}>{success}</div>}
 
-      <p className={styles.loginLink}>
-        Already have an account? <Link href="/login">Sign in</Link>
-      </p>
-    </Card>
+        <p className={styles.loginLink}>
+          Already have an account? <Link href="/login">Sign in</Link>
+        </p>
+      </Card>
+    </div>
   );
 
   async function onSubmit(data: z.infer<typeof expectedBody>) {

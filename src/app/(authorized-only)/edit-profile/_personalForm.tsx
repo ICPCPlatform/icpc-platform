@@ -16,12 +16,13 @@ export default function PersonList() {
   const personNamesList = [
     "nameEnFirst",
     "nameEnLast",
-    "NameAR1",
-    "NameAR2",
-    "NameAR3",
-    "NameAR4",
+    "nameAR1",
+    "nameAR2",
+    "nameAR3",
+    "nameAR4",
+    
   ] as const ;
-  const countryOptions = userFullData.shape.countryName.options;
+  const countryOptions = userFullData.shape.country._def.innerType.options;
   return (
     <div>
       {personNamesList.map((handle, index) => (

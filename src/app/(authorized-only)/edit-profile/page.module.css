@@ -41,3 +41,7 @@
   
   height: 100% ;
 }
+.submit{
+  background-color: hsl(var(--sidebar-primary));
+  color: hsl(var(--sidebar-primary-foreground));
+}

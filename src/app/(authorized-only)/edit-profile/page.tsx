@@ -13,6 +13,7 @@ import HandlesForm from "./_handlesForm";
 import SocialForm from "./_socialForm";
 import PersonalForm from "./_personalForm";
 
+const pages = [ "Personal","Academic", "Handles", "Social"] as const;
 export default function Profile() {
   const [page, setPage] = useState("Academic");
   const form = useForm<z.infer<typeof userFullData>>({
@@ -22,7 +23,7 @@ export default function Profile() {
     <main className={styles.main}>
       <Nav />
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(submit)}>
+        <form onSubmit={form.handleSubmit(submit)} style={{ padding: 30}}>
           {
             {
               Handles: <HandlesForm />,
@@ -31,8 +32,6 @@ export default function Profile() {
               Social: <SocialForm />,
             }[page]
           }
-          <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
-          <Button type="submit">Save</Button>
         </form>
       </FormProvider>
     </main>
@@ -44,19 +43,14 @@ export default function Profile() {
     return (
       <aside className={styles.navbar}>
         <ul>
-          <li>
-            <Button onClick={() => setPage("Handles")}>Edit Handles</Button>
-          </li>
-          <li>
-            <Button onClick={() => setPage("Personal")}>Edit Profile</Button>
-          </li>
-          <li>
-            <Button onClick={() => setPage("Academic")}>Edit Academic</Button>
-          </li>
-          <li>
-            <Button onClick={() => setPage("Social")}>Edit Social</Button>
-          </li>
+          {pages.map((page, idx) => (
+            <li key={idx}>
+              <Button onClick={() => setPage(page)}>Edit {page}</Button>
+            </li>
+          ))}
+          <Button type="submit" className={styles.submit}>Save</Button>
         </ul>
+
       </aside>
     );
   }

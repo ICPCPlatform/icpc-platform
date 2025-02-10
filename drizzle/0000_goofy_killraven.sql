@@ -43,6 +43,13 @@ CREATE TABLE "trainings" (
 	"status" varchar(40) DEFAULT 'active' NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "email_auth" (
+	"token" varchar NOT NULL,
+	"user_id" integer PRIMARY KEY NOT NULL,
+	"expires_at" date DEFAULT now() + interval '7 day' NOT NULL,
+	CONSTRAINT "email_auth_expiresAt_unique" UNIQUE("expires_at")
+);
+--> statement-breakpoint
 CREATE TABLE "tasks" (
 	"task_id" serial PRIMARY KEY NOT NULL,
 	"title" varchar NOT NULL,
@@ -69,12 +76,12 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_gmail_unique" UNIQUE("gmail")
 );
 --> statement-breakpoint
-CREATE TABLE "users_academic" (
+CREATE TABLE "users_full_data" (
 	"user_id" integer PRIMARY KEY NOT NULL,
 	"university" varchar,
 	"faculty" varchar,
 	"department" varchar,
-	"academic_year" date,
+	"academic_year" integer,
 	"graduation_year" date,
 	"vjudge" varchar,
 	"atcoder" varchar,
@@ -90,10 +97,9 @@ CREATE TABLE "users_academic" (
 	"name_ar_2" varchar,
 	"name_ar_3" varchar,
 	"name_ar_4" varchar,
-	"national_id" char(14) NOT NULL,
+	"national_id" char(14),
 	"country" varchar,
 	"city" varchar,
-	"birthdate" date,
 	"is_male" boolean,
 	"image_url" varchar,
 	"facebook" varchar,
@@ -115,4 +121,4 @@ ALTER TABLE "trainings" ADD CONSTRAINT "trainings_head_id_users_user_id_fk" FORE
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_trainee_id_trainees_trainee_id_fk" FOREIGN KEY ("trainee_id") REFERENCES "public"."trainees"("trainee_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_staff_id_staff_staff_id_fk" FOREIGN KEY ("staff_id") REFERENCES "public"."staff"("staff_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "users_academic" ADD CONSTRAINT "users_academic_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;

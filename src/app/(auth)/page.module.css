@@ -64,7 +64,7 @@
   font-size: 1rem;
   transition: all 0.2s ease;
   background-color: var(--accent-color);
-  color: var(--text-primary);
+  color: black;
 }
 
 .inputGroup input::placeholder {

@@ -1,25 +1,17 @@
 import {z} from "zod";
-import {faculties, departments, country, validGovernorateCodes, universities} from "@/const";
+import {faculties, departments, countries , validGovernorateCodes, universities} from "@/const";
 
 // Academic 
-const university = z.enum(universities);
-const faculty = z.enum(faculties);
-const department = z.enum(departments);
+const university = z.enum(universities).optional();
+const faculty = z.enum(faculties).optional();
+const department = z.enum(departments).optional();
 const academicYear = z.number({message:" Academic Year must be Number"})
     .positive({message:" Academic Year must be Positive"})
     .max(5,{message:" Academic Year must be between 1 and 5"}).optional();
-const gradYear = z.string().date().optional();
+const graduationYear = z.string().date().optional();
 
 
-// handles
-//
-// const vjudgeHandle = z.string().nullable();
-// const atcoder = z.string().nullable();
-// const topcoder = z.string().nullable();
-// const spoj = z.string().nullable();
-// const codechef = z.string().nullable();
-// const csacademy = z.string().nullable();
-// const cses = z.string().nullable();
+
 const handle = z
     .string()
     .trim()
@@ -31,20 +23,20 @@ const handle = z
 
 // personal
 
-const EnglishName = z
+const englishName = z
     .string()
     .trim()
     .min(3, {message: "too short"})
     .regex(/^[a-zA-Z]+$/)
     .optional();
-const ArabicName = z
+const arabicName = z
     .string()
     .trim()
     .min(2, {message: "too short"})
     .regex(/^[ء-ي]+$/)
     .optional();
 
-const nationalId = z
+const nationalID = z
     .string()
     .trim()
     .regex(/^\d{14}$/, "Egyptian National ID must be exactly 14 digits")
@@ -55,7 +47,7 @@ const nationalId = z
         return true;
     }, "Checksum validation failed").optional();
 
-const countryName = z.enum(country);
+const countryName = z.enum(countries).optional();
 const city = z.string().optional();
 const isMale = z.boolean().optional();
 const imageURL = z.string().url().optional();
@@ -102,9 +94,9 @@ export const userFullData = z.object({
     faculty,
     department,
     academicYear,
-    gradYear,
+    graduationYear,
 
-    vjudgeHandle:handle,
+    vjudge:handle,
     atcoder:handle,
     topcoder:handle,
     spoj:handle,
@@ -113,15 +105,15 @@ export const userFullData = z.object({
     cses:handle,
     leetcode:handle,
 
-    nameEnFirst: EnglishName,
-    nameEnLast: EnglishName,
-    NameAR1: ArabicName,
-    NameAR2: ArabicName,
-    NameAR3: ArabicName,
-    NameAR4: ArabicName,
+    nameEnFirst: englishName,
+    nameEnLast: englishName,
+    nameAR1: arabicName,
+    nameAR2: arabicName,
+    nameAR3: arabicName,
+    nameAR4: arabicName,
 
-    nationalId,
-    countryName,
+    nationalID,
+    country: countryName,
     city,
     isMale,
     imageURL,

@@ -18,7 +18,7 @@ export const UserFullData = pgTable("users_full_data", {
   university: varchar(),
   faculty: varchar(),
   department: varchar(),
-  academicYear: date(),
+  academicYear: integer(),
   graduationYear: date(),
 
   /* handles */
@@ -38,12 +38,11 @@ export const UserFullData = pgTable("users_full_data", {
   nameAR2: varchar(),
   nameAR3: varchar(),
   nameAR4: varchar(),
-  nationalID: char({ length: 14 }).notNull(),
+  nationalID: char({ length: 14 }),
   country: varchar(),
   city: varchar(),
-  birthdate: date(),
   isMale: boolean(),
-  ImageURL: varchar(),
+  imageURL: varchar(),
 
   /* Socials */
   facebook: varchar(), // link to facebook profile

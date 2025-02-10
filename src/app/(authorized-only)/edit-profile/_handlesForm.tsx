@@ -14,7 +14,7 @@ import { z } from "zod";
 export default function HandlesForm() {
   const form = useFormContext<z.infer<typeof userFullData>>();
   const handlesList = [
-    "vjudgeHandle",
+    "vjudge",
     "atcoder",
     "topcoder",
     "spoj",

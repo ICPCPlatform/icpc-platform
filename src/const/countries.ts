@@ -1,5 +1,5 @@
 
-const Country = [
+const countries = [
   "Afghanistan",
   "Aland Islands",
   "Albania",
@@ -206,4 +206,4 @@ const Country = [
 ] as const;
 
 
-export default Country;
+export default countries;

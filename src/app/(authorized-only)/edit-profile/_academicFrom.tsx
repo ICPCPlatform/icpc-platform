@@ -15,9 +15,11 @@ import { z } from "zod";
 
 export default function AcademicForm() {
   const form = useFormContext<z.infer<typeof userFullData>>();
-  const universityOptions = userFullData.shape.university.options;
-  const facultyOptions = userFullData.shape.faculty.options;
-  const departmentOptions = userFullData.shape.department.options;
+  const universityOptions =
+    userFullData.shape.university._def.innerType.options;
+  const facultyOptions = userFullData.shape.faculty._def.innerType.options;
+  const departmentOptions =
+    userFullData.shape.department._def.innerType.options;
   return (
     <div>
       <FormField
@@ -30,7 +32,7 @@ export default function AcademicForm() {
             <FormControl>
               <select {...field}>
                 {universityOptions.map((option, index) => (
-                  <option key={index} value={option}>
+                  <option key={index} defaultValue={undefined} value={option}>
                     {option}
                   </option>
                 ))}
@@ -51,7 +53,7 @@ export default function AcademicForm() {
             <FormControl>
               <select {...field}>
                 {facultyOptions.map((option, index) => (
-                  <option key={index} value={option}>
+                  <option key={index} defaultValue={undefined} value={option}>
                     {option}
                   </option>
                 ))}
@@ -85,7 +87,7 @@ export default function AcademicForm() {
       />
       <FormField
         control={form.control}
-        name="gradYear"
+        name="graduationYear"
         render={({ field }) => (
           <FormItem>
             <FormLabel>graduation year</FormLabel>
@@ -99,7 +101,7 @@ export default function AcademicForm() {
       />
       <FormField
         control={form.control}
-        name="academic year"
+        name="academicYear"
         render={({ field }) => (
           <FormItem>
             <FormLabel>academic year</FormLabel>
