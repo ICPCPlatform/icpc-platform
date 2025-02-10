@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Available Trainings | ICPC Platform",
   description: "Browse and join upcoming ICPC-style programming training sessions",
 };
-
+export const dynamic = "force-dynamic";
 export default async function Page() {
   const trainings = (await db
     .select({

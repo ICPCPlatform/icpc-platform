@@ -43,7 +43,7 @@ export default function PersonList() {
       ))}
       <FormField
         control={form.control}
-        name="nationalId"
+        name="nationalID"
         render={({ field }) => (
           <FormItem>
             <FormLabel>national Id</FormLabel>
@@ -56,7 +56,7 @@ export default function PersonList() {
       />
       <FormField
         control={form.control}
-        name="countryName"
+        name="country"
         render={({ field }) => (
           <FormItem>
             <FormLabel> country </FormLabel>
