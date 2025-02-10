@@ -19,6 +19,13 @@ import { TypographyH1 } from "@/components/ui/typography";
 export function Navbar() {
   const { theme, setTheme } = useTheme();
 
+  const toggleTheme = () => {
+    const root = document.documentElement;
+    const isDark = root.style.getPropertyValue('--background') === '#000000';
+    root.style.setProperty('--background', isDark ? '#ffffff' : '#000000');
+    root.style.setProperty('--foreground', isDark ? '#333333' : '#ffffff');
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -34,7 +41,7 @@ export function Navbar() {
               <NavigationMenuList className="flex flex-row gap-5">
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Training</NavigationMenuTrigger>
-                  <NavigationMenuContent>
+                  <NavigationMenuContent className="bg-white dark:bg-black">
                     <ul className="grid p-3 w-[280px]">
                       <li>
                         <NavigationMenuLink asChild>
@@ -88,19 +95,7 @@ export function Navbar() {
           </div>
           <div className="flex items-center space-x-1">
             <nav className="flex items-center space-x-1 sm:space-x-2 gap-5">
-              <Link href="/login">
-                <Button variant="default" className="flex items-center space-x-1">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm">Login</span>
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button variant="default" className="flex items-center space-x-1">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm">Register</span>
-                </Button>
-              </Link>
-              <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                 {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
             </nav>
