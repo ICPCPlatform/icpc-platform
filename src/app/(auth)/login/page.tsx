@@ -1,5 +1,4 @@
 "use client";
-import styles from "../page.module.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

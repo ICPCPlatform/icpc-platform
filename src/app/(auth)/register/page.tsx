@@ -1,7 +1,6 @@
 "use client";
 import expectedBody from "@/app/api/auth/register/expectedBody";
 import { useState } from "react";
-import styles from "../page.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -19,7 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card } from "@/components/ui/card";
-import { useTheme } from 'next-themes';
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
@@ -32,11 +30,7 @@ export default function RegisterPage() {
     },
   });
 
-  const { theme, setTheme } = useTheme();
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background text-foreground">

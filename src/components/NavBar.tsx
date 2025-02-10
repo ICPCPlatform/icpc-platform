@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Code2, User, Sun, Moon } from "lucide-react";
+import { Code2, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -11,19 +11,17 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useTheme } from 'next-themes';
+import { useTheme } from "next-themes";
 import { TypographyH1 } from "@/components/ui/typography";
 
 export function Navbar() {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   const toggleTheme = () => {
     const root = document.documentElement;
-    const isDark = root.style.getPropertyValue('--background') === '#000000';
-    root.style.setProperty('--background', isDark ? '#ffffff' : '#000000');
-    root.style.setProperty('--foreground', isDark ? '#333333' : '#ffffff');
+    const isDark = root.style.getPropertyValue("--background") === "#000000";
+    root.style.setProperty("--background", isDark ? "#ffffff" : "#000000");
+    root.style.setProperty("--foreground", isDark ? "#333333" : "#ffffff");
   };
 
   return (
@@ -85,7 +83,9 @@ export function Navbar() {
 
                 <NavigationMenuItem>
                   <Link href="/about" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
                       About Us
                     </NavigationMenuLink>
                   </Link>
@@ -95,8 +95,17 @@ export function Navbar() {
           </div>
           <div className="flex items-center space-x-1">
             <nav className="flex items-center space-x-1 sm:space-x-2 gap-5">
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
+                )}
               </Button>
             </nav>
           </div>
@@ -106,7 +115,13 @@ export function Navbar() {
   );
 }
 
-const Link1 = ({ children, href }: { children: React.ReactNode; href: string }) => (
+const Link1 = ({
+  children,
+  href,
+}: {
+  children: React.ReactNode;
+  href: string;
+}) => (
   <Link
     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
     href={href}
