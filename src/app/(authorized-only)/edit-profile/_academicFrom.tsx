@@ -27,18 +27,17 @@ export default function AcademicForm() {
         name="university"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>university</FormLabel>
+            <FormLabel> University </FormLabel>
             <br />
             <FormControl>
               <select {...field}>
                 {universityOptions.map((option, index) => (
-                  <option key={index} defaultValue={undefined} value={option}>
+                  <option key={index} defaultValue={"Other"} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </FormControl>
-            <FormDescription>this is your academic year.</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -59,7 +58,6 @@ export default function AcademicForm() {
                 ))}
               </select>
             </FormControl>
-            <FormDescription>this is your faculty.</FormDescription>
             <FormMessage />
           </FormItem>
         )}

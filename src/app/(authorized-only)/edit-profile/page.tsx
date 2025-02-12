@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,31 +12,41 @@ import HandlesForm from "./_handlesForm";
 import SocialForm from "./_socialForm";
 import PersonalForm from "./_personalForm";
 
-const pages = [ "Personal","Academic", "Handles", "Social"] as const;
+const pages = ["Personal", "Academic", "Handles", "Social"] as const;
 export default function Profile() {
-  const [page, setPage] = useState("Academic");
+  const [page, setPage] = useState("Personal");
   const form = useForm<z.infer<typeof userFullData>>({
     resolver: zodResolver(userFullData),
   });
   return (
-    <main className={styles.main}>
-      <Nav />
+    <main>
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(submit)} style={{ padding: 30}}>
-          {
+        <form onSubmit={form.handleSubmit(submit)} className={styles.main}>
+          <Nav />
+          <div style={{ padding: 30 }}>
             {
-              Handles: <HandlesForm />,
-              Personal: <PersonalForm />,
-              Academic: <AcademicForm />,
-              Social: <SocialForm />,
-            }[page]
-          }
+              {
+                Handles: <HandlesForm />,
+                Personal: <PersonalForm />,
+                Academic: <AcademicForm />,
+                Social: <SocialForm />,
+              }[page]
+            }
+          </div>
         </form>
       </FormProvider>
     </main>
   );
   function submit(data: z.infer<typeof userFullData>) {
     console.log(data);
+    fetch("/api/edit-profile", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
   }
   function Nav() {
     return (
@@ -48,9 +57,12 @@ export default function Profile() {
               <Button onClick={() => setPage(page)}>Edit {page}</Button>
             </li>
           ))}
-          <Button type="submit" className={styles.submit}>Save</Button>
+          <li>
+            <Button type="submit" className={styles.submit}>
+              Save
+            </Button>
+          </li>
         </ul>
-
       </aside>
     );
   }

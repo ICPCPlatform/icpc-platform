@@ -14,25 +14,24 @@ import { z } from "zod";
 export default function PersonList() {
   const form = useFormContext<z.infer<typeof userFullData>>();
   const personNamesList = [
-    "nameEnFirst",
-    "nameEnLast",
-    "nameAR1",
-    "nameAR2",
-    "nameAR3",
-    "nameAR4",
-    
-  ] as const ;
+    ["nameEnFirst", "First Name (English)"],
+    ["nameEnLast", "Last Name (English)"],
+    ["nameAR1", "First Name (Arabic)"],
+    ["nameAR2", "Second Name (Arabic)"],
+    ["nameAR3", "Third Name (Arabic)"],
+    ["nameAR4", "Fourth Name (Arabic)"],
+  ] as const;
   const countryOptions = userFullData.shape.country._def.innerType.options;
   return (
     <div>
-      {personNamesList.map((handle, index) => (
+      {personNamesList.map(([handle, viewText], index) => (
         <FormField
           key={index}
           control={form.control}
           name={handle}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{handle}</FormLabel>
+              <FormLabel>{viewText}</FormLabel>
               <FormControl>
                 <Input {...field} required={false} />
               </FormControl>
@@ -46,7 +45,7 @@ export default function PersonList() {
         name="nationalID"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>national Id</FormLabel>
+            <FormLabel>National ID</FormLabel>
             <FormControl>
               <Input {...field} required={false} pattern="^\d{14}$" />
             </FormControl>
@@ -59,9 +58,9 @@ export default function PersonList() {
         name="country"
         render={({ field }) => (
           <FormItem>
-            <FormLabel> country </FormLabel>
+            <FormLabel> Country </FormLabel>
             <FormControl>
-              <select {...field}>
+              <select {...field} defaultValue={"Egypt"}>
                 {countryOptions.map((option, index) => (
                   <option key={index} value={option}>
                     {option}
@@ -73,19 +72,19 @@ export default function PersonList() {
           </FormItem>
         )}
       />
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>city</FormLabel>
-              <FormControl>
-                <Input {...field} required={false} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <FormField
+        control={form.control}
+        name="city"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel> City </FormLabel>
+            <FormControl>
+              <Input {...field} required={false} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 }
