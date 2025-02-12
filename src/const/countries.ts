@@ -1,4 +1,3 @@
-
 const countries = [
   "Afghanistan",
   "Aland Islands",

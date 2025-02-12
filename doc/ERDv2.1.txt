@@ -1,0 +1,116 @@
+Table user {
+  user_id id [primary key]
+  username string 
+  password string
+
+  gmail string
+  cf_handle string
+  phone_number char(11)
+  role string 
+  last_online timestamp
+  is_verified bool
+  deleted bool 
+}
+
+Table user_full_data {
+  user_id id [ref: - user.user_id]
+  username string [ref: - user.username]
+  cf_handle string [ref: - user.cf_handle]
+  
+ /* Academic */
+  university string
+  faculty string
+  department string
+  academicYear number
+  graduationYear date
+
+  /* handles */
+  vjudge string 
+  atcoder string 
+  topcoder string 
+  spoj string 
+  codechef string 
+  csacademy string 
+  leetcode string 
+  cses string 
+
+  /* Personal */
+  nameEnFirst string 
+  nameEnLast string 
+  nameAR1 string 
+  nameAR2 string 
+  nameAR3 string 
+  nameAR4 string 
+  nationalID string
+  country string 
+  city string 
+  isMale boolean 
+  ImageURL string 
+
+  /* Socials */
+  facebook string 
+  linkedIn string 
+  twitter string  
+  github string  
+}
+
+Table training{
+  training_id id [primary key]
+  head_id id [ref: > user.user_id]
+  title string
+  description string
+  start_date date
+  duration int 
+  status training_status
+  
+}
+Table trainee{
+  user_id id [ref: > user.user_id]
+  training_id id [ref: > training.training_id]
+  Indexes {
+    (user_id,training_id) [pk]
+  }
+}
+
+Table staff{
+  training_id id [ref: > training.training_id]
+  user_id id [ref: > user.user_id]
+  mentor bool
+  coach bool
+  instructor bool
+  co_head bool
+  Indexes {
+    (user_id,training_id) [pk]
+  }
+}
+
+Table session{
+  session_id int [primary key]
+  training_id id [ref: > training.training_id]
+  session_date date
+  session_title string
+  session_description string
+}
+Table attendance{
+  mentor_id id [ref : > staff.user_id]
+  trainee_id id [ref: > trainee.user_id]
+  session_id int [ref: > session.session_id]
+ 
+  training_id id [ref: > training.training_id]
+  log_time timestamp
+  log_type string
+  Indexes {
+    (mentor_id,trainee_id,session_id) [pk]
+  }
+}
+Table task{
+  task_id id [primary key]
+  title string [null]
+  description string [null]
+  state task_state
+  deadline date
+  creation_date date
+  creator_id id [ref: > user .user_id]
+  assignee_id id [ref: > user.user_id]
+  training_id id [ref: > training.training_id]
+}
