@@ -39,12 +39,12 @@ export function Navbar() {
               <NavigationMenuList className="flex flex-row gap-5">
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Training</NavigationMenuTrigger>
-                  <NavigationMenuContent className="bg-white dark:bg-black">
+                  <NavigationMenuContent className="bg-background border">
                     <ul className="grid p-3 w-[280px]">
                       <li>
                         <NavigationMenuLink asChild>
                           <Link1 href="/trainings">
-                            <div className="text-sm font-medium leading-none">
+                            <div className="text-sm font-medium leading-none text-foreground">
                               All Trainings
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
@@ -56,7 +56,7 @@ export function Navbar() {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link1 href="/my-trainings">
-                            <div className="text-sm font-medium leading-none">
+                            <div className="text-sm font-medium leading-none text-foreground">
                               My Trainings
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
@@ -68,7 +68,7 @@ export function Navbar() {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link1 href="/applications">
-                            <div className="text-sm font-medium leading-none">
+                            <div className="text-sm font-medium leading-none text-foreground">
                               Applications
                             </div>
                             <p className="line-clamp-2 text-xs leading-snug text-muted-foreground mt-1">
