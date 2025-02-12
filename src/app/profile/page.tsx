@@ -5,7 +5,7 @@ import Profile from "./_Profile";
 
 const user = {
   id: 1,
-  photopath: "./profile.jpg",
+  photopath: "/profile.jpg",
   name: "Mohamed Reda",
   birthdate: "1/1/2003",
   email: "mhassa@yahoo.com",

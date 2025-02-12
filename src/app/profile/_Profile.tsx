@@ -1,6 +1,7 @@
 "use client";
 import React, { useContext } from "react";
 import { useState } from "react";
+import Image from "next/image";
 import { type User } from "./page";
 import { FaUser, FaGraduationCap, FaLink, FaCode } from 'react-icons/fa';
 import { SiCodeforces, SiLeetcode, SiCodechef } from 'react-icons/si';
@@ -79,13 +80,15 @@ function Info() {
       </div>
       <div className="photo-section">
         <div className="photo-placeholder">
-          <img 
-            src={user.photopath} 
+          <Image 
+            src={user.photopath}
             alt={user.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.src = "https://via.placeholder.com/140?text=Profile"
-            }}
+            width={140}
+            height={140}
+            className="object-cover rounded-lg"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkMjU1LC0yMi4xODY6OTg2MDQ0PkE5OD5FREI/RUdGTEVMTUz/2wBDAR"
+            unoptimized
           />
         </div>
         <div className="username">@{user.username}</div>
