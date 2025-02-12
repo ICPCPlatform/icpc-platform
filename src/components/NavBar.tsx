@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { Code2, Sun, Moon } from "lucide-react";
+import Image from "next/image";
+import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -12,7 +13,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useTheme } from "next-themes";
-import { TypographyH1 } from "@/components/ui/typography";
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -22,12 +22,24 @@ export function Navbar() {
       <div className="container flex h-14 items-center">
         <div className="flex items-center gap-6 mr-4">
           <Link href="/" className="flex items-center space-x-2">
-            <Code2 className="h-5 w-5 text-foreground" />
+            <Image
+              src="/icon.png"
+              alt="ICPC Assiut Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+              priority
+              unoptimized
+              onError={(e) => {
+                console.error('Error loading image:', e);
+                e.currentTarget.style.display = 'none';
+              }}
+            />
             <div className="flex flex-col relative">
-              <TypographyH1 className="hidden text-base font-semibold sm:inline-block">
+              <span className="hidden text-sm font-medium sm:inline-block">
                 ICPC Assiut
-              </TypographyH1>
-              <span className="text-[0.55rem] text-muted-foreground absolute -right-10 bottom-0">
+              </span>
+              <span className="text-[0.45rem] text-muted-foreground absolute -right-6 bottom-0">
                 DEMO
               </span>
             </div>
