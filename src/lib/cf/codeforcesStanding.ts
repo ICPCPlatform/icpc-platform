@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { Helper } from "./helper"; 
+import * as Helper  from "./helper"; 
 
 export class CodeforcesStanding {
   private apiKey: string;
@@ -19,8 +19,6 @@ export class CodeforcesStanding {
    * This function computes a SHA-512 digest of a string composed of a salt, the request, and the API secret.
    * It returns a string in the format: &apiSig=123456<digest>
    *
-   * @param request The API request string.
-   * @returns The computed API signature.
    */
   private getSignature(request: string): string {
     const salt = "123456";
@@ -33,10 +31,6 @@ export class CodeforcesStanding {
   /**
    * Constructs the complete Codeforces API URL for fetching contest standings.
    *
-   * @param unofficial Whether to include unofficial standings.
-   * @param from (Optional) The starting rank (1-indexed).
-   * @param count (Optional) The number of standings to fetch.
-   * @returns The fully constructed URL.
    */
   public constructURL(unofficial: boolean, from?: number, count?: number): string {
     let request = "contest.standings?";
@@ -62,20 +56,16 @@ export class CodeforcesStanding {
   /**
    * Fetches the standings from Codeforces using the constructed URL.
    *
-   * @param unofficial (Optional) Whether to include unofficial standings (default false).
-   * @param from (Optional) The starting rank.
-   * @param count (Optional) The number of standings to fetch.
-   * @returns A promise resolving to the result data from Codeforces or null if an error occurs.
    */
-  public async getStanding(unofficial: boolean = false, from?: number, count?: number): Promise<any | null> {
-    // TODO add option asManager check for more info @https://codeforces.com/apiHelp/methods#contest.standings
-    
-    const url = this.constructURL(unofficial, from, count);
-    const response = await Helper.getUrlResponse(url);
-    // Assuming the API returns a JSON object with a "result" property.
-    if (response != null) {
-      return response["result"];
-    }
-    return null;
-  }
+  // public async getStanding(unofficial: boolean = false, from?: number, count?: number): Promise<any | null> {
+  //   // TODO add option asManager check for more info @https://codeforces.com/apiHelp/methods#contest.standings
+  //   
+  //   const url = this.constructURL(unofficial, from, count);
+  //   const response = await Helper.getUrlResponse(url);
+  //   // Assuming the API returns a JSON object with a "result" property.
+  //   if (response != null) {
+  //     return response["result"];
+  //   }
+  //   return null;
+  // }
 }

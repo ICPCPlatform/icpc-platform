@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   faculties,
   departments,
-  country,
+  countries,
   validGovernorateCodes,
   universities,
 } from "@/const";
@@ -15,17 +15,9 @@ const academicYear = z
   .number({ message: " Academic Year must be Number" })
   .positive({ message: " Academic Year must be Positive" })
   .max(5, { message: " Academic Year must be between 1 and 5" });
-const gradYear = z.string().date();
+const graduationYear = z.string().date();
 
-// handles
-//
-// const vjudgeHandle = z.string().nullable();
-// const atcoder = z.string().nullable();
-// const topcoder = z.string().nullable();
-// const spoj = z.string().nullable();
-// const codechef = z.string().nullable();
-// const csacademy = z.string().nullable();
-// const cses = z.string().nullable();
+
 const handle = z
   .string()
   .trim()
@@ -36,20 +28,20 @@ const handle = z
 
 // personal
 
-const EnglishName = z
+const englishName = z
   .string()
   .trim()
   .min(3, { message: "too short" })
   .regex(/^[a-zA-Z]+$/)
   .nullable();
-const ArabicName = z
+const arabicName = z
   .string()
   .trim()
   .min(2, { message: "too short" })
   .regex(/^[ء-ي]+$/)
   .nullable();
 
-const nationalId = z
+const nationalID = z
   .string()
   .trim()
   .regex(/^\d{14}$/, "Egyptian National ID must be exactly 14 digits")
@@ -120,36 +112,36 @@ function isValidEgyptianNIDChecksum(id: string) {
 }
 
 export const userFullData = z.object({
-  university,
-  faculty,
-  department,
-  academicYear,
-  gradYear,
+    university,
+    faculty,
+    department,
+    academicYear,
+    graduationYear,
 
-  vjudgeHandle: handle,
-  atcoder: handle,
-  topcoder: handle,
-  spoj: handle,
-  codechef: handle,
-  csacademy: handle,
-  cses: handle,
-  leetcode: handle,
+    vjudge:handle,
+    atcoder:handle,
+    topcoder:handle,
+    spoj:handle,
+    codechef:handle,
+    csacademy:handle,
+    cses:handle,
+    leetcode:handle,
 
-  nameEnFirst: EnglishName,
-  nameEnLast: EnglishName,
-  NameAR1: ArabicName,
-  NameAR2: ArabicName,
-  NameAR3: ArabicName,
-  NameAR4: ArabicName,
+    nameEnFirst: englishName,
+    nameEnLast: englishName,
+    nameAR1: arabicName,
+    nameAR2: arabicName,
+    nameAR3: arabicName,
+    nameAR4: arabicName,
 
-  nationalId,
-  countryName,
-  city,
-  isMale,
-  imageURL,
+    nationalID,
+    country: countryName,
+    city,
+    isMale,
+    imageURL,
 
-  facebook,
-  linkedIn,
-  twitter,
-  github,
+    facebook,
+    linkedIn,
+    twitter,
+    github
 });
