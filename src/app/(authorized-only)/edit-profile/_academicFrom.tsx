@@ -21,24 +21,24 @@ export default function AcademicForm() {
   const departmentOptions =
     userFullData.shape.department._def.innerType.options;
   return (
-    <div>
+    <div className="space-y-6">
       <FormField
         control={form.control}
         name="university"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>university</FormLabel>
-            <br />
+            <FormLabel>University</FormLabel>
             <FormControl>
-              <select {...field}>
+              <select {...field} className="w-full p-2 border rounded-md">
+                <option value="">Select your university</option>
                 {universityOptions.map((option, index) => (
-                  <option key={index} defaultValue={undefined} value={option}>
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </FormControl>
-            <FormDescription>this is your academic year.</FormDescription>
+            <FormDescription>Select the university you are currently enrolled in or graduated from.</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -49,17 +49,17 @@ export default function AcademicForm() {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Faculty</FormLabel>
-            <br />
             <FormControl>
-              <select {...field}>
+              <select {...field} className="w-full p-2 border rounded-md">
+                <option value="">Select your faculty</option>
                 {facultyOptions.map((option, index) => (
-                  <option key={index} defaultValue={undefined} value={option}>
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </FormControl>
-            <FormDescription>this is your faculty.</FormDescription>
+            <FormDescription>Choose your faculty or college within the university.</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -70,9 +70,9 @@ export default function AcademicForm() {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Department</FormLabel>
-            <br />
             <FormControl>
-              <select {...field}>
+              <select {...field} className="w-full p-2 border rounded-md">
+                <option value="">Select your department</option>
                 {departmentOptions.map((option, index) => (
                   <option key={index} value={option}>
                     {option}
@@ -80,7 +80,7 @@ export default function AcademicForm() {
                 ))}
               </select>
             </FormControl>
-            <FormDescription>this is your department.</FormDescription>
+            <FormDescription>Select your specific department or major.</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -90,11 +90,11 @@ export default function AcademicForm() {
         name="graduationYear"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>graduation year</FormLabel>
+            <FormLabel>Expected Graduation Date</FormLabel>
             <FormControl>
-              <Input type="date" {...field} />
+              <Input type="date" {...field} className="w-full" />
             </FormControl>
-            <FormDescription>this is your department.</FormDescription>
+            <FormDescription>Your expected or actual graduation date.</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -104,11 +104,18 @@ export default function AcademicForm() {
         name="academicYear"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>academic year</FormLabel>
+            <FormLabel>Current Academic Year</FormLabel>
             <FormControl>
-              <Input type="number" {...field} />
+              <Input 
+                type="number" 
+                {...field} 
+                min="1" 
+                max="7" 
+                placeholder="Enter your current year (1-7)"
+                className="w-full"
+              />
             </FormControl>
-            <FormDescription>this is year you are in.</FormDescription>
+            <FormDescription>Your current year of study (1st year, 2nd year, etc.).</FormDescription>
             <FormMessage />
           </FormItem>
         )}

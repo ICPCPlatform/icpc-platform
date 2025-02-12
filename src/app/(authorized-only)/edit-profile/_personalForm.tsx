@@ -13,28 +13,29 @@ import { z } from "zod";
 
 export default function PersonList() {
   const form = useFormContext<z.infer<typeof userFullData>>();
-  const personNamesList = [
-    "nameEnFirst",
-    "nameEnLast",
-    "nameAR1",
-    "nameAR2",
-    "nameAR3",
-    "nameAR4",
-    
-  ] as const ;
+  
+  const personalFields = [
+    { name: "nameEnFirst", label: "First Name (English)" },
+    { name: "nameEnLast", label: "Last Name (English)" },
+    { name: "nameAR1", label: "First Name (Arabic)" },
+    { name: "nameAR2", label: "Second Name (Arabic)" },
+    { name: "nameAR3", label: "Third Name (Arabic)" },
+    { name: "nameAR4", label: "Last Name (Arabic)" },
+  ] as const;
+  
   const countryOptions = userFullData.shape.country._def.innerType.options;
   return (
-    <div>
-      {personNamesList.map((handle, index) => (
+    <div className="space-y-4">
+      {personalFields.map((field) => (
         <FormField
-          key={index}
+          key={field.name}
           control={form.control}
-          name={handle}
-          render={({ field }) => (
+          name={field.name}
+          render={({ field: formField }) => (
             <FormItem>
-              <FormLabel>{handle}</FormLabel>
+              <FormLabel>{field.label}</FormLabel>
               <FormControl>
-                <Input {...field} required={false} />
+                <Input {...formField} required={false} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -46,9 +47,9 @@ export default function PersonList() {
         name="nationalID"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>national Id</FormLabel>
+            <FormLabel>National ID Number</FormLabel>
             <FormControl>
-              <Input {...field} required={false} pattern="^\d{14}$" />
+              <Input {...field} required={false} pattern="^\d{14}$" placeholder="14 digits national ID" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -59,9 +60,10 @@ export default function PersonList() {
         name="country"
         render={({ field }) => (
           <FormItem>
-            <FormLabel> country </FormLabel>
+            <FormLabel>Country of Residence</FormLabel>
             <FormControl>
-              <select {...field}>
+              <select {...field} className="w-full p-2 border rounded-md">
+                <option value="">Select a country</option>
                 {countryOptions.map((option, index) => (
                   <option key={index} value={option}>
                     {option}
@@ -73,19 +75,19 @@ export default function PersonList() {
           </FormItem>
         )}
       />
-        <FormField
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>city</FormLabel>
-              <FormControl>
-                <Input {...field} required={false} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <FormField
+        control={form.control}
+        name="city"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>City</FormLabel>
+            <FormControl>
+              <Input {...field} required={false} placeholder="Enter your city" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 }

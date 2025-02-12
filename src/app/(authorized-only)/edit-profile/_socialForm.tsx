@@ -13,19 +13,46 @@ import { z } from "zod";
 
 export default function SocialForm() {
   const form = useFormContext<z.infer<typeof userFullData>>();
-  const socialList = ["facebook", "linkedIn", "twitter", "github"] as const;
+  const socialProfiles = [
+    { 
+      id: "facebook", 
+      label: "Facebook Profile", 
+      placeholder: "Enter your Facebook profile URL"
+    },
+    { 
+      id: "linkedIn", 
+      label: "LinkedIn Profile", 
+      placeholder: "Enter your LinkedIn profile URL"
+    },
+    { 
+      id: "twitter", 
+      label: "Twitter/X Profile", 
+      placeholder: "Enter your Twitter/X profile URL"
+    },
+    { 
+      id: "github", 
+      label: "GitHub Profile", 
+      placeholder: "Enter your GitHub profile URL"
+    }
+  ] as const;
+
   return (
-    <div>
-      {socialList.map((handle, index) => (
+    <div className="space-y-4">
+      {socialProfiles.map((profile) => (
         <FormField
-          key={index}
+          key={profile.id}
           control={form.control}
-          name={handle}
+          name={profile.id}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{handle}</FormLabel>
+              <FormLabel>{profile.label}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input 
+                  {...field} 
+                  placeholder={profile.placeholder}
+                  className="w-full"
+                  type="url"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

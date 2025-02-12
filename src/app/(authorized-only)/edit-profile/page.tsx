@@ -13,17 +13,32 @@ import HandlesForm from "./_handlesForm";
 import SocialForm from "./_socialForm";
 import PersonalForm from "./_personalForm";
 
-const pages = [ "Personal","Academic", "Handles", "Social"] as const;
+interface NavSection {
+  id: typeof pages[number];
+  label: string;
+  icon?: string;
+}
+
+const sections: NavSection[] = [
+  { id: "Personal", label: "Basic Info" },
+  { id: "Academic", label: "Education" },
+  { id: "Handles", label: "Coding Profiles" },
+  { id: "Social", label: "Social Links" },
+] as const;
+
+const pages = sections.map(section => section.id) as const;
+
 export default function Profile() {
-  const [page, setPage] = useState("Academic");
+  const [page, setPage] = useState<typeof pages[number]>("Personal");
   const form = useForm<z.infer<typeof userFullData>>({
     resolver: zodResolver(userFullData),
   });
+
   return (
     <main className={styles.main}>
       <Nav />
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(submit)} style={{ padding: 30}}>
+        <form onSubmit={form.handleSubmit(submit)} className={styles.formContainer}>
           {
             {
               Handles: <HandlesForm />,
@@ -36,21 +51,30 @@ export default function Profile() {
       </FormProvider>
     </main>
   );
+
   function submit(data: z.infer<typeof userFullData>) {
     console.log(data);
   }
+
   function Nav() {
     return (
       <aside className={styles.navbar}>
         <ul>
-          {pages.map((page, idx) => (
-            <li key={idx}>
-              <Button onClick={() => setPage(page)}>Edit {page}</Button>
+          {sections.map((section) => (
+            <li key={section.id}>
+              <Button
+                variant="ghost"
+                onClick={() => setPage(section.id)}
+                data-active={page === section.id}
+              >
+                {section.label}
+              </Button>
             </li>
           ))}
-          <Button type="submit" className={styles.submit}>Save</Button>
+          <Button type="submit" className={styles.submit}>
+            Save Changes
+          </Button>
         </ul>
-
       </aside>
     );
   }
