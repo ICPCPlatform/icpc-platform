@@ -29,9 +29,9 @@ export type User = typeof user;
 export default async function ProfilePage() {
   return (
     <div className="container mx-auto py-6">
-      <div className="flex gap-8">
-        <Profile user={user} />
-        <Sidebar />
+      <div className="flex gap-6">
+        <Profile user={user} className="flex-[2]" />
+        <Sidebar className="flex-1" />
       </div>
     </div>
   );

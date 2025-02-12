@@ -1,7 +1,7 @@
 import React from "react";
 import { FaUserFriends, FaRobot, FaChalkboardTeacher } from 'react-icons/fa';
 
-export default function Sidebar() {
+export default function Sidebar({ className }: { className?: string }) {
   const users = [
     { handle: "user1", online: Math.random() >= 0.5 },
     { handle: "user2", online: Math.random() >= 0.5 },
@@ -26,7 +26,7 @@ export default function Sidebar() {
   ].filter((mentor) => mentor.online);
 
   return (
-    <aside className="w-[320px] p-4">
+    <aside className={`w-[280px] p-4 ${className || ''}`}>
       <div className="friends-section">
         <div className="section-header">
           <FaUserFriends />

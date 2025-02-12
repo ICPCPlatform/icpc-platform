@@ -7,12 +7,12 @@ import { SiCodeforces, SiLeetcode, SiCodechef } from 'react-icons/si';
 
 const UserContext = React.createContext({} as User);
 
-export default function Profile({ user }: { user: User }) {
+export default function Profile({ user, className }: { user: User, className?: string }) {
   const [activeTab, setActiveTab] = useState("cp");
 
   return (
     <UserContext.Provider value={user}>
-      <div className="profile-container">
+      <div className={`profile-container ${className || ''}`}>
         <Info />
 
         <div className="tabs">
