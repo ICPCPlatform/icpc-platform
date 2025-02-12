@@ -12,14 +12,20 @@ import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 import { userFullData } from "@/lib/validation/userFulldataValidations";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AcademicForm() {
   const form = useFormContext<z.infer<typeof userFullData>>();
-  const universityOptions =
-    userFullData.shape.university._def.innerType.options;
+  const universityOptions = userFullData.shape.university._def.innerType.options;
   const facultyOptions = userFullData.shape.faculty._def.innerType.options;
-  const departmentOptions =
-    userFullData.shape.department._def.innerType.options;
+  const departmentOptions = userFullData.shape.department._def.innerType.options;
+  
   return (
     <div className="space-y-6">
       <FormField
@@ -27,18 +33,35 @@ export default function AcademicForm() {
         name="university"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>University</FormLabel>
-            <FormControl>
-              <select {...field} className="w-full p-2 border rounded-md">
-                <option value="">Select your university</option>
-                {universityOptions.map((option, index) => (
-                  <option key={index} value={option}>
+            <FormLabel className="text-foreground">University</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select your university" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent 
+                className="!bg-popover border shadow-md !z-[100]"
+                style={{ 
+                  backgroundColor: 'var(--background)',
+                  backdropFilter: 'none',
+                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                {universityOptions.map((option) => (
+                  <SelectItem 
+                    key={option} 
+                    value={option}
+                    className="hover:bg-accent focus:bg-accent"
+                  >
                     {option}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
-            </FormControl>
-            <FormDescription>Select the university you are currently enrolled in or graduated from.</FormDescription>
+              </SelectContent>
+            </Select>
+            <FormDescription className="text-muted-foreground">
+              Select the university you are currently enrolled in or graduated from.
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -48,18 +71,35 @@ export default function AcademicForm() {
         name="faculty"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Faculty</FormLabel>
-            <FormControl>
-              <select {...field} className="w-full p-2 border rounded-md">
-                <option value="">Select your faculty</option>
-                {facultyOptions.map((option, index) => (
-                  <option key={index} value={option}>
+            <FormLabel className="text-foreground">Faculty</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select your faculty" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent 
+                className="!bg-popover border shadow-md !z-[100]"
+                style={{ 
+                  backgroundColor: 'var(--background)',
+                  backdropFilter: 'none',
+                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                {facultyOptions.map((option) => (
+                  <SelectItem 
+                    key={option} 
+                    value={option}
+                    className="hover:bg-accent focus:bg-accent"
+                  >
                     {option}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
-            </FormControl>
-            <FormDescription>Choose your faculty or college within the university.</FormDescription>
+              </SelectContent>
+            </Select>
+            <FormDescription className="text-muted-foreground">
+              Choose your faculty or college within the university.
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -69,18 +109,35 @@ export default function AcademicForm() {
         name="department"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Department</FormLabel>
-            <FormControl>
-              <select {...field} className="w-full p-2 border rounded-md">
-                <option value="">Select your department</option>
-                {departmentOptions.map((option, index) => (
-                  <option key={index} value={option}>
+            <FormLabel className="text-foreground">Department</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select your department" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent 
+                className="!bg-popover border shadow-md !z-[100]"
+                style={{ 
+                  backgroundColor: 'var(--background)',
+                  backdropFilter: 'none',
+                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                {departmentOptions.map((option) => (
+                  <SelectItem 
+                    key={option} 
+                    value={option}
+                    className="hover:bg-accent focus:bg-accent"
+                  >
                     {option}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
-            </FormControl>
-            <FormDescription>Select your specific department or major.</FormDescription>
+              </SelectContent>
+            </Select>
+            <FormDescription className="text-muted-foreground">
+              Select your specific department or major.
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -90,11 +147,17 @@ export default function AcademicForm() {
         name="graduationYear"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Expected Graduation Date</FormLabel>
+            <FormLabel className="text-foreground">Expected Graduation Date</FormLabel>
             <FormControl>
-              <Input type="date" {...field} className="w-full" />
+              <Input 
+                type="date" 
+                {...field} 
+                className="w-full bg-background text-foreground" 
+              />
             </FormControl>
-            <FormDescription>Your expected or actual graduation date.</FormDescription>
+            <FormDescription className="text-muted-foreground">
+              Your expected or actual graduation date.
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -104,7 +167,7 @@ export default function AcademicForm() {
         name="academicYear"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Current Academic Year</FormLabel>
+            <FormLabel className="text-foreground">Current Academic Year</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -112,10 +175,12 @@ export default function AcademicForm() {
                 min="1" 
                 max="7" 
                 placeholder="Enter your current year (1-7)"
-                className="w-full"
+                className="w-full bg-background text-foreground"
               />
             </FormControl>
-            <FormDescription>Your current year of study (1st year, 2nd year, etc.).</FormDescription>
+            <FormDescription className="text-muted-foreground">
+              Your current year of study (1st year, 2nd year, etc.).
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}

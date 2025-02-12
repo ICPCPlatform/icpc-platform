@@ -10,6 +10,13 @@ import { Input } from "@/components/ui/input";
 import { userFullData } from "@/lib/validation/userFulldataValidations";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function PersonList() {
   const form = useFormContext<z.infer<typeof userFullData>>();
@@ -33,9 +40,13 @@ export default function PersonList() {
           name={field.name}
           render={({ field: formField }) => (
             <FormItem>
-              <FormLabel>{field.label}</FormLabel>
+              <FormLabel className="text-foreground">{field.label}</FormLabel>
               <FormControl>
-                <Input {...formField} required={false} />
+                <Input 
+                  {...formField} 
+                  required={false}
+                  className="bg-background text-foreground" 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -47,9 +58,15 @@ export default function PersonList() {
         name="nationalID"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>National ID Number</FormLabel>
+            <FormLabel className="text-foreground">National ID Number</FormLabel>
             <FormControl>
-              <Input {...field} required={false} pattern="^\d{14}$" placeholder="14 digits national ID" />
+              <Input 
+                {...field} 
+                required={false} 
+                pattern="^\d{14}$" 
+                placeholder="14 digits national ID"
+                className="bg-background text-foreground" 
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -60,17 +77,32 @@ export default function PersonList() {
         name="country"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Country of Residence</FormLabel>
-            <FormControl>
-              <select {...field} className="w-full p-2 border rounded-md">
-                <option value="">Select a country</option>
-                {countryOptions.map((option, index) => (
-                  <option key={index} value={option}>
+            <FormLabel className="text-foreground">Country of Residence</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select a country" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent 
+                className="!bg-popover border shadow-md !z-[100]"
+                style={{ 
+                  backgroundColor: 'var(--background)',
+                  backdropFilter: 'none',
+                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                {countryOptions.map((option) => (
+                  <SelectItem 
+                    key={option} 
+                    value={option}
+                    className="hover:bg-accent focus:bg-accent"
+                  >
                     {option}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
-            </FormControl>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -80,9 +112,14 @@ export default function PersonList() {
         name="city"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>City</FormLabel>
+            <FormLabel className="text-foreground">City</FormLabel>
             <FormControl>
-              <Input {...field} required={false} placeholder="Enter your city" />
+              <Input 
+                {...field} 
+                required={false} 
+                placeholder="Enter your city"
+                className="bg-background text-foreground" 
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
