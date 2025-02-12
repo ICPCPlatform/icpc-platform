@@ -1,72 +1,275 @@
-@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #333333;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
-  background-color: var(--background);
-  color: var(--foreground);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-header * {
-  font-size: 1rem;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.bg-primary {
-  background-color: #2563eb;
-}
-
-.text-primary-foreground {
-  color: white;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #000000;
-    --foreground: #ffffff;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
   }
 
+  .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 4%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 4% 8%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 8%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 8%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 240 5% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-[hsl(var(--border))];
+  }
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+  }
+}
+
+@layer components {
+  .container {
+    @apply mx-auto w-full max-w-[80rem] px-4;
   }
 
-  .bg-primary {
-    background-color: #000000;
+  .card {
+    @apply rounded-lg border bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow-sm;
   }
 
-  .text-primary-foreground {
-    color: #ffffff;
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-primary {
+    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90;
+  }
+
+  .btn-secondary {
+    @apply bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] hover:bg-[hsl(var(--secondary))]/80;
+  }
+
+  .btn-destructive {
+    @apply bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] hover:bg-[hsl(var(--destructive))]/90;
+  }
+
+  .btn-outline {
+    @apply border border-[hsl(var(--input))] bg-[hsl(var(--background))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))];
+  }
+
+  .input {
+    @apply flex h-10 w-full rounded-md border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 py-2 text-sm ring-offset-[hsl(var(--background))] file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[hsl(var(--muted-foreground))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .link {
+    @apply text-[hsl(var(--primary))] hover:text-[hsl(var(--primary))]/80 underline-offset-4 hover:underline;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-offset-2;
+  }
+
+  .badge-secondary {
+    @apply border-transparent bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))];
+  }
+
+  .badge-outline {
+    @apply text-[hsl(var(--foreground))];
+  }
+
+  .truncate {
+    @apply overflow-hidden text-ellipsis whitespace-nowrap;
+  }
+
+  .user-handle {
+    @apply font-medium truncate;
+  }
+
+  .status-text {
+    @apply text-xs text-[hsl(var(--muted-foreground))];
+  }
+
+  .list-group-item {
+    @apply flex items-center gap-4 p-2 hover:bg-[hsl(var(--accent))];
+  }
+
+  .user-info-container {
+    @apply flex-1 max-w-[65%];
+  }
+
+  .status-indicator {
+    @apply w-2 h-2 rounded-full flex-shrink-0;
+  }
+
+  .status-online {
+    @apply bg-[hsl(var(--primary))];
+  }
+
+  .status-offline {
+    @apply bg-[hsl(var(--muted))];
+  }
+
+  .section-header {
+    @apply flex items-center gap-2 font-medium mb-4 text-[hsl(var(--foreground))];
+  }
+
+  .section-header svg {
+    @apply w-4 h-4 text-[hsl(var(--foreground))];
+  }
+
+  .list-item {
+    @apply flex items-center p-2 rounded-md border border-[hsl(var(--border))] text-sm transition-colors
+           hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))];
+  }
+
+  .tabs {
+    @apply flex gap-2 border-b border-[hsl(var(--border))] mb-6 pb-2;
+  }
+
+  .tab {
+    @apply px-4 py-2 text-sm font-medium rounded-md transition-colors
+           hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]
+           data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-[hsl(var(--primary-foreground))];
+  }
+
+  .nav-header {
+    @apply sticky top-0 z-50 w-full border-b border-[hsl(var(--border))] 
+           bg-[hsl(var(--background))]/95 backdrop-blur supports-[backdrop-filter]:bg-[hsl(var(--background))]/60
+           dark:bg-[hsl(var(--background))]/95 dark:supports-[backdrop-filter]:bg-[hsl(var(--background))]/80;
+  }
+
+  .profile-container {
+    @apply bg-[hsl(var(--background))] p-8 border border-[hsl(var(--border))] rounded-lg shadow-sm;
+  }
+
+  .user-info {
+    @apply grid grid-cols-[1fr,auto] gap-8 mb-8 pb-8 border-b border-[hsl(var(--border))];
+  }
+
+  .info-section {
+    @apply flex flex-col gap-4;
+  }
+
+  .info-section div {
+    @apply text-[0.95rem];
+  }
+
+  .info-section span {
+    @apply text-[hsl(var(--muted-foreground))] mr-2;
+  }
+
+  .info-section .info-value {
+    @apply text-[hsl(var(--foreground))];
+  }
+
+  .photo-section {
+    @apply text-center;
+  }
+
+  .photo-placeholder {
+    @apply w-[140px] h-[140px] bg-[hsl(var(--muted))] rounded-lg mb-4 border border-[hsl(var(--border))] 
+           overflow-hidden flex items-center justify-center;
+  }
+
+  .photo-placeholder img {
+    @apply w-full h-full object-cover;
+  }
+
+  .username {
+    @apply text-base font-medium text-[hsl(var(--foreground))];
+  }
+
+  .platform {
+    @apply py-3 border-b border-[hsl(var(--border))] flex items-center gap-4 text-sm last:border-b-0 last:pb-0;
+  }
+
+  .platform-icon {
+    @apply text-[hsl(var(--muted-foreground))] w-5 h-5 flex-shrink-0;
+  }
+
+  .platform-name {
+    @apply text-[hsl(var(--muted-foreground))] w-[120px] flex-shrink-0;
+  }
+
+  .platform-handle {
+    @apply font-medium text-[hsl(var(--foreground))] flex-1;
+  }
+
+  .cp-section,
+  .academic-section,
+  .socials-section,
+  .friends-section,
+  .mentors-section {
+    @apply bg-[hsl(var(--background))] p-6 border border-[hsl(var(--border))] rounded-lg mb-4;
+  }
+
+  .chatbot-section {
+    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] p-3 rounded-md text-center 
+           my-4 text-sm font-medium;
+  }
+
+  /* Friends and Mentors List */
+  .list-group-item {
+    @apply flex items-center gap-3 p-3 rounded-md border border-[hsl(var(--border))] mb-2 
+           hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]
+           transition-all duration-200;
+  }
+
+  .user-info-container {
+    @apply flex items-center justify-between flex-1;
+  }
+
+  .user-handle {
+    @apply font-medium text-[hsl(var(--foreground))];
+  }
+
+  .status-wrapper {
+    @apply flex items-center gap-2;
+  }
+
+  .status-text {
+    @apply text-xs text-[hsl(var(--muted-foreground))];
+  }
+
+  .status-indicator {
+    @apply w-2 h-2 rounded-full flex-shrink-0;
+  }
+
+  .status-online {
+    @apply bg-[hsl(var(--primary))];
+  }
+
+  .status-offline {
+    @apply bg-[hsl(var(--muted))];
   }
 }

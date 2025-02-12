@@ -1,5 +1,4 @@
-import "./ProfilePage.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "@/app/globals.css";
 
 import Sidebar from "./_Sidebar";
 import Profile from "./_Profile";
@@ -29,12 +28,8 @@ export type User = typeof user;
 
 export default async function ProfilePage() {
   return (
-    <div className="ProfilePage">
-      <nav style={{ background: "#333", color: "white", padding: "10px" }}>
-        <h1>Profile Page</h1>
-      </nav>
-
-      <div style={{ display: "flex" }}>
+    <div className="container mx-auto py-6">
+      <div className="flex gap-8">
         <Profile user={user} />
         <Sidebar />
       </div>

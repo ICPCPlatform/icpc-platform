@@ -1,5 +1,6 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { FaUserFriends, FaRobot, FaChalkboardTeacher } from 'react-icons/fa';
+
 export default function Sidebar() {
   const users = [
     { handle: "user1", online: Math.random() >= 0.5 },
@@ -15,6 +16,7 @@ export default function Sidebar() {
     }
     return Number(b.online) - Number(a.online);
   });
+
   const mentors = [
     { handle: "mentor1", online: Math.random() >= 0.5 },
     { handle: "mentor2", online: Math.random() >= 0.5 },
@@ -24,29 +26,54 @@ export default function Sidebar() {
   ].filter((mentor) => mentor.online);
 
   return (
-    <div style={{ width: "400px", background: "#f4f4f4", padding: "10px" }}>
+    <aside className="w-[320px] p-4">
       <div className="friends-section">
-        <div>Friends:(TBD)</div>
-        <ul className="list-group">
+        <div className="section-header">
+          <FaUserFriends />
+          <span>Friends</span>
+        </div>
+        <ul className="space-y-1.5">
           {users.map((user, idx) => (
             <li className="list-group-item" key={idx}>
-              {user.handle} - {user.online ? "Online" : "Offline"}
+              <div className="user-info-container">
+                <span className="user-handle">{user.handle}</span>
+                <div className="status-wrapper">
+                  <span className={`status-indicator ${user.online ? 'status-online' : 'status-offline'}`} />
+                  <span className="status-text">
+                    {user.online ? "Online" : "Offline"}
+                  </span>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
       </div>
-      <div className="chatbot-section">Chatbot Mentor: Online</div>
+
+      <div className="chatbot-section">
+        <FaRobot className="inline-block mr-2 text-sm" />
+        <span>Chatbot Mentor: Online</span>
+      </div>
+
       <div className="mentors-section">
-        <div>Mentors Available:(TBD)</div>
-        <ul className="list-group">
+        <div className="section-header">
+          <FaChalkboardTeacher />
+          <span>Available Mentors</span>
+        </div>
+        <ul className="space-y-1.5">
           {mentors.map((mentor, idx) => (
             <li className="list-group-item" key={idx}>
-              {mentor.handle} - {mentor.online ? "Online" : "Offline"}
+              <div className="user-info-container">
+                <span className="user-handle">{mentor.handle}</span>
+                <div className="status-wrapper">
+                  <span className="status-indicator status-online" />
+                  <span className="status-text">Online</span>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
       </div>
-    </div>
+    </aside>
   );
 }
 
