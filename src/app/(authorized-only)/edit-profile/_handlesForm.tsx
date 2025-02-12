@@ -7,7 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userFullData } from "@/validation/user-fulldata-validations";
+import { userFullData } from "@/lib/validation/userFulldataValidations";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 

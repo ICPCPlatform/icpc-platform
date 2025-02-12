@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
-import { userFullData } from "@/validation/user-fulldata-validations";
+import { userFullData } from "@/lib/validation/userFulldataValidations";
 import { z } from "zod";
 
 export default function AcademicForm() {
