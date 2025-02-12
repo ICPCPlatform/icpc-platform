@@ -33,13 +33,13 @@ const englishName = z
   .trim()
   .min(3, { message: "too short" })
   .regex(/^[a-zA-Z]+$/)
-  .nullable();
+  .optional();
 const arabicName = z
   .string()
   .trim()
   .min(2, { message: "too short" })
   .regex(/^[ء-ي]+$/)
-  .nullable();
+  .optional();
 
 const nationalID = z
   .string()
