@@ -5,12 +5,12 @@ import {
   countries,
   validGovernorateCodes,
   universities,
-} from "@/const";
+} from "@/lib/const";
 
 // Academic
-const university = z.enum(universities);
-const faculty = z.enum(faculties);
-const department = z.enum(departments);
+const university = z.enum(universities).optional();
+const faculty = z.enum(faculties).optional();
+const department = z.enum(departments).optional();
 const academicYear = z
   .number({ message: " Academic Year must be Number" })
   .positive({ message: " Academic Year must be Positive" })

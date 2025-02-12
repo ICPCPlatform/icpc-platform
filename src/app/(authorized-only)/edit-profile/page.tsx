@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
-import { userFullData } from "@/validation/user-fulldata-validations";
+import { userFullData } from "@/lib/validation/userFulldataValidations";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 // import { Sidebar } from "@/components/ui/sidebar";
