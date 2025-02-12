@@ -23,10 +23,16 @@ export function Navbar() {
         <div className="flex items-center gap-6 mr-4">
           <Link href="/" className="flex items-center space-x-2">
             <Code2 className="h-5 w-5 text-foreground" />
-            <TypographyH1 className="hidden text-base font-semibold sm:inline-block">
-              ICPC Assiut
-            </TypographyH1>
+            <div className="flex flex-col relative">
+              <TypographyH1 className="hidden text-base font-semibold sm:inline-block">
+                ICPC Assiut
+              </TypographyH1>
+              <span className="text-[0.55rem] text-muted-foreground absolute -right-10 bottom-0">
+                DEMO
+              </span>
+            </div>
           </Link>
+          <div className="w-2" />
           <NavigationMenu className="hidden sm:flex">
             <NavigationMenuList>
               <NavigationMenuItem>
