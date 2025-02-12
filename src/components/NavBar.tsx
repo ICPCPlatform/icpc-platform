@@ -39,7 +39,7 @@ export function Navbar() {
               <span className="hidden text-sm font-medium sm:inline-block">
                 ICPC Assiut
               </span>
-              <span className="text-[0.45rem] text-muted-foreground absolute -right-6 bottom-0">
+              <span className="text-[0.45rem] text-green-500 font-medium absolute -right-6 bottom-0">
                 DEMO
               </span>
             </div>
