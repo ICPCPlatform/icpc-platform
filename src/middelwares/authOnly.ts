@@ -6,18 +6,17 @@ import { decryptSession, type userData } from "@/lib/session";
  * How to use
  * `
  * async function POST(request: NextRequest, user: userData) {}
- * exports { POST: adminOnly(POST) };
+ * const POST = adminOnly(POSTfn);
+ * export { POST } ;
  * `
  */
-export default function adminOnly(
-  f: (_request: NextRequest, _user: userData) => Promise<NextResponse>,
+export default function authOnly(
+  f: (_request: NextRequest, _user: userData) => Promise<NextResponse>
 ) {
   return async (request: NextRequest) => {
     const session = request.cookies.get("session")?.value;
     const user = (await decryptSession(session)) as userData;
-    if (user.role === "admin") {
-      return await f(request, user);
-    }
+    if (user) return await f(request, user);
     return new NextResponse(null, { status: 401 });
   };
 }
