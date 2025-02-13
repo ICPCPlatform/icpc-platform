@@ -15,6 +15,13 @@
       "when": 1739436518306,
       "tag": "0001_wonderful_glorian",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739441766036,
+      "tag": "0002_green_mentor",
+      "breakpoints": true
     }
   ]
 }
