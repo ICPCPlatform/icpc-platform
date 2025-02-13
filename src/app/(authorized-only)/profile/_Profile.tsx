@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { type User } from "./page";
 import { FaUser, FaGraduationCap, FaLink, FaCode } from "react-icons/fa";
-import { SiCodeforces, SiLeetcode, SiCodechef } from "react-icons/si";
+import {  SiLeetcode, SiCodechef } from "react-icons/si";
 
 const UserContext = React.createContext({} as User);
 

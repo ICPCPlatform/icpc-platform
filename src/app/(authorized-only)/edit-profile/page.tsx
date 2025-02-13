@@ -9,7 +9,6 @@ import SocialForm from "./_socialForm";
 import PersonalForm from "./_personalForm";
 import { z } from "zod";
 import { FaUser, FaGraduationCap, FaCode, FaLink, FaSave } from "react-icons/fa";
-import styles from "./page.module.css";
 
 type PageType = "personal" | "academic" | "competitive" | "social";
 
