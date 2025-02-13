@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
 import { cookies } from "next/headers";
-import { decryptSession, userData } from "@/lib/session";
+import { decryptSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-import UserProvider from "@/providers/user";
 import "@/app/page.module.css";
-import { ThemeProvider } from "next-themes";
-
 
 export const metadata: Metadata = {
   title: "ICPC Platform",
@@ -22,12 +19,8 @@ export default async function RootLayout({
   const session = cookieStore.get("session")?.value;
   const validation = await decryptSession(session);
   if (!validation) {
+    // is not logged in
     redirect("/login");
   }
-  const user = validation as userData;
-  return (
-    <ThemeProvider attribute="class">
-      <UserProvider user={user}>{children}</UserProvider>
-    </ThemeProvider>
-  );
+  return <> {children} </>;
 }

@@ -1,3 +1,4 @@
+import "server-only";
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
 
 // Encrypting a payload

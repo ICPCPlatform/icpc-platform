@@ -225,11 +225,7 @@
     @apply font-medium text-[hsl(var(--foreground))] flex-1;
   }
 
-  .cp-section,
-  .academic-section,
-  .socials-section,
-  .friends-section,
-  .mentors-section {
+  .profile-section {
     @apply bg-[hsl(var(--background))] p-6 border border-[hsl(var(--border))] rounded-lg mb-4;
   }
 

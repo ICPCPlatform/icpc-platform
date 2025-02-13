@@ -3,10 +3,7 @@ import "@/app/globals.css";
 import { cookies } from "next/headers";
 import { decryptSession, type userData } from "@/lib/session";
 import { redirect } from "next/navigation";
-import UserProvider from "@/providers/user";
 import "@/app/page.module.css";
-import { ThemeProvider } from "next-themes";
-
 
 export const metadata: Metadata = {
   title: "ICPC Platform",
@@ -27,11 +24,7 @@ export default async function RootLayout({
   const user = validation as userData;
   if (user.role !== "admin") {
     // unauthorized access
-    redirect("/profile");
+    redirect("/");
   }
-  return (
-    <ThemeProvider attribute="class">
-      <UserProvider user={user}>{children}</UserProvider>
-    </ThemeProvider>
-  );
+  return <>{children}</>;
 }
