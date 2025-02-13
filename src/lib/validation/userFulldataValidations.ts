@@ -8,17 +8,26 @@ import {
 } from "@/lib/const";
 
 // Academic
-const universitiesValues = [
-  ...universities,
-  "Other",
-] as const;
+const universitiesValues = [...universities, "Other"] as const;
 const university = z.enum(universitiesValues).default("Other");
 const faculty = z.enum(faculties).optional();
 const department = z.enum(departments).optional();
+
+
+// don't touch this
 const academicYear = z
-  .number({ message: " Academic Year must be Number" })
-  .positive({ message: " Academic Year must be Positive" })
-  .max(5, { message: " Academic Year must be between 1 and 5" })
+  .string()
+  .trim()
+  .regex(/^[1-7]$/, {
+    message: "Academic Year must be a number between 1 and 7",
+  })
+  .transform((value) => Number(value))
+  .or(
+    z
+      .number({ message: " Academic Year must be Number" })
+      .positive({ message: " Academic Year must be Positive" })
+      .max(7, { message: " Academic Year must be between 1 and 5" }),
+  )
   .optional();
 const graduationYear = z.string().date().optional();
 
@@ -50,9 +59,9 @@ const nationalID = z
   .string()
   .trim()
   .regex(/^\d{14}$/, "Egyptian National ID must be exactly 14 digits")
-  .refine(birthdate, "Invalid birthdate encoded in ID")
-  .refine(govNumber, "Invalid governorate code")
-  .refine(isValidEgyptianNIDChecksum, "Checksum validation failed")
+  .refine(birthdate, "Invalid National ID")
+  .refine(govNumber, "Invalid National ID")
+  .refine(isValidEgyptianNIDChecksum, "Invalid National ID")
   .optional();
 
 const countryName = z.enum(countries).default("Egypt");
