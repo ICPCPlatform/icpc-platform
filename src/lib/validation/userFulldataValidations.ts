@@ -8,15 +8,28 @@ import {
 } from "@/lib/const";
 
 // Academic
-const university = z.enum(universities).optional();
+const universitiesValues = [...universities, "Other"] as const;
+const university = z.enum(universitiesValues).default("Other");
 const faculty = z.enum(faculties).optional();
 const department = z.enum(departments).optional();
-const academicYear = z
-  .number({ message: " Academic Year must be Number" })
-  .positive({ message: " Academic Year must be Positive" })
-  .max(5, { message: " Academic Year must be between 1 and 5" });
-const graduationYear = z.string().date();
 
+
+// don't touch this
+const academicYear = z
+  .string()
+  .trim()
+  .regex(/^[1-7]$/, {
+    message: "Academic Year must be a number between 1 and 7",
+  })
+  .transform((value) => Number(value))
+  .or(
+    z
+      .number({ message: " Academic Year must be Number" })
+      .positive({ message: " Academic Year must be Positive" })
+      .max(7, { message: " Academic Year must be between 1 and 5" }),
+  )
+  .optional();
+const graduationYear = z.string().date().optional();
 
 const handle = z
   .string()
@@ -24,7 +37,8 @@ const handle = z
   .min(3, { message: "Username too short" })
   .regex(/^[a-zA-Z0-9_]+$/, {
     message: "Username must contain only letters, numbers, and underscores",
-  });
+  })
+  .optional();
 
 // personal
 
@@ -45,11 +59,12 @@ const nationalID = z
   .string()
   .trim()
   .regex(/^\d{14}$/, "Egyptian National ID must be exactly 14 digits")
-  .refine(birthdate, "Invalid birthdate encoded in ID")
-  .refine(govNumber, "Invalid governorate code")
-  .refine(isValidEgyptianNIDChecksum, "Checksum validation failed");
+  .refine(birthdate, "Invalid National ID")
+  .refine(govNumber, "Invalid National ID")
+  .refine(isValidEgyptianNIDChecksum, "Invalid National ID")
+  .optional();
 
-const countryName = z.enum(countries).optional();
+const countryName = z.enum(countries).default("Egypt");
 const city = z.string().optional();
 const isMale = z.boolean().optional();
 const imageURL = z.string().url().optional();
@@ -89,7 +104,6 @@ function birthdate(id: string) {
 }
 
 function isValidEgyptianNIDChecksum(id: string) {
-    
   const weights = [2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
   const payload = id.slice(0, 13);
   const givenCheckDigit = parseInt(id.slice(13), 10);
@@ -112,36 +126,36 @@ function isValidEgyptianNIDChecksum(id: string) {
 }
 
 export const userFullData = z.object({
-    university,
-    faculty,
-    department,
-    academicYear,
-    graduationYear,
+  university,
+  faculty,
+  department,
+  academicYear,
+  graduationYear,
 
-    vjudge:handle,
-    atcoder:handle,
-    topcoder:handle,
-    spoj:handle,
-    codechef:handle,
-    csacademy:handle,
-    cses:handle,
-    leetcode:handle,
+  vjudge: handle,
+  atcoder: handle,
+  topcoder: handle,
+  spoj: handle,
+  codechef: handle,
+  csacademy: handle,
+  cses: handle,
+  leetcode: handle,
 
-    nameEnFirst: englishName,
-    nameEnLast: englishName,
-    nameAR1: arabicName,
-    nameAR2: arabicName,
-    nameAR3: arabicName,
-    nameAR4: arabicName,
+  nameEnFirst: englishName,
+  nameEnLast: englishName,
+  nameAR1: arabicName,
+  nameAR2: arabicName,
+  nameAR3: arabicName,
+  nameAR4: arabicName,
 
-    nationalID,
-    country: countryName,
-    city,
-    isMale,
-    imageURL,
+  nationalID,
+  country: countryName,
+  city,
+  isMale,
+  imageURL,
 
-    facebook,
-    linkedIn,
-    twitter,
-    github
+  facebook,
+  linkedIn,
+  twitter,
+  github,
 });
