@@ -2,76 +2,34 @@ import React from "react";
 import { FaUserFriends, FaRobot, FaChalkboardTeacher } from 'react-icons/fa';
 
 export default function Sidebar({ className }: { className?: string }) {
-  const users = [
-    { handle: "user1", online: Math.random() >= 0.5 },
-    { handle: "user2", online: Math.random() >= 0.5 },
-    { handle: "user3", online: Math.random() >= 0.5 },
-    { handle: "user4", online: Math.random() >= 0.5 },
-    { handle: "user5", online: Math.random() >= 0.5 },
-  ];
-
-  users.sort((a, b) => {
-    if (a.online === b.online) {
-      return a.handle.localeCompare(b.handle);
-    }
-    return Number(b.online) - Number(a.online);
-  });
-
-  const mentors = [
-    { handle: "mentor1", online: Math.random() >= 0.5 },
-    { handle: "mentor2", online: Math.random() >= 0.5 },
-    { handle: "mentor3", online: Math.random() >= 0.5 },
-    { handle: "mentor4", online: Math.random() >= 0.5 },
-    { handle: "mentor5", online: Math.random() >= 0.5 },
-  ].filter((mentor) => mentor.online);
-
   return (
-    <aside className={`w-[280px] p-4 ${className || ''}`}>
-      <div className="friends-section">
-        <div className="section-header">
-          <FaUserFriends />
+    <aside className={`p-5 bg-white dark:bg-gray-800/50 rounded-xl shadow-sm ${className || ''}`}>
+      <div className="friends-section mb-8">
+        <div className="section-header flex items-center gap-2.5 mb-5 text-lg font-medium text-gray-800 dark:text-gray-200">
+          <FaUserFriends className="text-primary text-xl" />
           <span>Friends</span>
         </div>
-        <ul className="space-y-1.5">
-          {users.map((user, idx) => (
-            <li className="list-group-item" key={idx}>
-              <div className="user-info-container">
-                <span className="user-handle">{user.handle}</span>
-                <div className="status-wrapper">
-                  <span className={`status-indicator ${user.online ? 'status-online' : 'status-offline'}`} />
-                  <span className="status-text">
-                    {user.online ? "Online" : "Offline"}
-                  </span>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="text-sm text-gray-600 dark:text-gray-400 text-center py-4">
+          Friends feature coming soon!
+        </div>
       </div>
 
-      <div className="chatbot-section">
-        <FaRobot className="inline-block mr-2 text-sm" />
-        <span>Chatbot Mentor: Online</span>
+      <div className="chatbot-section mb-8 p-5 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+        <div className="flex items-center gap-3">
+          <FaRobot className="text-primary text-xl" />
+          <span className="font-medium text-gray-800 dark:text-gray-200">AI Assistant</span>
+          <span className="text-sm text-green-600 dark:text-green-400 ml-2">• Online</span>
+        </div>
       </div>
 
       <div className="mentors-section">
-        <div className="section-header">
-          <FaChalkboardTeacher />
+        <div className="section-header flex items-center gap-2.5 mb-5 text-lg font-medium text-gray-800 dark:text-gray-200">
+          <FaChalkboardTeacher className="text-primary text-xl" />
           <span>Available Mentors</span>
         </div>
-        <ul className="space-y-1.5">
-          {mentors.map((mentor, idx) => (
-            <li className="list-group-item" key={idx}>
-              <div className="user-info-container">
-                <span className="user-handle">{mentor.handle}</span>
-                <div className="status-wrapper">
-                  <span className="status-indicator status-online" />
-                  <span className="status-text">Online</span>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="text-sm text-gray-600 dark:text-gray-400 text-center py-4">
+          Mentors feature coming soon!
+        </div>
       </div>
     </aside>
   );

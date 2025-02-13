@@ -25,10 +25,10 @@ export default async function ProfilePage() {
   )[0] ?? { userId };
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex gap-6">
-        <Profile user={user} className="flex-[2]" />
-        <Sidebar className="flex-1" />
+    <div className="container mx-auto px-4 py-4 md:py-6">
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
+        <Profile user={user} className="w-full lg:flex-[3]" />
+        <Sidebar className="w-full lg:w-[320px] lg:self-start" />
       </div>
     </div>
   );
