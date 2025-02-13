@@ -5,6 +5,7 @@ import authOnly from "@/middelwares/authOnly";
 import { eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { userFullData as userFulldataValidations } from "@/lib/validation/userFulldataValidations";
+import { Users } from "@/lib/db/schema/user/Users";
 
 async function POSTfn(request: NextRequest, user: userData) {
   try {
@@ -20,7 +21,21 @@ async function POSTfn(request: NextRequest, user: userData) {
       .where(eq(UsersFullData.userId, user.userId))
       .execute();
     if (userFullData.length === 0) {
-      await db.insert(UsersFullData).values({ userId: user.userId }).execute();
+      const userData = (
+        await db
+          .select({ cfHandle: Users.cfHandle })
+          .from(Users)
+          .where(eq(Users.userId, user.userId))
+          .execute()
+      )[0];
+      await db
+        .insert(UsersFullData)
+        .values({
+          userId: user.userId,
+          cfHandle: userData.cfHandle,
+          username: user.username,
+        })
+        .execute();
     }
     await db
       .update(UsersFullData)

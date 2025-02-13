@@ -1,4 +1,5 @@
 import {
+  foreignKey,
   integer,
   pgTable,
   serial,
@@ -8,26 +9,37 @@ import {
 
 import { Staff } from "./Staff";
 import { Trainees } from "./Trainees";
-import { Trainings } from "./Trainings";
 import { Sessions } from "./Sessions";
 type logType = "checkin" | "checkout";
 
-export const AttendanceLogs = pgTable("attendance_logs", {
-  attendanceLogId: serial().primaryKey(),
-  staffId: integer()
-    .references(() => Staff.staffId)
-    .notNull(),
-  traineeId: integer()
-    .references(() => Trainees.traineeId)
-    .notNull(),
-  trainingId: integer()
-    .references(() => Trainings.trainingId)
-    .notNull(),
-  sessionId: integer()
-    .references(() => Sessions.sessionId)
-    .notNull(),
+export const AttendanceLogs = pgTable(
+  "attendance_logs",
+  {
+    attendanceLogId: serial().primaryKey(),
+    staffId: integer()
+      .notNull(),
+    traineeId: integer()
+      .notNull(),
+    trainingId: integer()
+      .notNull(),
+    sessionId: integer()
+      .references(() => Sessions.sessionId)
+      .notNull(),
 
-  logType: varchar({ length: 40 }).$type<logType>().notNull(),
-  logTime: timestamp().defaultNow(),
-  logRemarks: varchar(),
-});
+    logType: varchar({ length: 40 }).$type<logType>().notNull(),
+    logTime: timestamp().defaultNow(),
+    logRemarks: varchar(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.staffId, table.trainingId],
+      foreignColumns: [Trainees.userId, Trainees.trainingId],
+      name: "fk_attendance_trainees",
+    }),
+    foreignKey({
+      columns: [table.staffId, table.trainingId],
+      foreignColumns: [Staff.userId, Staff.trainingId],
+      name: "fk_attendance_staff",
+    }),
+  ],
+);
