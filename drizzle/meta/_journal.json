@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1739432408998,
-      "tag": "0000_shiny_red_shift",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1739436518306,
-      "tag": "0001_wonderful_glorian",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1739441766036,
-      "tag": "0002_green_mentor",
+      "when": 1739489594831,
+      "tag": "0000_certain_wilson_fisk",
       "breakpoints": true
     }
   ]
