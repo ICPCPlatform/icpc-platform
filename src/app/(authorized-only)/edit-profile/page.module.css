@@ -30,12 +30,12 @@
         padding: 0.75rem 1rem;
         background-color: transparent;
         border: 1px solid transparent;
-        
+
         &:hover {
           color: hsl(var(--foreground));
           background-color: hsl(var(--accent));
         }
-        
+
         &[data-active="true"] {
           color: hsl(var(--foreground));
           background-color: hsl(var(--accent));
@@ -49,7 +49,7 @@
 .main {
   display: grid;
   grid-template-columns: minmax(240px, 300px) 1fr;
-  min-height: 100vh;
+  height: 100%;
   background-color: hsl(var(--background));
 }
 

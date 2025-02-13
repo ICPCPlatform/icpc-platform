@@ -170,7 +170,7 @@ export default function AcademicForm() {
             <FormLabel className="text-foreground">Current Academic Year</FormLabel>
             <FormControl>
               <Input 
-                type="number" 
+                type="number"
                 {...field} 
                 min="1" 
                 max="7" 

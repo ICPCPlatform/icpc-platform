@@ -8,7 +8,8 @@ import AcademicForm from "./_academicForm";
 import SocialForm from "./_socialForm";
 import PersonalForm from "./_personalForm";
 import { z } from "zod";
-import { FaUser, FaGraduationCap, FaCode, FaLink } from "react-icons/fa";
+import { FaUser, FaGraduationCap, FaCode, FaLink, FaSave } from "react-icons/fa";
+import styles from "./page.module.css";
 
 type PageType = "personal" | "academic" | "competitive" | "social";
 
@@ -55,31 +56,35 @@ export default function Profile() {
   return (
     <div className="container mx-auto py-6">
       <div className="flex gap-6">
-        <aside className="w-64 bg-card rounded-lg border p-4">
-          <nav className="space-y-2">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setCurrentPage(section.id)}
-                className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap
+        <aside >
+          <div className="flex-shrink-0 w-64 bg-card rounded-lg border p-4">
+            <nav >
+              {sections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => setCurrentPage(section.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap
                   ${
                     currentPage === section.id
                       ? "bg-primary text-primary-foreground"
                       : "hover:bg-accent hover:text-accent-foreground"
                   }`}
+                >
+                  {section.icon}
+                  {section.label}
+                </button>
+              ))}
+              <button
+                type="submit"
+                form="edit-profile-form"
+                className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium text-left"
               >
-                {section.icon}
-                {section.label}
+                <FaSave className="w-4 h-4 inline-block mr-3 mb-1" />
+                
+                Save Changes
               </button>
-            ))}
-          </nav>
-          <button
-            type="submit"
-            form="edit-profile-form"
-            className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium"
-          >
-            Save Changes
-          </button>
+            </nav>
+          </div>
         </aside>
 
         <main className="flex-1 bg-card rounded-lg border p-6">
