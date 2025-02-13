@@ -3,35 +3,41 @@ import React, { useContext } from "react";
 import { useState } from "react";
 import Image from "next/image";
 import { type User } from "./page";
-import { FaUser, FaGraduationCap, FaLink, FaCode } from 'react-icons/fa';
-import { SiCodeforces, SiLeetcode, SiCodechef } from 'react-icons/si';
+import { FaUser, FaGraduationCap, FaLink, FaCode } from "react-icons/fa";
+import { SiCodeforces, SiLeetcode, SiCodechef } from "react-icons/si";
 
 const UserContext = React.createContext({} as User);
 
-export default function Profile({ user, className }: { user: User, className?: string }) {
+export default function Profile({
+  user,
+  className,
+}: {
+  user: User;
+  className?: string;
+}) {
   const [activeTab, setActiveTab] = useState("cp");
 
   return (
     <UserContext.Provider value={user}>
-      <div className={`profile-container ${className || ''}`}>
+      <div className={`profile-container ${className || ""}`}>
         <Info />
 
         <div className="tabs">
-          <button 
-            className={`tab ${activeTab === "cp" ? "active" : ""}`} 
+          <button
+            className={`tab ${activeTab === "cp" ? "active" : ""}`}
             onClick={() => setActiveTab("cp")}
           >
-            <FaCode className="inline-block mr-1.5" /> 
+            <FaCode className="inline-block mr-1.5" />
             <span>Competitive Programming</span>
           </button>
-          <button 
+          <button
             className={`tab ${activeTab === "academic" ? "active" : ""}`}
             onClick={() => setActiveTab("academic")}
           >
             <FaGraduationCap className="inline-block mr-1.5" />
             <span>Academic</span>
           </button>
-          <button 
+          <button
             className={`tab ${activeTab === "socials" ? "active" : ""}`}
             onClick={() => setActiveTab("socials")}
           >
@@ -57,32 +63,15 @@ function Info() {
       <div className="info-section">
         <div className="section-header">
           <FaUser />
-          <h2 className="text-lg font-medium">{user.name}</h2>
+          <h2 className="text-lg font-medium">{user.nameEnFirst}</h2>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <span>Birthdate:</span>
-            <span className="info-value">{user.birthdate}</span>
-          </div>
-          <div>
-            <span>Email:</span>
-            <span className="info-value">{user.email}</span>
-          </div>
-          <div>
-            <span>Location:</span>
-            <span className="info-value">{user.location}</span>
-          </div>
-          <div>
-            <span>Last Online:</span>
-            <span className="info-value">{user.lastOnline}</span>
-          </div>
-        </div>
+        <div className="grid grid-cols-2 gap-4"></div>
       </div>
       <div className="photo-section">
         <div className="photo-placeholder">
-          <Image 
-            src={user.photopath}
-            alt={user.name}
+          <Image
+            src={user.imageURL ?? "/window.svg"}
+            alt={user.nameEnFirst ?? ""}
             width={140}
             height={140}
             className="object-cover rounded-lg"
@@ -91,7 +80,7 @@ function Info() {
             unoptimized
           />
         </div>
-        <div className="username">@{user.username}</div>
+        <div className="username">@{user.nameEnFirst ?? ""}</div>
       </div>
     </div>
   );
@@ -100,22 +89,25 @@ function Info() {
 function CP() {
   const user = useContext(UserContext);
   const platforms = [
-    { name: "Codeforces", handle: user.codeforcesHandle, icon: <SiCodeforces /> },
-    { name: "Vjudge", handle: user.vjudgeHandle },
-    { name: "AtCoder", handle: user.atcoderHandle },
-    { name: "CodeChef", handle: user.codechefHandle, icon: <SiCodechef /> },
-    { name: "LeetCode", handle: user.leetCodeHandle, icon: <SiLeetcode /> },
+    { name: "Vjudge", handle: user.vjudge },
+    { name: "AtCoder", handle: user.atcoder },
+    { name: "CodeChef", handle: user.codechef, icon: <SiCodechef /> },
+    { name: "LeetCode", handle: user.leetcode, icon: <SiLeetcode /> },
   ];
 
   return (
     <div className="cp-section">
-      {platforms.map((platform, index) => (
-        <div key={index} className="platform">
-          {platform.icon && <span className="platform-icon">{platform.icon}</span>}
-          <span className="platform-name">{platform.name}</span>
-          <span className="platform-handle">{platform.handle}</span>
-        </div>
-      ))}
+      {platforms.map((platform, index) => {
+        if (platform.handle) return null;
+        else
+          <div key={index} className="platform">
+            {platform.icon && (
+              <span className="platform-icon">{platform.icon}</span>
+            )}
+            <span className="platform-name">{platform.name}</span>
+            <span className="platform-handle">{platform.handle}</span>
+          </div>;
+      })}
     </div>
   );
 }
@@ -125,7 +117,6 @@ function Socials() {
   const socials = [
     { name: "LinkedIn", link: user.linkedIn },
     { name: "Facebook", link: user.facebook },
-    { name: "Telegram", link: user.telegram },
   ];
 
   return (
@@ -133,9 +124,9 @@ function Socials() {
       {socials.map((social, index) => (
         <div key={index} className="platform">
           <span className="platform-name">{social.name}</span>
-          <a 
-            href={social.link} 
-            target="_blank" 
+          <a
+            href={social.link ?? ""}
+            target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
           >
@@ -150,9 +141,8 @@ function Socials() {
 function Academic() {
   const user = useContext(UserContext);
   const academic = [
-    { label: "Institute", value: user.institute },
+    { label: "Institute", value: user.university },
     { label: "Graduation Year", value: user.graduationYear },
-    { label: "Academic Email", value: user.academicEmail },
   ];
 
   return (
