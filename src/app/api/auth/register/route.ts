@@ -73,7 +73,12 @@ export async function POST(request: NextRequest) {
       .execute();
     await db
       .insert(UsersFullData)
-      .values({ userId: userId, imageURL: titlePhoto })
+      .values({
+        userId: userId,
+        cfHandle: registerData.cfHandle,
+        username: registerData.username,
+        imageURL: titlePhoto,
+      })
       .execute();
     emailActivation(registerData, randomToken);
 
