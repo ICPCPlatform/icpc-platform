@@ -5,7 +5,6 @@ export const EmailAuth = pgTable("email_auth", {
   token: varchar().notNull(),
   userId: integer().primaryKey(),
   expiresAt: date()
-    .unique()
     .default(sql`now() + interval '7 day'`)
     .notNull(),
 });

@@ -47,8 +47,7 @@ CREATE TABLE "trainings" (
 CREATE TABLE "email_auth" (
 	"token" varchar NOT NULL,
 	"user_id" integer PRIMARY KEY NOT NULL,
-	"expires_at" date DEFAULT now() + interval '7 day' NOT NULL,
-	CONSTRAINT "email_auth_expiresAt_unique" UNIQUE("expires_at")
+	"expires_at" date DEFAULT now() + interval '7 day' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "tasks" (
@@ -116,7 +115,7 @@ CREATE TABLE "users_full_data" (
 );
 --> statement-breakpoint
 ALTER TABLE "attendance_logs" ADD CONSTRAINT "attendance_logs_session_id_sessions_session_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."sessions"("session_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "attendance_logs" ADD CONSTRAINT "fk_attendance_trainees" FOREIGN KEY ("staff_id","training_id") REFERENCES "public"."trainees"("user_id","training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "attendance_logs" ADD CONSTRAINT "fk_attendance_trainees" FOREIGN KEY ("trainee_id","training_id") REFERENCES "public"."trainees"("user_id","training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "attendance_logs" ADD CONSTRAINT "fk_attendance_staff" FOREIGN KEY ("staff_id","training_id") REFERENCES "public"."staff"("user_id","training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "staff" ADD CONSTRAINT "staff_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

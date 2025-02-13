@@ -32,7 +32,7 @@ export const AttendanceLogs = pgTable(
   },
   (table) => [
     foreignKey({
-      columns: [table.staffId, table.trainingId],
+      columns: [table.traineeId, table.trainingId],
       foreignColumns: [Trainees.userId, Trainees.trainingId],
       name: "fk_attendance_trainees",
     }),

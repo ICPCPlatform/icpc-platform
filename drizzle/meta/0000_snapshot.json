@@ -1,5 +1,5 @@
 {
-  "id": "0a99ae11-0c61-4419-8129-a8a2b7135e13",
+  "id": "a7ac0f18-3f20-4931-ab46-0db84b19db01",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -78,7 +78,7 @@
           "tableFrom": "attendance_logs",
           "tableTo": "trainees",
           "columnsFrom": [
-            "staff_id",
+            "trainee_id",
             "training_id"
           ],
           "columnsTo": [
@@ -421,15 +421,7 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "email_auth_expiresAt_unique": {
-          "name": "email_auth_expiresAt_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "expires_at"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
