@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { UserFullData } from "@/lib/db/schema/user/UsersFullData";
+import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import { type userData } from "@/lib/session";
 import authOnly from "@/middelwares/authOnly";
 import { eq } from "drizzle-orm";
@@ -16,16 +16,16 @@ async function POSTfn(request: NextRequest, user: userData) {
     }
     const userFullData = await db
       .select()
-      .from(UserFullData)
-      .where(eq(UserFullData.userId, user.userId))
+      .from(UsersFullData)
+      .where(eq(UsersFullData.userId, user.userId))
       .execute();
     if (userFullData.length === 0) {
-      await db.insert(UserFullData).values({ userId: user.userId }).execute();
+      await db.insert(UsersFullData).values({ userId: user.userId }).execute();
     }
     await db
-      .update(UserFullData)
+      .update(UsersFullData)
       .set(data)
-      .where(eq(UserFullData.userId, user.userId))
+      .where(eq(UsersFullData.userId, user.userId))
       .execute();
     return new NextResponse(null, { status: 201 });
   } catch (e) {
