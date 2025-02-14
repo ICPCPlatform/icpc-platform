@@ -10,8 +10,10 @@ import {
   FaMapMarkerAlt,
   FaGithub,
   FaTwitter,
+  FaUserEdit,
 } from "react-icons/fa";
 import { SiLeetcode, SiCodechef, SiCodeforces } from "react-icons/si";
+import Link from "next/link";
 
 const activeButtonStyle = "text-primary border-b-2 border-primary";
 const unactiveButtonStyle =
@@ -23,9 +25,11 @@ const UserContext = React.createContext({} as User);
 export default function Profile({
   user,
   className,
+  allowEdit = false,
 }: {
   user: User;
   className?: string;
+  allowEdit: boolean;
 }) {
   const userContent = userData(user);
   const [activeTab, setActiveTab] = useState<keyof typeof userContent>("cp");
@@ -73,6 +77,12 @@ export default function Profile({
               <FaLink className="inline-block mr-1.5" />
               <span>Social Links</span>
             </button>
+            {allowEdit && (
+              <Link className={tabStyle} href="/edit-profile">
+                <FaUserEdit className="inline-block mr-1.5" />
+                <span>edit profile</span>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -130,10 +140,10 @@ function Info() {
       </div>
       <div className="info-section flex-1">
         <div className="mb-4">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">{`${user.nameEnFirst} ${user.nameEnLast}`}</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">{`${user.nameEnFirst ?? ""} ${user.nameEnLast ?? ""}`}</h2>
           {user.nameAR1 && (
             <h3 className="text-base md:text-lg text-gray-600 dark:text-gray-400 mt-1 font-arabic">
-              {`${user.nameAR1} ${user.nameAR2} ${user.nameAR3} ${user.nameAR4}`}
+              {`${user.nameAR1} ${user.nameAR2 ?? ""} ${user.nameAR3 ?? ""} ${user.nameAR4 ?? ""}`}
             </h3>
           )}
         </div>
@@ -145,20 +155,13 @@ function Info() {
               <span className="truncate">{`${user.city}, ${user.country}`}</span>
             </div>
           )}
-          {user.cfHandle && (
-            <div className="flex items-center text-gray-600 dark:text-gray-400">
-              <SiCodeforces className="mr-2 flex-shrink-0" />
-              <span className="truncate">{user.cfHandle}</span>
-            </div>
-          )}
         </div>
       </div>
     </div>
   );
 }
 
-
-function userData(user:User){
+function userData(user: User) {
   return {
     socials: [
       {
@@ -235,5 +238,5 @@ function userData(user:User){
       { name: "TopCoder", value: user.topcoder },
       { name: "CS Academy", value: user.csacademy },
     ],
-  }
+  };
 }

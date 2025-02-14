@@ -16,18 +16,18 @@ export default async function ProfilePage() {
   const validation = await decryptSession(session);
   if (!validation) return null;
   const { userId } = validation;
-  const user: User = (
+  const user: User | undefined = (
     await db
       .select()
       .from(UsersFullData)
       .where(eq(UsersFullData.userId, userId))
       .execute()
-  )[0] ?? { userId };
+  )[0]?? { userId };
 
   return (
     <div className="container mx-auto p-4 md:py-6">
       <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
-        <Profile user={user} className="w-full lg:flex-[3]" />
+        <Profile user={user} className="w-full lg:flex-[3]" allowEdit />
         <Sidebar className="w-full lg:w-[320px] lg:self-start" />
       </div>
     </div>
