@@ -1,115 +1,35 @@
-"use client";
+import { db } from "@/lib/db";
+import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
+import { decryptSession } from "@/lib/session";
 import { userFullData } from "@/lib/validation/userFulldataValidations";
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import HandlesForm from "./_handlesForm";
-import AcademicForm from "./_academicForm";
-import SocialForm from "./_socialForm";
-import PersonalForm from "./_personalForm";
+import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import Profile from "./_page";
 import { z } from "zod";
-import { FaUser, FaGraduationCap, FaCode, FaLink, FaSave } from "react-icons/fa";
 
-type PageType = "personal" | "academic" | "competitive" | "social";
-
-interface NavSection {
-  id: PageType;
-  label: string;
-  icon: React.ReactNode;
-}
-
-const sections: NavSection[] = [
-  {
-    id: "personal",
-    label: "Personal Info",
-    icon: <FaUser className="w-4 h-4" />,
-  },
-  {
-    id: "academic",
-    label: "Academic Info",
-    icon: <FaGraduationCap className="w-4 h-4" />,
-  },
-  {
-    id: "competitive",
-    label: "CP Handles",
-    icon: <FaCode className="w-4 h-4" />,
-  },
-  { id: "social", label: "Social Links", icon: <FaLink className="w-4 h-4" /> },
-];
-
-const components: Record<PageType, React.ReactNode> = {
-  personal: <PersonalForm />,
-  academic: <AcademicForm />,
-  competitive: <HandlesForm />,
-  social: <SocialForm />,
-};
-
-// Define your form schema
-
-export default function Profile() {
-  const [currentPage, setCurrentPage] = useState<PageType>("personal");
-  const form = useForm<z.infer<typeof userFullData>>({
-    resolver: zodResolver(userFullData),
-  });
+export default async function Page() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("session")?.value;
+  const user = await decryptSession(session);
+  if (!user) {
+    redirect("/login");
+  }
+  const userData = Object.fromEntries(
+    Object.entries(
+      (
+        await db
+          .select()
+          .from(UsersFullData)
+          .where(eq(UsersFullData.userId, user.userId))
+          .execute()
+      )[0] ?? { userId: user.userId },
+    ).map(([key, value]) => [key, value ?? undefined]),
+  ) as z.infer<typeof userFullData>;
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex gap-6">
-        <aside >
-          <div className="flex-shrink-0 w-64 bg-card rounded-lg border p-4">
-            <nav >
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => setCurrentPage(section.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap
-                  ${
-                    currentPage === section.id
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-accent hover:text-accent-foreground"
-                  }`}
-                >
-                  {section.icon}
-                  {section.label}
-                </button>
-              ))}
-              <button
-                type="submit"
-                form="edit-profile-form"
-                className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium text-left"
-              >
-                <FaSave className="w-4 h-4 inline-block mr-3 mb-1" />
-                
-                Save Changes
-              </button>
-            </nav>
-          </div>
-        </aside>
-
-        <main className="flex-1 bg-card rounded-lg border p-6">
-          <FormProvider {...form}>
-            <form
-              id="edit-profile-form"
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
-            >
-              {components[currentPage]}
-            </form>
-          </FormProvider>
-        </main>
-      </div>
-    </div>
+    <>
+      <Profile userData={userData} />
+    </>
   );
-
-  function onSubmit(data: z.infer<typeof userFullData>) {
-    console.log(data);
-    fetch("/api/edit-profile", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
-  }
 }

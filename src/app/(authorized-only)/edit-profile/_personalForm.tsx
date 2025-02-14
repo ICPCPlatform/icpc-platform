@@ -20,7 +20,7 @@ import {
 
 export default function PersonList() {
   const form = useFormContext<z.infer<typeof userFullData>>();
-  
+
   const personalFields = [
     { name: "nameEnFirst", label: "First Name (English)" },
     { name: "nameEnLast", label: "Last Name (English)" },
@@ -29,7 +29,7 @@ export default function PersonList() {
     { name: "nameAR3", label: "Third Name (Arabic)" },
     { name: "nameAR4", label: "Last Name (Arabic)" },
   ] as const;
-  
+
   const countryOptions = userFullData.shape.country._def.innerType.options;
   return (
     <div className="space-y-4">
@@ -42,10 +42,10 @@ export default function PersonList() {
             <FormItem>
               <FormLabel className="text-foreground">{field.label}</FormLabel>
               <FormControl>
-                <Input 
-                  {...formField} 
+                <Input
+                  {...formField}
                   required={false}
-                  className="bg-background text-foreground" 
+                  className="bg-background text-foreground"
                 />
               </FormControl>
               <FormMessage />
@@ -58,14 +58,16 @@ export default function PersonList() {
         name="nationalID"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground">National ID Number</FormLabel>
+            <FormLabel className="text-foreground">
+              National ID Number
+            </FormLabel>
             <FormControl>
-              <Input 
-                {...field} 
-                required={false} 
-                pattern="^\d{14}$" 
+              <Input
+                {...field}
+                required={false}
+                pattern="^\d{14}$"
                 placeholder="14 digits national ID"
-                className="bg-background text-foreground" 
+                className="bg-background text-foreground"
               />
             </FormControl>
             <FormMessage />
@@ -77,24 +79,26 @@ export default function PersonList() {
         name="country"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-foreground">Country of Residence</FormLabel>
+            <FormLabel className="text-foreground">
+              Country of Residence
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="Select a country" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent 
+              <SelectContent
                 className="!bg-popover border shadow-md !z-[100]"
-                style={{ 
-                  backgroundColor: 'var(--background)',
-                  backdropFilter: 'none',
-                  boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
+                style={{
+                  backgroundColor: "var(--background)",
+                  backdropFilter: "none",
+                  boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5)",
                 }}
               >
                 {countryOptions.map((option) => (
-                  <SelectItem 
-                    key={option} 
+                  <SelectItem
+                    key={option}
                     value={option}
                     className="hover:bg-accent focus:bg-accent"
                   >
@@ -114,11 +118,11 @@ export default function PersonList() {
           <FormItem>
             <FormLabel className="text-foreground">City</FormLabel>
             <FormControl>
-              <Input 
-                {...field} 
-                required={false} 
+              <Input
+                {...field}
+                required={false}
                 placeholder="Enter your city"
-                className="bg-background text-foreground" 
+                className="bg-background text-foreground"
               />
             </FormControl>
             <FormMessage />

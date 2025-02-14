@@ -152,7 +152,7 @@ function Info() {
           {user.country && (
             <div className="flex items-center text-gray-600 dark:text-gray-400">
               <FaMapMarkerAlt className="mr-2 flex-shrink-0" />
-              <span className="truncate">{`${user.city}, ${user.country}`}</span>
+              <span className="truncate">{`${user.city ?? ""}, ${user.country ?? ""}`}</span>
             </div>
           )}
         </div>
