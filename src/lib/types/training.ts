@@ -24,14 +24,23 @@ export interface Mentor {
 export interface Training {
     id: string;
     title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    status: 'ongoing' | 'upcoming' | 'completed';
+    enrollmentStatus: 'open' | 'closed';
+    capacity: number;
+    enrolled: number;
+    level: 'beginner' | 'intermediate' | 'advanced';
+    mentors: string[];
+    topics: string[];
     announcements: Announcement[];
     tasks: Task[];
     chatMessages: ChatMessage[];
-    mentors: Mentor[];
 }
 
 export interface UserTraining extends Training {
-  progress: number;
-  joinedAt: string;
-  lastAccessed?: string;
+    progress: number;
+    joinedAt: string;
+    lastAccessed?: string;
 } 
