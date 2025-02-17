@@ -17,6 +17,40 @@ export const mockUserTrainings: UserTraining[] = [
     progress: 60,
     joinedAt: '2024-01-01',
     lastAccessed: '2024-02-15',
+    announcements: [
+      {
+        date: '2024-01-15',
+        message: 'New practice problems added for Binary Search topic'
+      },
+      {
+        date: '2024-02-01',
+        message: 'Upcoming live session on Advanced STL techniques'
+      }
+    ],
+    tasks: [
+      {
+        id: 1,
+        title: 'Complete STL practice set',
+        completed: true
+      },
+      {
+        id: 2,
+        title: 'Submit Frequency Array assignment',
+        completed: false
+      }
+    ],
+    chatMessages: [
+      {
+        sender: 'Mentor',
+        message: 'How are you progressing with the STL problems?',
+        timestamp: '2024-02-10T14:30:00Z'
+      },
+      {
+        sender: 'You',
+        message: 'Going well! Just finished the vector problems',
+        timestamp: '2024-02-10T14:35:00Z'
+      }
+    ]
   },
   {
     id: '2',
@@ -34,7 +68,46 @@ export const mockUserTrainings: UserTraining[] = [
     progress: 75,
     joinedAt: '2024-02-01',
     lastAccessed: '2024-02-14',
-  },
+    announcements: [
+      {
+        date: '2024-02-05',
+        message: 'Welcome to C++ Fundamentals!'
+      },
+      {
+        date: '2024-02-10',
+        message: 'First assignment due next week'
+      }
+    ],
+    tasks: [
+      {
+        id: 1,
+        title: 'Setup C++ environment',
+        completed: true
+      },
+      {
+        id: 2,
+        title: 'Complete basic syntax exercises',
+        completed: true
+      },
+      {
+        id: 3,
+        title: 'Submit control flow assignment',
+        completed: false
+      }
+    ],
+    chatMessages: [
+      {
+        sender: 'Mentor',
+        message: 'Don\'t forget to submit your first assignment',
+        timestamp: '2024-02-12T10:00:00Z'
+      },
+      {
+        sender: 'You',
+        message: 'Thanks for the reminder!',
+        timestamp: '2024-02-12T10:05:00Z'
+      }
+    ]
+  }
 ];
 
 export const mockAvailableTrainings: Training[] = [
@@ -51,6 +124,9 @@ export const mockAvailableTrainings: Training[] = [
     level: 'advanced',
     mentors: ['Dr. Ahmed Sayed', 'Mostafa Ibrahim'],
     topics: ['Dynamic Programming', 'Graph Algorithms', 'Segment Trees', 'Advanced Number Theory', 'Network Flow'],
+    announcements: [],
+    tasks: [],
+    chatMessages: []
   },
   {
     id: '4',
@@ -65,6 +141,9 @@ export const mockAvailableTrainings: Training[] = [
     level: 'beginner',
     mentors: ['Youssef Ali', 'Mariam Hassan'],
     topics: ['C++ Basics', 'Problem Solving', 'Time Complexity', 'Basic Math', 'Arrays & Strings'],
+    announcements: [],
+    tasks: [],
+    chatMessages: []
   },
   {
     id: '5',
@@ -79,6 +158,9 @@ export const mockAvailableTrainings: Training[] = [
     level: 'advanced',
     mentors: ['Mohamed Reda', 'Ahmed Gamal'],
     topics: ['Advanced DP', 'Advanced Graph Theory', 'String Algorithms', 'Geometry', 'Contest Strategy'],
+    announcements: [],
+    tasks: [],
+    chatMessages: []
   },
   {
     id: '6',
@@ -93,5 +175,8 @@ export const mockAvailableTrainings: Training[] = [
     level: 'intermediate',
     mentors: ['Omar Hassan', 'Asmaa Mohamed'],
     topics: ['STLs', 'Binary Search', 'Two Pointers', 'Prefix Sum', 'Frequency Array', 'Basic Number Theory'],
-  },
+    announcements: [],
+    tasks: [],
+    chatMessages: []
+  }
 ]; 
