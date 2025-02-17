@@ -4,69 +4,82 @@ import {
   date,
   integer,
   pgTable,
-  uniqueIndex,
+  uuid,
   varchar,
+  timestamp,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "./Users";
+import { Cities } from "./Cities";
+import { Departments } from "./Departments";
+import { Faculties } from "./Faculties";
+import { Institutes } from "./Institutes";
+import { Countries } from "./Countries";
+import { Communities } from "./Communities";
+export const UsersFullData = pgTable("users_full_data", {
+  userId: uuid()
+    .primaryKey()
+    .references(() => Users.userId, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
 
-export const UsersFullData = pgTable(
-  "users_full_data",
-  {
-    userId: integer()
-      .primaryKey()
-      .references(() => Users.userId, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    username: varchar()
-      .notNull()
-      .references(() => Users.username, {
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      }),
-    cfHandle: varchar()
-      .notNull()
-      .references(() => Users.cfHandle, {
-        onUpdate: "cascade",
-        onDelete: "cascade",
-      }),
+  /* Academic */
+  instituteId: integer().references(() => Institutes.instituteId, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  facultyId: integer().references(() => Faculties.facultyId, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  departmentId: integer().references(() => Departments.departmentId, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  communityId: integer().references(() => Communities.communityId, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  academicYear: integer(),
+  graduationDate: date(),
 
-    /* Academic */
-    university: varchar(),
-    faculty: varchar(),
-    department: varchar(),
-    academicYear: integer(),
-    graduationYear: date(),
+  /* handles */
+  atcoder: varchar({ length: 16 }),
+  codechef: varchar({ length: 15 }),
+  leetcode: varchar({ length: 30 }),
+  cses: varchar({ length: 16 }),
 
-    /* handles */
-    vjudge: varchar(),
-    atcoder: varchar(),
-    topcoder: varchar(),
-    spoj: varchar(),
-    codechef: varchar(),
-    csacademy: varchar(),
-    leetcode: varchar(),
-    cses: varchar(),
+  /* Personal */
+  firstNameEn: varchar({ length: 20 }),
+  lastNameEn: varchar({ length: 20 }),
+  nameAR1: varchar({ length: 20 }),
+  nameAR2: varchar({ length: 20 }),
+  nameAR3: varchar({ length: 20 }),
+  nameAR4: varchar({ length: 20 }),
+  nationalId: char({ length: 14 }).unique(), // for Egyptians
+  countryId: integer().references(() => Countries.countryId, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  cityId: integer().references(() => Cities.cityId, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
+  isMale: boolean(),
+  imageUrl: varchar({ length: 255 }),
+  whatsappPhoneNumber: varchar({ length: 15 }),
+  /* Socials */
+  facebook: varchar({ length: 128 }), // facebook link||id to profile
+  linkedIn: varchar({ length: 30 }), // linkedin username 29 mx length
+  twitter: varchar({ length: 16 }), // twitter username  15 mx length
+  github: varchar({ length: 40 }), // github username   39 mx length
+  telegram: varchar({ length: 32 }), // telegram username
 
-    /* Personal */
-    nameEnFirst: varchar(),
-    nameEnLast: varchar(),
-    nameAR1: varchar(),
-    nameAR2: varchar(),
-    nameAR3: varchar(),
-    nameAR4: varchar(),
-    nationalID: char({ length: 14 }),
-    country: varchar(),
-    city: varchar(),
-    isMale: boolean(),
-    imageURL: varchar(),
+  /* server stuff */
+  visibilityMask: integer().default(0), // 1 means hide field
+  registrationDate: timestamp().defaultNow(),
+});
 
-    /* Socials */
-    facebook: varchar(), // link to facebook profile
-    linkedIn: varchar(), // link to linkedIn profile
-    twitter: varchar(), // link to twitter profile
-    github: varchar(), //   link to github profile
-  },
-  (table) => [uniqueIndex("users_full_data_username_idx").on(table.username)],
-);
+// TODO make sure all key components her are in it's ZOD verification
+type k = keyof typeof UsersFullData.$inferInsert;
