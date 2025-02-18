@@ -3,10 +3,8 @@ import {
   integer,
   pgTable,
   primaryKey,
-  unique,
   timestamp,
   uuid,
-  check,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";

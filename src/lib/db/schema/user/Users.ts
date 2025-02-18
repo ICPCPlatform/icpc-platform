@@ -13,12 +13,12 @@ export const Users = pgTable(
   "users",
   {
     userId: uuid().primaryKey(),
-    username: citext({ length: 24 }).notNull(),
-    password: varchar({ length: 75 }).notNull(),
+    username: citext().notNull(),
+    password: varchar().notNull(),
 
-    gmail: citext({ length: 40 }).notNull().unique(),
-    cfHandle: citext({ length: 24 }).notNull().unique(),
-    vjHandle: citext({ length: 16 }).unique(),
+    gmail: citext().notNull().unique(),
+    cfHandle: citext().notNull().unique(),
+    vjHandle: citext().unique(),
 
     // international numbers could be accepted in the future
     phoneNumber: varchar({ length: 15 }).notNull(),

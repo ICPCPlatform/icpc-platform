@@ -47,10 +47,10 @@ export const UsersFullData = pgTable("users_full_data", {
   graduationDate: date(),
 
   /* handles */
-  atcoder: citext({ length: 16 }),
-  codechef: citext({ length: 15 }),
-  leetcode: citext({ length: 30 }),
-  cses: citext({ length: 16 }),
+  atcoder: citext(),
+  codechef: citext(),
+  leetcode: citext(),
+  cses: citext(),
 
   /* Personal */
   firstNameEn: varchar({ length: 20 }),
