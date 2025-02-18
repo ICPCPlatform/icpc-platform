@@ -1,6 +1,7 @@
 import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { citext } from "@/lib/db/util";
 
 export const Institutes = pgTable("institutes", {
   instituteId: serial().primaryKey(),
-  instituteName: varchar({ length: 60 }).notNull().unique(),
+  instituteName: citext({ length: 60 }).notNull().unique(),
 });

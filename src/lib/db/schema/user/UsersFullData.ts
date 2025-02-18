@@ -7,6 +7,7 @@ import {
   uuid,
   varchar,
   timestamp,
+  customType,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "./Users";
@@ -16,6 +17,8 @@ import { Faculties } from "./Faculties";
 import { Institutes } from "./Institutes";
 import { Countries } from "./Countries";
 import { Communities } from "./Communities";
+import { citext } from "@/lib/db/util";
+
 export const UsersFullData = pgTable("users_full_data", {
   userId: uuid()
     .primaryKey()
@@ -45,10 +48,10 @@ export const UsersFullData = pgTable("users_full_data", {
   graduationDate: date(),
 
   /* handles */
-  atcoder: varchar({ length: 16 }),
-  codechef: varchar({ length: 15 }),
-  leetcode: varchar({ length: 30 }),
-  cses: varchar({ length: 16 }),
+  atcoder: citext({ length: 16 }),
+  codechef: citext({ length: 15 }),
+  leetcode: citext({ length: 30 }),
+  cses: citext({ length: 16 }),
 
   /* Personal */
   firstNameEn: varchar({ length: 20 }),
