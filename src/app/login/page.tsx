@@ -75,15 +75,14 @@ function Login() {
                   <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="strongpassword123" 
+                      placeholder="strongpassword123"
                       {...field}
                       type="password"
                       className="mt-1 border border-gray-300 rounded-md p-2"
                     />
                     {/* for the memes */}
                   </FormControl>
-                  <FormDescription>
-                  </FormDescription>
+                  <FormDescription></FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

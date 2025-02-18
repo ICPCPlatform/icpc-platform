@@ -27,5 +27,5 @@ export const Users = pgTable(
     deleted: timestamp(), // null means <not deleted> otherwise <time of deletion>
   },
   // makes sure that the username is unique and searches are faster
-  (table) => [uniqueIndex("users_username_idx").on(table.username)]
+  (table) => [uniqueIndex("users_username_idx").on(table.username)],
 );

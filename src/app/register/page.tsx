@@ -1,5 +1,5 @@
 "use client";
-import { userRegisterValid } from "@/lib/validation/userValidations"
+import { userRegisterValid } from "@/lib/validation/userValidations";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -30,8 +30,6 @@ export default function RegisterPage() {
     },
   });
 
-
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
       <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10">
@@ -49,7 +47,11 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="username123" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="username123"
+                      {...field}
+                      className="mt-1 border border-gray-300 rounded-md p-2"
+                    />
                   </FormControl>
                   <FormDescription>
                     This is your public display name.
@@ -65,7 +67,11 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Gmail</FormLabel>
                   <FormControl>
-                    <Input placeholder="example@gmail.com" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="example@gmail.com"
+                      {...field}
+                      className="mt-1 border border-gray-300 rounded-md p-2"
+                    />
                   </FormControl>
                   <FormDescription>
                     This is your email address. Only Gmail is allowed.
@@ -81,9 +87,15 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Codeforces Handle</FormLabel>
                   <FormControl>
-                    <Input placeholder="mohamed_reda" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="mohamed_reda"
+                      {...field}
+                      className="mt-1 border border-gray-300 rounded-md p-2"
+                    />
                   </FormControl>
-                  <FormDescription>This is your Codeforces handle.</FormDescription>
+                  <FormDescription>
+                    This is your Codeforces handle.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -96,7 +108,11 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="01001001000" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="01001001000"
+                      {...field}
+                      className="mt-1 border border-gray-300 rounded-md p-2"
+                    />
                   </FormControl>
                   <FormDescription>This is your phone number.</FormDescription>
                   <FormMessage />
@@ -111,24 +127,40 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="*****" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      type="password"
+                      placeholder="*****"
+                      {...field}
+                      className="mt-1 border border-gray-300 rounded-md p-2"
+                    />
                   </FormControl>
                   <FormDescription>
-                    At least 8 characters with a mix of letters, numbers, and symbols.
+                    At least 8 characters with a mix of letters, numbers, and
+                    symbols.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full bg-black text-white py-2 rounded-md">Create Account</Button>
+            <Button
+              type="submit"
+              className="w-full bg-black text-white py-2 rounded-md"
+            >
+              Create Account
+            </Button>
           </form>
         </Form>
 
         {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
-        {success && <div className="text-green-500 mt-4 text-center">{success}</div>}
+        {success && (
+          <div className="text-green-500 mt-4 text-center">{success}</div>
+        )}
 
         <p className="text-sm text-center mt-6">
-          Already have an account? <Link href="/login" className="text-primary">Sign in</Link>
+          Already have an account?{" "}
+          <Link href="/login" className="text-primary">
+            Sign in
+          </Link>
         </p>
       </Card>
     </div>

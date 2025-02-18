@@ -18,7 +18,7 @@ export default async function Page({
       .from(UsersFullData)
       .where(eq(UsersFullData.username, username))
       .execute()
-  )[0] ;
+  )[0];
   if (!user) return redirect("/404");
 
   return (

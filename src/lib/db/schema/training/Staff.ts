@@ -39,5 +39,5 @@ export const Staff = pgTable(
       columns: [table.userId, table.trainingId],
       name: "staff_pk",
     }),
-  })
+  }),
 );

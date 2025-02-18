@@ -26,4 +26,4 @@ async function POSTfn(request: NextRequest, user: userData) {
 }
 
 const POST = adminOnly(POSTfn);
-export { POST } ;
+export { POST };

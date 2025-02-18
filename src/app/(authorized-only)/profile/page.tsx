@@ -22,7 +22,7 @@ export default async function ProfilePage() {
       .from(UsersFullData)
       .where(eq(UsersFullData.userId, userId))
       .execute()
-  )[0]?? { userId };
+  )[0] ?? { userId };
 
   return (
     <div className="container mx-auto p-4 md:py-6">

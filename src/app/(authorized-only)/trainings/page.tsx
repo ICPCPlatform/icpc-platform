@@ -9,9 +9,10 @@ import { Search } from "lucide-react";
 export default function TrainingsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTrainings = mockAvailableTrainings.filter(training =>
-    training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    training.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTrainings = mockAvailableTrainings.filter(
+    (training) =>
+      training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      training.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleEnroll = async (trainingId: string) => {
@@ -23,7 +24,9 @@ export default function TrainingsPage() {
     <div className="container py-8">
       <div className="flex flex-col gap-8">
         <div className="space-y-4">
-          <h1 className="text-3xl font-bold tracking-tight">Available Trainings</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Available Trainings
+          </h1>
           <p className="text-muted-foreground">
             Browse and apply for our comprehensive training programs.
           </p>
@@ -43,7 +46,9 @@ export default function TrainingsPage() {
         {/* Trainings Grid */}
         {filteredTrainings.length === 0 ? (
           <div className="text-center py-8 bg-muted/50 rounded-lg">
-            <p className="text-muted-foreground">No trainings found matching your search.</p>
+            <p className="text-muted-foreground">
+              No trainings found matching your search.
+            </p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
@@ -59,4 +64,4 @@ export default function TrainingsPage() {
       </div>
     </div>
   );
-} 
+}

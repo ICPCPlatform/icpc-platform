@@ -31,5 +31,5 @@ export const Trainees = pgTable(
     mentor_assigned_date: timestamp().defaultNow(),
     deleted: timestamp(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.trainingId] })]
+  (table) => [primaryKey({ columns: [table.userId, table.trainingId] })],
 );

@@ -7,10 +7,10 @@ export default function UserProvider({
   user,
 }: {
   children: React.ReactNode;
-  user: userData|null;
+  user: userData | null;
 }) {
   return <userContext.Provider value={user}>{children}</userContext.Provider>;
 }
-export function useUserContext(){
+export function useUserContext() {
   return useContext(userContext);
 }

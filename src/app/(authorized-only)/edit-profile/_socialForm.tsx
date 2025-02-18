@@ -14,26 +14,26 @@ import { z } from "zod";
 export default function SocialForm() {
   const form = useFormContext<z.infer<typeof userFullDataValid>>();
   const socialProfiles = [
-    { 
-      id: "facebook", 
-      label: "Facebook Profile", 
-      placeholder: "Enter your Facebook profile URL"
+    {
+      id: "facebook",
+      label: "Facebook Profile",
+      placeholder: "Enter your Facebook profile URL",
     },
-    { 
-      id: "linkedIn", 
-      label: "LinkedIn Profile", 
-      placeholder: "Enter your LinkedIn profile URL"
+    {
+      id: "linkedIn",
+      label: "LinkedIn Profile",
+      placeholder: "Enter your LinkedIn profile URL",
     },
-    { 
-      id: "twitter", 
-      label: "Twitter/X Profile", 
-      placeholder: "Enter your Twitter/X profile URL"
+    {
+      id: "twitter",
+      label: "Twitter/X Profile",
+      placeholder: "Enter your Twitter/X profile URL",
     },
-    { 
-      id: "github", 
-      label: "GitHub Profile", 
-      placeholder: "Enter your GitHub profile URL"
-    }
+    {
+      id: "github",
+      label: "GitHub Profile",
+      placeholder: "Enter your GitHub profile URL",
+    },
   ] as const;
 
   return (
@@ -47,8 +47,8 @@ export default function SocialForm() {
             <FormItem>
               <FormLabel>{profile.label}</FormLabel>
               <FormControl>
-                <Input 
-                  {...field} 
+                <Input
+                  {...field}
                   placeholder={profile.placeholder}
                   className="w-full"
                   type="url"

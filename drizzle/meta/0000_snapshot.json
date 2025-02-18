@@ -64,12 +64,8 @@
           "name": "attendance_logs_session_id_sessions_session_id_fk",
           "tableFrom": "attendance_logs",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "session_id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["session_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -77,14 +73,8 @@
           "name": "fk_attendance_trainees",
           "tableFrom": "attendance_logs",
           "tableTo": "trainees",
-          "columnsFrom": [
-            "trainee_id",
-            "training_id"
-          ],
-          "columnsTo": [
-            "user_id",
-            "training_id"
-          ],
+          "columnsFrom": ["trainee_id", "training_id"],
+          "columnsTo": ["user_id", "training_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -92,14 +82,8 @@
           "name": "fk_attendance_staff",
           "tableFrom": "attendance_logs",
           "tableTo": "staff",
-          "columnsFrom": [
-            "staff_id",
-            "training_id"
-          ],
-          "columnsTo": [
-            "user_id",
-            "training_id"
-          ],
+          "columnsFrom": ["staff_id", "training_id"],
+          "columnsTo": ["user_id", "training_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -151,12 +135,8 @@
           "name": "sessions_training_id_trainings_training_id_fk",
           "tableFrom": "sessions",
           "tableTo": "trainings",
-          "columnsFrom": [
-            "training_id"
-          ],
-          "columnsTo": [
-            "training_id"
-          ],
+          "columnsFrom": ["training_id"],
+          "columnsTo": ["training_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -218,12 +198,8 @@
           "name": "staff_user_id_users_user_id_fk",
           "tableFrom": "staff",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -231,12 +207,8 @@
           "name": "staff_training_id_trainings_training_id_fk",
           "tableFrom": "staff",
           "tableTo": "trainings",
-          "columnsFrom": [
-            "training_id"
-          ],
-          "columnsTo": [
-            "training_id"
-          ],
+          "columnsFrom": ["training_id"],
+          "columnsTo": ["training_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -244,20 +216,14 @@
       "compositePrimaryKeys": {
         "staff_pk": {
           "name": "staff_pk",
-          "columns": [
-            "user_id",
-            "training_id"
-          ]
+          "columns": ["user_id", "training_id"]
         }
       },
       "uniqueConstraints": {
         "staff_userId_trainingId_unique": {
           "name": "staff_userId_trainingId_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id",
-            "training_id"
-          ]
+          "columns": ["user_id", "training_id"]
         }
       },
       "policies": {},
@@ -287,12 +253,8 @@
           "name": "trainees_user_id_users_user_id_fk",
           "tableFrom": "trainees",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -300,12 +262,8 @@
           "name": "trainees_training_id_trainings_training_id_fk",
           "tableFrom": "trainees",
           "tableTo": "trainings",
-          "columnsFrom": [
-            "training_id"
-          ],
-          "columnsTo": [
-            "training_id"
-          ],
+          "columnsFrom": ["training_id"],
+          "columnsTo": ["training_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -313,10 +271,7 @@
       "compositePrimaryKeys": {
         "trainees_user_id_training_id_pk": {
           "name": "trainees_user_id_training_id_pk",
-          "columns": [
-            "user_id",
-            "training_id"
-          ]
+          "columns": ["user_id", "training_id"]
         }
       },
       "uniqueConstraints": {},
@@ -378,12 +333,8 @@
           "name": "trainings_head_id_users_user_id_fk",
           "tableFrom": "trainings",
           "tableTo": "users",
-          "columnsFrom": [
-            "head_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["head_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -494,14 +445,8 @@
           "name": "tasks_trainee_id_training_id_trainees_user_id_training_id_fk",
           "tableFrom": "tasks",
           "tableTo": "trainees",
-          "columnsFrom": [
-            "trainee_id",
-            "training_id"
-          ],
-          "columnsTo": [
-            "user_id",
-            "training_id"
-          ],
+          "columnsFrom": ["trainee_id", "training_id"],
+          "columnsTo": ["user_id", "training_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -509,14 +454,8 @@
           "name": "tasks_staff_id_training_id_staff_user_id_training_id_fk",
           "tableFrom": "tasks",
           "tableTo": "staff",
-          "columnsFrom": [
-            "staff_id",
-            "training_id"
-          ],
-          "columnsTo": [
-            "user_id",
-            "training_id"
-          ],
+          "columnsFrom": ["staff_id", "training_id"],
+          "columnsTo": ["user_id", "training_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -619,37 +558,27 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         },
         "users_password_unique": {
           "name": "users_password_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "password"
-          ]
+          "columns": ["password"]
         },
         "users_gmail_unique": {
           "name": "users_gmail_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "gmail"
-          ]
+          "columns": ["gmail"]
         },
         "users_cfHandle_unique": {
           "name": "users_cfHandle_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "cf_handle"
-          ]
+          "columns": ["cf_handle"]
         },
         "users_phoneNumber_unique": {
           "name": "users_phoneNumber_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "phone_number"
-          ]
+          "columns": ["phone_number"]
         }
       },
       "policies": {},
@@ -869,12 +798,8 @@
           "name": "users_full_data_user_id_users_user_id_fk",
           "tableFrom": "users_full_data",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -882,12 +807,8 @@
           "name": "users_full_data_username_users_username_fk",
           "tableFrom": "users_full_data",
           "tableTo": "users",
-          "columnsFrom": [
-            "username"
-          ],
-          "columnsTo": [
-            "username"
-          ],
+          "columnsFrom": ["username"],
+          "columnsTo": ["username"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -895,12 +816,8 @@
           "name": "users_full_data_cf_handle_users_cf_handle_fk",
           "tableFrom": "users_full_data",
           "tableTo": "users",
-          "columnsFrom": [
-            "cf_handle"
-          ],
-          "columnsTo": [
-            "cf_handle"
-          ],
+          "columnsFrom": ["cf_handle"],
+          "columnsTo": ["cf_handle"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
