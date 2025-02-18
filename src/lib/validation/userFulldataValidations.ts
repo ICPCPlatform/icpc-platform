@@ -1,18 +1,9 @@
 import { z } from "zod";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
-import {
-  faculties,
-  departments,
-  countries,
-  validGovernorateCodes,
-  universities,
-} from "@/lib/const";
+import { validGovernorateCodes } from "@/lib/const";
+import { type EnforceKeys } from "./util";
 
 // Academic
-const universitiesValues = [...universities, "Other"] as const;
-const university = z.enum(universitiesValues).default("Other");
-const faculty = z.enum(faculties).optional();
-const department = z.enum(departments).optional();
 
 // don't touch this
 const academicYear = z
@@ -29,7 +20,7 @@ const academicYear = z
       .max(7, { message: " Academic Year must be between 1 and 5" }),
   )
   .optional();
-const graduationYear = z.string().date().optional();
+const graduationDate = z.string().date().optional();
 
 const handle = z
   .string()
@@ -55,7 +46,7 @@ const arabicName = z
   .regex(/^[ء-ي]+$/)
   .optional();
 
-const nationalID = z
+const nationalId = z
   .string()
   .trim()
   .regex(/^\d{14}$/, "Egyptian National ID must be exactly 14 digits")
@@ -64,10 +55,8 @@ const nationalID = z
   .refine(isValidEgyptianNIDChecksum, "Invalid National ID")
   .optional();
 
-const countryName = z.enum(countries).default("Egypt");
-const city = z.string().optional();
 const isMale = z.boolean().optional();
-const imageURL = z.string().url().optional();
+const imageUrl = z.string().url().optional();
 
 const facebook = z.string().url().optional();
 const linkedIn = z.string().url().optional();
@@ -124,48 +113,40 @@ function isValidEgyptianNIDChecksum(id: string) {
 
   return expectedCheckDigit === givenCheckDigit;
 }
+const id = z.number().positive().int().optional();
 
 const userFullDataValid = z.object({
-  university,
-  faculty,
-  department,
+  instituteId: id,
+  facultyId: id,
+  departmentId: id,
   academicYear,
-  graduationYear,
+  graduationDate,
 
-  vjudge: handle,
   atcoder: handle,
-  topcoder: handle,
-  spoj: handle,
   codechef: handle,
-  csacademy: handle,
   cses: handle,
   leetcode: handle,
 
-  nameEnFirst: englishName,
-  nameEnLast: englishName,
+  firstNameEn: englishName,
+  lastNameEn: englishName,
   nameAR1: arabicName,
   nameAR2: arabicName,
   nameAR3: arabicName,
   nameAR4: arabicName,
 
-  nationalID,
-  country: countryName,
-  city,
+  nationalId,
+  countryId: id,
+  cityId: id,
   isMale,
-  imageURL,
+  imageUrl,
 
   facebook,
   linkedIn,
   twitter,
   github,
+  visibilityMask: z.number().int().optional(),
 });
 
-type EnforceType<T, Expected> = keyof T extends keyof Expected ? T : never;
-
-let _: EnforceType<
-  typeof userFullDataValid.shape,
-  typeof UsersFullData.$inferInsert
-> = userFullDataValid.shape;
-console.log(_);
+const _: EnforceKeys<typeof userFullDataValid, typeof UsersFullData> = true;
 
 export { userFullDataValid };

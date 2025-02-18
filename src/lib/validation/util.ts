@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { type AnyPgTable } from "drizzle-orm/pg-core";
 
 export const username = z
   .string()
@@ -16,6 +17,7 @@ export const password = z
       "Password must be include an uppercase letter, a lowercase letter, a number, and a special character, with no spaces.",
   });
 
-export type EnforceType<T, Expected> = keyof T extends keyof Expected
-  ? T
-  : never;
+export type EnforceKeys<
+  T extends z.ZodTypeAny,
+  Expected extends AnyPgTable,
+> = keyof z.infer<T> extends keyof Expected["$inferInsert"] ? true : never;
