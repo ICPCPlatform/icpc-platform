@@ -1,5 +1,5 @@
 "use client";
-import expectedBody from "@/app/api/auth/register/expectedBody";
+import { userRegisterValid } from "@/lib/validation/userValidations"
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,8 +23,8 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
-  const form = useForm<z.infer<typeof expectedBody>>({
-    resolver: zodResolver(expectedBody),
+  const form = useForm<z.infer<typeof userRegisterValid>>({
+    resolver: zodResolver(userRegisterValid),
     defaultValues: {
       username: "",
     },
@@ -134,7 +134,7 @@ export default function RegisterPage() {
     </div>
   );
 
-  async function onSubmit(data: z.infer<typeof expectedBody>) {
+  async function onSubmit(data: z.infer<typeof userRegisterValid>) {
     setError("");
     setSuccess("");
 

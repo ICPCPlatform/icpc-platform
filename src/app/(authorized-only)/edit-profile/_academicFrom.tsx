@@ -10,16 +10,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
-import { userFullData } from "@/lib/validation/userFulldataValidations";
+import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { z } from "zod";
 
 export default function AcademicForm() {
-  const form = useFormContext<z.infer<typeof userFullData>>();
+  const form = useFormContext<z.infer<typeof userFullDataValid>>();
   const universityOptions =
-    userFullData.shape.university._def.innerType.options;
-  const facultyOptions = userFullData.shape.faculty._def.innerType.options;
+    userFullDataValid.shape.university._def.innerType.options;
+  const facultyOptions = userFullDataValid.shape.faculty._def.innerType.options;
   const departmentOptions =
-    userFullData.shape.department._def.innerType.options;
+    userFullDataValid.shape.department._def.innerType.options;
   return (
     <div>
       <FormField

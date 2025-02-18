@@ -1,5 +1,5 @@
 "use client";
-import { userFullData } from "@/lib/validation/userFulldataValidations";
+import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import HandlesForm from "./_handlesForm";
@@ -52,10 +52,10 @@ const components: Record<PageType, React.ReactNode> = {
 export default function Profile({
   userData,
 }: {
-  userData: z.infer<typeof userFullData>;
+  userData: z.infer<typeof userFullDataValid>;
 }) {
   const [currentPage, setCurrentPage] = useState<PageType>("personal");
-  const form = useForm<z.infer<typeof userFullData>>({
+  const form = useForm<z.infer<typeof userFullDataValid>>({
     defaultValues: userData,
   });
 
@@ -107,7 +107,7 @@ export default function Profile({
     </div>
   );
 
-  function onSubmit(data: z.infer<typeof userFullData>) {
+  function onSubmit(data: z.infer<typeof userFullDataValid>) {
     console.log(data);
     fetch("/api/edit-profile", {
       headers: {

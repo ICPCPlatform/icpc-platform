@@ -4,7 +4,7 @@ import { type userData } from "@/lib/session";
 import authOnly from "@/middelwares/authOnly";
 import { eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
-import { userFullData as userFulldataValidations } from "@/lib/validation/userFulldataValidations";
+import { userFullDataValid as userFulldataValidations } from "@/lib/validation/userFulldataValidations";
 import { Users } from "@/lib/db/schema/user/Users";
 
 async function POSTfn(request: NextRequest, user: userData) {

@@ -1,21 +1,6 @@
 import { z } from "zod";
-
-const username = z
-  .string()
-  .trim()
-  .min(3, { message: "Username too short" })
-  .regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Username must contain only letters, numbers, and underscores",
-  });
-
-const password = z
-  .string()
-  .min(8, { message: "Password must be at least 8 characters" })
-  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])(?!.*\s).{8,}$/, {
-    message:
-      "Password must be include an uppercase letter, a lowercase letter, a number, and a special character, with no spaces.",
-  });
-
+import { username, password, type EnforceType } from "./util";
+import { Users } from "@/lib/db/schema/user/Users";
 const gmail = z
   .string()
   .trim()
@@ -31,22 +16,24 @@ const cfHandle = z
     message: "Username must contain only letters, numbers, and underscores",
   });
 
-const phone = z
+const phoneNumber = z
   .string()
   .trim()
   .regex(
     /^\+201[0-9]{9}$/,
-    "Phone number must be a valid Egyptian number (starts with +20)"
+    "Phone number must be a valid Egyptian number (starts with +20)",
   )
   .nullable();
 
-export const user = z.object({
+const userRegisterValid = z.object({
   username,
   password,
   gmail,
   cfHandle,
-  phone,
+  phoneNumber,
 });
+const _: EnforceType<typeof userRegisterValid.shape, typeof Users> =
+  userRegisterValid.shape;
 
 // Usage example:
 // const { success, data, error } = password.safeParse(""); // Replace with an actual 14-digit ID

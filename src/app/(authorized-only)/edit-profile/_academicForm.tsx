@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
-import { userFullData } from "@/lib/validation/userFulldataValidations";
+import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { z } from "zod";
 import {
   Select,
@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/select";
 
 export default function AcademicForm() {
-  const form = useFormContext<z.infer<typeof userFullData>>();
-  const universityOptions = userFullData.shape.university._def.innerType.options;
-  const facultyOptions = userFullData.shape.faculty._def.innerType.options;
-  const departmentOptions = userFullData.shape.department._def.innerType.options;
+  const form = useFormContext<z.infer<typeof userFullDataValid>>();
+  const universityOptions = userFullDataValid.shape.university._def.innerType.options;
+  const facultyOptions = userFullDataValid.shape.faculty._def.innerType.options;
+  const departmentOptions = userFullDataValid.shape.department._def.innerType.options;
   
   return (
     <div className="space-y-6">

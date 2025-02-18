@@ -7,12 +7,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userFullData } from "@/lib/validation/userFulldataValidations";
+import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 
 export default function SocialForm() {
-  const form = useFormContext<z.infer<typeof userFullData>>();
+  const form = useFormContext<z.infer<typeof userFullDataValid>>();
   const socialProfiles = [
     { 
       id: "facebook", 

@@ -7,7 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userFullData } from "@/lib/validation/userFulldataValidations";
+import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 
 export default function PersonList() {
-  const form = useFormContext<z.infer<typeof userFullData>>();
+  const form = useFormContext<z.infer<typeof userFullDataValid>>();
 
   const personalFields = [
     { name: "nameEnFirst", label: "First Name (English)" },
@@ -30,7 +30,7 @@ export default function PersonList() {
     { name: "nameAR4", label: "Last Name (Arabic)" },
   ] as const;
 
-  const countryOptions = userFullData.shape.country._def.innerType.options;
+  const countryOptions = userFullDataValid.shape.country._def.innerType.options;
   return (
     <div className="space-y-4">
       {personalFields.map((field) => (

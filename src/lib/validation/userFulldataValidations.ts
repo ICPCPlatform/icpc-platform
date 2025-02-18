@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import {
   faculties,
   departments,
@@ -12,7 +13,6 @@ const universitiesValues = [...universities, "Other"] as const;
 const university = z.enum(universitiesValues).default("Other");
 const faculty = z.enum(faculties).optional();
 const department = z.enum(departments).optional();
-
 
 // don't touch this
 const academicYear = z
@@ -125,7 +125,7 @@ function isValidEgyptianNIDChecksum(id: string) {
   return expectedCheckDigit === givenCheckDigit;
 }
 
-export const userFullData = z.object({
+const userFullDataValid = z.object({
   university,
   faculty,
   department,
@@ -159,3 +159,13 @@ export const userFullData = z.object({
   twitter,
   github,
 });
+
+type EnforceType<T, Expected> = keyof T extends keyof Expected ? T : never;
+
+let _: EnforceType<
+  typeof userFullDataValid.shape,
+  typeof UsersFullData.$inferInsert
+> = userFullDataValid.shape;
+console.log(_);
+
+export { userFullDataValid };

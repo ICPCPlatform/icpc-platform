@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import { decryptSession } from "@/lib/session";
-import { userFullData } from "@/lib/validation/userFulldataValidations";
+import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -27,7 +27,7 @@ export default async function Page() {
           .execute()
       )[0] ?? { userId: user.userId },
     ).map(([key, value]) => [key, value ?? undefined]),
-  ) as z.infer<typeof userFullData>;
+  ) as z.infer<typeof userFullDataValid>;
 
   return (
     <>
