@@ -15,6 +15,8 @@ export default async function Page() {
   if (!user) {
     redirect("/login");
   }
+
+  // TODO make type safe (replace nulls with undefined)
   const userData = Object.fromEntries(
     Object.entries(
       (
