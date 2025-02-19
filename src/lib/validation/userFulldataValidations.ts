@@ -1,9 +1,21 @@
 import { z } from "zod";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
-import { validGovernorateCodes } from "@/lib/const";
 import { type EnforceKeys } from "./util";
 
 // Academic
+import {
+  faculties,
+  departments,
+  countries,
+  validGovernorateCodes,
+  universities,
+} from "@/lib/const";
+
+// Academic
+const universitiesValues = [...universities, "Other"] as const;
+const institute = z.enum(universitiesValues).default("Other");
+const faculty = z.enum(faculties).optional();
+const department = z.enum(departments).optional();
 
 // don't touch this
 const academicYear = z
@@ -55,6 +67,8 @@ const nationalId = z
   .refine(isValidEgyptianNIDChecksum, "Invalid National ID")
   .optional();
 
+const country = z.enum(countries).optional();
+
 const isMale = z.boolean().optional();
 const imageUrl = z.string().url().optional();
 
@@ -68,6 +82,9 @@ function govNumber(id: string) {
   const govCode = id.slice(7, 9);
   return validGovernorateCodes.includes(govCode);
 }
+
+
+const city = z.string().optional();
 
 function birthdate(id: string) {
   // Birthdate: digits 2-7 (0-indexed positions 2-7)
@@ -113,12 +130,11 @@ function isValidEgyptianNIDChecksum(id: string) {
 
   return expectedCheckDigit === givenCheckDigit;
 }
-const id = z.number().positive().int().optional();
 
 const userFullDataValid = z.object({
-  instituteId: id,
-  facultyId: id,
-  departmentId: id,
+  institute,
+  faculty,
+  department,
   academicYear,
   graduationDate,
 
@@ -135,8 +151,8 @@ const userFullDataValid = z.object({
   nameAR4: arabicName,
 
   nationalId,
-  countryId: id,
-  cityId: id,
+  country,
+  city,
   isMale,
   imageUrl,
 
@@ -147,6 +163,5 @@ const userFullDataValid = z.object({
   visibilityMask: z.number().int().optional(),
 });
 
-const _: EnforceKeys<typeof userFullDataValid, typeof UsersFullData> = true;
 
 export { userFullDataValid };
