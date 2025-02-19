@@ -34,7 +34,7 @@ export const UsersFullData = pgTable("users_full_data", {
   facultyId: integer().references(() => Faculties.facultyId, {
     onDelete: "set null",
     onUpdate: "cascade",
-  }),
+  ),
   departmentId: integer().references(() => Departments.departmentId, {
     onDelete: "set null",
     onUpdate: "cascade",

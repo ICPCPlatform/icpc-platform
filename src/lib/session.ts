@@ -6,7 +6,7 @@ import { JWTPayload, SignJWT, jwtVerify } from "jose";
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 export type userData = {
-  userId: number;
+  userId: string;
   username: string;
   role: string;
 };

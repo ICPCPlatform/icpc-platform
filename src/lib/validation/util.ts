@@ -17,6 +17,15 @@ export const password = z
       "Password must be include an uppercase letter, a lowercase letter, a number, and a special character, with no spaces.",
   });
 
+/** 
+ * check if the keys of the zod object are the same as the keys of the pgTable
+ * @param T - zod object
+ * @param Expected - pgTable
+ *
+ * how to use
+ * @example 
+ * const _: EnforceKeys<typeof userFullDataValid, typeof UsersFullData> = true;
+ * */
 export type EnforceKeys<
   T extends z.ZodTypeAny,
   Expected extends AnyPgTable,
