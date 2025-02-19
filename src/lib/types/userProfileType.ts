@@ -28,4 +28,6 @@ export type UserProfile<Filter extends boolean> = {
   telegram: string | null;
   academicYear: number | null;
   graduationDate: string | null;
-} & (Filter extends false ? { visibilityMask: number } : unknown);
+} & (Filter extends false
+  ? { visibilityMask: number | null }
+  : unknown);

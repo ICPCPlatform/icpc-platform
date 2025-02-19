@@ -8,7 +8,10 @@ import { Users } from "@/lib/db/schema/user/Users";
 import { eq } from "drizzle-orm";
 import { Departments } from "@/lib/db/schema/user/Departments";
 import { Communities } from "@/lib/db/schema/user/Communities";
-import { UserProfile } from "@/lib/types/userProfileType";
+import { type UserProfile } from "@/lib/types/userProfileType";
+import { Institutes } from "@/lib/db/schema/user/Institutes";
+import { faculties } from "@/lib/const";
+import { Faculties } from "@/lib/db/schema/user/Faculties";
 
 export async function getUserFullData<
   T extends
@@ -18,26 +21,29 @@ export async function getUserFullData<
     | {
         userId: string;
       },
+    U extends (T extends { username: string } ? true : false)
 >(
-  ident: T,
-): Promise<UserProfile<T extends { username: string } ? true : false> | null> {
+  ident: T
+): Promise<UserProfile<U> | null> {
   const comp =
     "username" in ident
       ? eq(Users.username, ident.username)
       : eq(Users.userId, ident.userId);
-  const userData =
+  const userData : UserProfile<false> | null =
     (
       await db
         .select({
           username: Users.username,
           imageUrl: UsersFullData.imageUrl,
-          email: Users.gmail,
+          gmail: Users.gmail,
           createdAt: UsersFullData.registrationDate,
 
           country: Countries.countryName,
           city: Cities.cityName,
+          institute: Institutes.instituteName,
           department: Departments.departmentName,
           community: Communities.communityName,
+          faculty: Faculties.facultyName,
 
           nameAR1: UsersFullData.nameAR1,
           nameAR2: UsersFullData.nameAR2,
@@ -64,23 +70,25 @@ export async function getUserFullData<
           visibilityMask: UsersFullData.visibilityMask,
         })
         .from(UsersFullData)
-        .leftJoin(Users, eq(UsersFullData.userId, Users.userId))
-        .where(comp)
         .leftJoin(Countries, eq(UsersFullData.countryId, Countries.countryId))
         .leftJoin(Cities, eq(UsersFullData.cityId, Cities.cityId))
-        .leftJoin(UsersFullData, eq(UsersFullData.userId, Users.userId))
+        .leftJoin(Users, eq(UsersFullData.userId, Users.userId))
+        .leftJoin(Institutes, eq(UsersFullData.cityId, Institutes.instituteId))
+        .leftJoin(Faculties, eq(UsersFullData.userId, Faculties.facultyId))
         .leftJoin(
           Departments,
-          eq(UsersFullData.departmentId, Departments.departmentId),
+          eq(UsersFullData.departmentId, Departments.departmentId)
         )
         .leftJoin(
           Communities,
-          eq(UsersFullData.communityId, Communities.communityId),
+          eq(UsersFullData.communityId, Communities.communityId)
         )
+        .where(comp)
         .execute()
-    )[0] ?? null;
-
-
-
-  return userData
+    )[0] ?? null ;
+  if (userData === null) return null;
+  if ("username" in ident) {
+    //TODO: check visibility
+  }
+  return userData as UserProfile<false>;
 }

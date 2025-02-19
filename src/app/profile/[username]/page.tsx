@@ -1,6 +1,5 @@
 import Profile from "@/components/profile/_Profile";
 import Sidebar from "@/components/profile/_Sidebar";
-import { type UserProfile } from "@/lib/types/userProfileType";
 import { redirect } from "next/navigation";
 import { getUserFullData } from "@/actions/getUserFullData";
 
