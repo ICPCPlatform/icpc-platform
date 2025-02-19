@@ -14,6 +14,7 @@ import { Departments } from "@/lib/db/schema/user/Departments";
 import { Communities } from "@/lib/db/schema/user/Communities";
 import { redirect } from "next/navigation";
 import { Faculties } from "@/lib/db/schema/user/Faculties";
+import { Institutes } from "@/lib/db/schema/user/Institutes";
 
 export type User = {
   username: string | null;
@@ -37,6 +38,7 @@ export type User = {
   codechef: string | null;
   leetcode: string | null;
   cses: string | null;
+  facebook : string | null;
   linkedIn: string | null;
   twitter: string | null;
   github: string | null;
@@ -74,6 +76,7 @@ export default async function ProfilePage() {
 
           codeforces: Users.cfHandle,
           vjudge: Users.vjHandle,
+
           atcoder: UsersFullData.atcoder,
           codechef: UsersFullData.codechef,
           leetcode: UsersFullData.leetcode,
@@ -102,6 +105,7 @@ export default async function ProfilePage() {
           eq(UsersFullData.communityId, Communities.communityId),
         )
         .leftJoin(Faculties, eq(UsersFullData.facultyId, Faculties.facultyId))
+        .leftJoin(Institutes, eq(UsersFullData.instituteId, Institutes.instituteId))
         .execute()
     )[0] ?? null;
   if (!user) redirect("/404");
