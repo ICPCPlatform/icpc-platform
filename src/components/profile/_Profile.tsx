@@ -2,7 +2,7 @@
 import React, { JSX, useContext } from "react";
 import { useState } from "react";
 import Image from "next/image";
-import { type User } from "./page";
+import { type UserProfile } from "@/lib/types/userProfileType";
 import {
   FaGraduationCap,
   FaLink,
@@ -24,14 +24,16 @@ const unactiveButtonStyle =
   "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300";
 const tabStyle = "tab px-3 md:px-4 py-2 font-medium text-sm md:text-base";
 
-const UserContext = React.createContext({} as User);
+const UserContext = React.createContext(
+  {} as UserProfile<true> | UserProfile<false>,
+);
 
-export default function Profile({
+export default function Profile<T extends boolean>({
   user,
   className,
   allowEdit = false,
 }: {
-  user: User;
+  user: UserProfile<T>;
   className?: string;
   allowEdit: boolean;
 }) {
