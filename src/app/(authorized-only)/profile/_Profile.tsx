@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { JSX, useContext } from "react";
 import { useState } from "react";
 import Image from "next/image";
 import { type User } from "./page";
@@ -11,6 +11,10 @@ import {
   FaGithub,
   FaTwitter,
   FaUserEdit,
+  FaTelegram,
+  FaFacebook,
+  FaLinkedin,
+  FaUniversity,
 } from "react-icons/fa";
 import { SiLeetcode, SiCodechef, SiCodeforces } from "react-icons/si";
 import Link from "next/link";
@@ -56,11 +60,11 @@ export default function Profile({
             <button
               className={`${
                 tabStyle +
-                (activeTab === "academic"
+                (activeTab === "academics"
                   ? activeButtonStyle
                   : unactiveButtonStyle)
               }`}
-              onClick={() => setActiveTab("academic")}
+              onClick={() => setActiveTab("academics")}
             >
               <FaGraduationCap className="inline-block mr-1.5" />
               <span>Academic</span>
@@ -90,7 +94,7 @@ export default function Profile({
           <div className="mb-6 md:mb-8">
             <div className="profile-section grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
               {userContent[activeTab].map((data, index) => {
-                if (!data.value) return null;
+                if (!data?.value) return null;
                 return (
                   <div key={index} className="h-[72px]">
                     <div className="platform group hover:shadow-md transition-all duration-200 flex items-center h-full space-x-4 px-4 md:px-5 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700">
@@ -124,8 +128,8 @@ function Info() {
       <div className="photo-section flex md:block items-center gap-4 md:gap-0">
         <div className="photo-placeholder flex-shrink-0">
           <Image
-            src={user.imageURL ?? "/window.svg"}
-            alt={`${user.nameEnFirst} ${user.nameEnLast}`}
+            src={user.imageUrl ?? "/window.svg"}
+            alt={`${user.firstNameEn} ${user.lastNameEn}`}
             width={140}
             height={140}
             className="object-cover rounded-lg w-24 h-24 md:w-[140px] md:h-[140px]"
@@ -140,7 +144,7 @@ function Info() {
       </div>
       <div className="info-section flex-1">
         <div className="mb-4">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">{`${user.nameEnFirst ?? ""} ${user.nameEnLast ?? ""}`}</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">{`${user.firstNameEn ?? ""} ${user.lastNameEn ?? ""}`}</h2>
           {user.nameAR1 && (
             <h3 className="text-base md:text-lg text-gray-600 dark:text-gray-400 mt-1 font-arabic">
               {`${user.nameAR1} ${user.nameAR2 ?? ""} ${user.nameAR3 ?? ""} ${user.nameAR4 ?? ""}`}
@@ -160,19 +164,28 @@ function Info() {
     </div>
   );
 }
+type EntryType = {
+  name: string;
+  value: string | number | null;
+  icon: JSX.Element;
+};
 
-function userData(user: User) {
+function userData(user: User): {
+  socials: EntryType[];
+  academics: EntryType[];
+  cp: EntryType[];
+} {
   return {
     socials: [
       {
         name: "LinkedIn",
         value: user.linkedIn,
-        icon: <FaGithub className="text-xl" />,
+        icon: <FaLinkedin className="text-xl" />,
       },
       {
         name: "Facebook",
         value: user.facebook,
-        icon: <FaGithub className="text-xl" />,
+        icon: <FaFacebook className="text-xl" />,
       },
       {
         name: "Twitter",
@@ -184,12 +197,17 @@ function userData(user: User) {
         value: user.github,
         icon: <FaGithub className="text-xl" />,
       },
-    ],
-    academic: [
       {
-        name: "University",
-        value: user.university,
-        icon: <FaGraduationCap className="text-xl" />,
+        name: "Telegram",
+        value: user.telegram,
+        icon: <FaTelegram className="text-xl" />,
+      },
+    ],
+    academics: [
+      {
+        name: "Institute",
+        value: user.institute,
+        icon: <FaUniversity className="text-xl" />,
       },
       {
         name: "Faculty",
@@ -208,8 +226,8 @@ function userData(user: User) {
       },
       {
         name: "Expected Graduation",
-        value: user.graduationYear
-          ? new Date(user.graduationYear).getFullYear()
+        value: user.graduationDate
+          ? new Date(user.graduationDate).getFullYear()
           : null,
         icon: <FaGraduationCap className="text-xl" />,
       },
@@ -218,11 +236,19 @@ function userData(user: User) {
     cp: [
       {
         name: "Codeforces",
-        value: user.cfHandle,
+        value: user.codeforces,
         icon: <SiCodeforces className="text-xl" />,
       },
-      { name: "Vjudge", value: user.vjudge },
-      { name: "AtCoder", value: user.atcoder },
+      {
+        name: "Vjudge",
+        value: user.vjudge,
+        icon: <FaCode className="text-xl" />,
+      },
+      {
+        name: "AtCoder",
+        value: user.atcoder,
+        icon: <FaCode className="text-xl" />,
+      },
       {
         name: "CodeChef",
         value: user.codechef,
@@ -233,10 +259,6 @@ function userData(user: User) {
         value: user.leetcode,
         icon: <SiLeetcode className="text-xl" />,
       },
-      { name: "SPOJ", value: user.spoj },
-      { name: "CSES", value: user.cses },
-      { name: "TopCoder", value: user.topcoder },
-      { name: "CS Academy", value: user.csacademy },
     ],
   };
 }

@@ -23,6 +23,7 @@ export type User = {
   createdAt: Date | null;
   country: string | null;
   city: string | null;
+  institute: string | null;
   department: string | null;
   community: string | null;
   faculty: string | null;

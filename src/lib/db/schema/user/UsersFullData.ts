@@ -34,7 +34,7 @@ export const UsersFullData = pgTable("users_full_data", {
   facultyId: integer().references(() => Faculties.facultyId, {
     onDelete: "set null",
     onUpdate: "cascade",
-  ),
+  }),
   departmentId: integer().references(() => Departments.departmentId, {
     onDelete: "set null",
     onUpdate: "cascade",
@@ -84,4 +84,4 @@ export const UsersFullData = pgTable("users_full_data", {
 });
 
 // TODO make sure all key components her are in it's ZOD verification
-type k = keyof typeof UsersFullData.$inferInsert;
+// ype k = keyof typeof UsersFullData.$inferInsert;
