@@ -63,6 +63,7 @@ export default async function ProfilePage() {
 
           country: Countries.countryName,
           city: Cities.cityName,
+          institute: Institutes.instituteName,
           department: Departments.departmentName,
           community: Communities.communityName,
           faculty: Faculties.facultyName,
