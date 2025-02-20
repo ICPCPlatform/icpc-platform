@@ -10,7 +10,6 @@ import { Departments } from "@/lib/db/schema/user/Departments";
 import { Communities } from "@/lib/db/schema/user/Communities";
 import { type UserProfile } from "@/lib/types/userProfileType";
 import { Institutes } from "@/lib/db/schema/user/Institutes";
-import { faculties } from "@/lib/const";
 import { Faculties } from "@/lib/db/schema/user/Faculties";
 
 export async function getUserFullData<
@@ -21,15 +20,13 @@ export async function getUserFullData<
     | {
         userId: string;
       },
-    U extends (T extends { username: string } ? true : false)
->(
-  ident: T
-): Promise<UserProfile<U> | null> {
+  U extends T extends { username: string } ? true : false,
+>(ident: T): Promise<UserProfile<U> | null> {
   const comp =
     "username" in ident
       ? eq(Users.username, ident.username)
       : eq(Users.userId, ident.userId);
-  const userData : UserProfile<false> | null =
+  const userData: UserProfile<false> | null =
     (
       await db
         .select({
@@ -38,12 +35,12 @@ export async function getUserFullData<
           gmail: Users.gmail,
           createdAt: UsersFullData.registrationDate,
 
-          country: Countries.countryName,
-          city: Cities.cityName,
-          institute: Institutes.instituteName,
-          department: Departments.departmentName,
-          community: Communities.communityName,
-          faculty: Faculties.facultyName,
+          country: Countries.name,
+          city: Cities.name,
+          institute: Institutes.name,
+          department: Departments.name,
+          community: Communities.name,
+          faculty: Faculties.name,
 
           nameAR1: UsersFullData.nameAR1,
           nameAR2: UsersFullData.nameAR2,
@@ -70,22 +67,22 @@ export async function getUserFullData<
           visibilityMask: UsersFullData.visibilityMask,
         })
         .from(UsersFullData)
-        .leftJoin(Countries, eq(UsersFullData.countryId, Countries.countryId))
-        .leftJoin(Cities, eq(UsersFullData.cityId, Cities.cityId))
+        .leftJoin(Countries, eq(UsersFullData.countryId, Countries.id))
+        .leftJoin(Cities, eq(UsersFullData.cityId, Cities.id))
         .leftJoin(Users, eq(UsersFullData.userId, Users.userId))
-        .leftJoin(Institutes, eq(UsersFullData.cityId, Institutes.instituteId))
-        .leftJoin(Faculties, eq(UsersFullData.userId, Faculties.facultyId))
+        .leftJoin(Institutes, eq(UsersFullData.instituteId, Institutes.id))
+        .leftJoin(Faculties, eq(UsersFullData.facultyId, Faculties.id))
         .leftJoin(
           Departments,
-          eq(UsersFullData.departmentId, Departments.departmentId)
+          eq(UsersFullData.departmentId, Departments.id),
         )
         .leftJoin(
           Communities,
-          eq(UsersFullData.communityId, Communities.communityId)
+          eq(UsersFullData.communityId, Communities.id),
         )
         .where(comp)
         .execute()
-    )[0] ?? null ;
+    )[0] ?? null;
   if (userData === null) return null;
   if ("username" in ident) {
     //TODO: check visibility
