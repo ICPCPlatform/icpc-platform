@@ -12,7 +12,7 @@ type Role = "admin" | "user" | "coach";
 export const Users = pgTable(
   "users",
   {
-    userId: uuid().primaryKey(),
+    userId: uuid().primaryKey().defaultRandom(),
     username: citext().notNull(),
     password: varchar().notNull(),
 
