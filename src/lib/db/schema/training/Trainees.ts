@@ -4,6 +4,7 @@ import {
   primaryKey,
   uuid,
   timestamp,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
@@ -24,12 +25,15 @@ export const Trainees = pgTable(
         onUpdate: "cascade",
       })
       .notNull(),
-    mentorId: uuid().references(() => Staff.userId, {
-      onDelete: "set null",
-      onUpdate: "set null",
-    }),
+    mentorId: uuid().notNull(),
     mentor_assigned_date: timestamp().defaultNow(),
     deleted: timestamp(),
   },
-  (table) => [primaryKey({ columns: [table.userId, table.trainingId] })],
+  (table) => [
+    primaryKey({ columns: [table.userId, table.trainingId] }),
+    foreignKey({
+      columns: [table.mentorId, table.trainingId],
+      foreignColumns: [Staff.userId, Staff.trainingId],
+    }),
+  ],
 );
