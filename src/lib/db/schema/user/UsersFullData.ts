@@ -27,19 +27,19 @@ export const UsersFullData = pgTable("users_full_data", {
     }),
 
   /* Academic */
-  instituteId: integer().references(() => Institutes.instituteId, {
+  instituteId: integer().references(() => Institutes.id, {
     onDelete: "set null",
     onUpdate: "cascade",
   }),
-  facultyId: integer().references(() => Faculties.facultyId, {
+  facultyId: integer().references(() => Faculties.id, {
     onDelete: "set null",
     onUpdate: "cascade",
   }),
-  departmentId: integer().references(() => Departments.departmentId, {
+  departmentId: integer().references(() => Departments.id, {
     onDelete: "set null",
     onUpdate: "cascade",
   }),
-  communityId: integer().references(() => Communities.communityId, {
+  communityId: integer().references(() => Communities.id, {
     onDelete: "set null",
     onUpdate: "cascade",
   }),
@@ -60,11 +60,11 @@ export const UsersFullData = pgTable("users_full_data", {
   nameAR3: varchar({ length: 20 }),
   nameAR4: varchar({ length: 20 }),
   nationalId: char({ length: 14 }).unique(), // for Egyptians
-  countryId: integer().references(() => Countries.countryId, {
+  countryId: integer().references(() => Countries.id, {
     onDelete: "set null",
     onUpdate: "cascade",
   }),
-  cityId: integer().references(() => Cities.cityId, {
+  cityId: integer().references(() => Cities.id, {
     onDelete: "set null",
     onUpdate: "cascade",
   }),
