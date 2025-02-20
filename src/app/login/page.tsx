@@ -69,10 +69,10 @@ function Login() {
             />
             <FormField
               control={form.control}
-              name="username"
+              name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="strongpassword123"
