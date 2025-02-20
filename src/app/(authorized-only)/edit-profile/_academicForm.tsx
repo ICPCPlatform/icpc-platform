@@ -23,8 +23,9 @@ import {
 export default function AcademicForm() {
   const form = useFormContext<z.infer<typeof userFullDataValid>>();
   const universityOptions =
-    userFullDataValid.shape.university._def.innerType.options;
+    userFullDataValid.shape.institute._def.innerType.options;
   const facultyOptions = userFullDataValid.shape.faculty._def.innerType.options;
+  const communitiesOptions = userFullDataValid.shape.community._def.innerType.options;
   const departmentOptions =
     userFullDataValid.shape.department._def.innerType.options;
 
@@ -32,7 +33,7 @@ export default function AcademicForm() {
     <div className="space-y-6">
       <FormField
         control={form.control}
-        name="university"
+        name="institute"
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-foreground">University</FormLabel>
@@ -147,7 +148,7 @@ export default function AcademicForm() {
       />
       <FormField
         control={form.control}
-        name="graduationYear"
+        name="graduationDate"
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-foreground">
@@ -187,6 +188,44 @@ export default function AcademicForm() {
             </FormControl>
             <FormDescription className="text-muted-foreground">
               Your current year of study (1st year, 2nd year, etc.).
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="community"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-foreground">Department</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select your department" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent
+                className="!bg-popover border shadow-md !z-[100]"
+                style={{
+                  backgroundColor: "var(--background)",
+                  backdropFilter: "none",
+                  boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                {communitiesOptions.map((option) => (
+                  <SelectItem
+                    key={option}
+                    value={option}
+                    className="hover:bg-accent focus:bg-accent"
+                  >
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormDescription className="text-muted-foreground">
+              Select your specific department or major.
             </FormDescription>
             <FormMessage />
           </FormItem>

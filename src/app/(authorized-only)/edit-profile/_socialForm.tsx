@@ -54,7 +54,9 @@ export default function SocialForm() {
                   type="url"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage >
+                {form.formState.errors[profile.id]?.message}
+              </FormMessage>
             </FormItem>
           )}
         />

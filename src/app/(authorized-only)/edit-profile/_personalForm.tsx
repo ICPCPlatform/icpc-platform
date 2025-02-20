@@ -1,6 +1,7 @@
 "use client";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,8 +23,8 @@ export default function PersonList() {
   const form = useFormContext<z.infer<typeof userFullDataValid>>();
 
   const personalFields = [
-    { name: "nameEnFirst", label: "First Name (English)" },
-    { name: "nameEnLast", label: "Last Name (English)" },
+    { name: "firstNameEn", label: "First Name (English)" },
+    { name: "lastNameEn", label: "Last Name (English)" },
     { name: "nameAR1", label: "First Name (Arabic)" },
     { name: "nameAR2", label: "Second Name (Arabic)" },
     { name: "nameAR3", label: "Third Name (Arabic)" },
@@ -55,7 +56,7 @@ export default function PersonList() {
       ))}
       <FormField
         control={form.control}
-        name="nationalID"
+        name="nationalId"
         render={({ field }) => (
           <FormItem>
             <FormLabel className="text-foreground">
@@ -65,15 +66,16 @@ export default function PersonList() {
               <Input
                 {...field}
                 required={false}
-                pattern="^\d{14}$"
                 placeholder="14 digits national ID"
                 className="bg-background text-foreground"
               />
             </FormControl>
+            <FormDescription />
             <FormMessage />
           </FormItem>
         )}
       />
+
       <FormField
         control={form.control}
         name="country"
