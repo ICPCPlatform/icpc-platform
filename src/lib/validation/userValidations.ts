@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { username, password, type EnforceType } from "./util";
+import { username, password, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
 const gmail = z
   .string()
@@ -19,21 +19,21 @@ const cfHandle = z
 const phoneNumber = z
   .string()
   .trim()
+  .min(13, { message: "Phone number too short" })
+  .max(15, { message: "Phone number too long" })
   .regex(
     /^\+201[0-9]{9}$/,
     "Phone number must be a valid Egyptian number (starts with +20)",
-  )
-  .nullable();
-
-const userRegisterValid = z.object({
+  );
+export const userRegisterValid = z.object({
   username,
   password,
   gmail,
   cfHandle,
+  vjHandle: cfHandle.optional(),
   phoneNumber,
 });
-const _: EnforceType<typeof userRegisterValid.shape, typeof Users> =
-  userRegisterValid.shape;
+const _: EnforceKeys<typeof userRegisterValid, typeof Users> = true;
 
 // Usage example:
 // const { success, data, error } = password.safeParse(""); // Replace with an actual 14-digit ID

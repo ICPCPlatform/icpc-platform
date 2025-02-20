@@ -1,6 +1,4 @@
 import { z } from "zod";
-import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
-import { type EnforceKeys } from "./util";
 
 // Academic
 import {
@@ -9,6 +7,7 @@ import {
   countries,
   validGovernorateCodes,
   universities,
+  communities,
 } from "@/lib/const";
 
 // Academic
@@ -16,6 +15,7 @@ const universitiesValues = [...universities, "Other"] as const;
 const institute = z.enum(universitiesValues).default("Other");
 const faculty = z.enum(faculties).optional();
 const department = z.enum(departments).optional();
+const community = z.enum(communities).optional();
 
 // don't touch this
 const academicYear = z
@@ -161,6 +161,7 @@ const userFullDataValid = z.object({
   twitter,
   github,
   visibilityMask: z.number().int().optional(),
+  community,
 });
 
 
