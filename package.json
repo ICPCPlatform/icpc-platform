@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:e2e":"npx playwright test",
+    "test :e2e:ui": "npx playwright test --ui"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.50.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/eslint__eslintrc": "^2.1.2",
     "@types/node": "^20",

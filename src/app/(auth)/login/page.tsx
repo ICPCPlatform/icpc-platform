@@ -10,7 +10,6 @@ export default function LoginPage() {
         <Login/>
     </Suspense>
 
-
 }
 
 function Login() {
