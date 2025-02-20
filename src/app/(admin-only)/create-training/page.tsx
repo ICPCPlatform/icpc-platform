@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 import expectedBody from "../api/create-training/_expectedBody";
-import styles from './page.module.css';
-import { useState } from 'react';
+import styles from "./page.module.css";
+import { useState } from "react";
 
 export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -12,7 +12,9 @@ export default function Page() {
       <h1 className={styles.title}>Create Training</h1>
       <form onSubmit={onSubmit} className={styles.form}>
         <div className={styles.formGroup}>
-          <label htmlFor="title" className={styles.label}>Training Name</label>
+          <label htmlFor="title" className={styles.label}>
+            Training Name
+          </label>
           <input
             type="text"
             id="title"
@@ -24,7 +26,9 @@ export default function Page() {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="description" className={styles.label}>Description</label>
+          <label htmlFor="description" className={styles.label}>
+            Description
+          </label>
           <textarea
             id="description"
             name="description"
@@ -35,7 +39,9 @@ export default function Page() {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="startDate" className={styles.label}>Start Date</label>
+          <label htmlFor="startDate" className={styles.label}>
+            Start Date
+          </label>
           <input
             type="date"
             id="startDate"
@@ -46,7 +52,9 @@ export default function Page() {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="duration" className={styles.label}>Duration (hours)</label>
+          <label htmlFor="duration" className={styles.label}>
+            Duration (hours)
+          </label>
           <input
             type="number"
             id="duration"
@@ -58,12 +66,8 @@ export default function Page() {
           />
         </div>
 
-        <button
-          type="submit"
-          className={styles.button}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Creating...' : 'Create Training'}
+        <button type="submit" className={styles.button} disabled={isSubmitting}>
+          {isSubmitting ? "Creating..." : "Create Training"}
         </button>
       </form>
     </div>
@@ -80,19 +84,16 @@ export default function Page() {
       const givenData = {
         ...givenBody,
         duration: Number(givenBody.duration),
-      }
+      };
 
-
-      const { success, data } = expectedBody.safeParse(
-        givenData
-      );
+      const { success, data } = expectedBody.safeParse(givenData);
 
       if (!success) {
         alert("Please check your input and try again");
         return;
       }
 
-      const response = await fetch('/api/create-training', {
+      const response = await fetch("/api/create-training", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,9 +106,9 @@ export default function Page() {
         alert("Training created successfully");
         form.reset();
       } else {
-        throw new Error('Failed to create training');
+        throw new Error("Failed to create training");
       }
-    } catch  {
+    } catch {
       alert("An error occurred while creating the training");
     } finally {
       setIsSubmitting(false);

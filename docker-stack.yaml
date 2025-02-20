@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   web:
@@ -8,8 +8,10 @@ services:
     deploy:
       replicas: 1
     environment:
-        DATABASE_URL: ${DATABASE_URL}
-        SESSION_SECRET: ${SESSION_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
+      SESSION_SECRET: ${SESSION_SECRET}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      URL: ${URL}
     networks:
       - web_network
 

@@ -1,113 +1,72 @@
-import styles from "./page.module.css";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
+import { FaUserPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+
+const iconSize = "text-xl";
+
 export default async function Home() {
   const cookie = await cookies();
   const isLoggedIn = !!cookie.get("session");
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        {/* Hero Section */}
-        <section className={styles.hero}>
-          <h1 className={styles.title}>Welcome to ICPC Training Platform</h1>
-          <p className={styles.heroText}>
-            Elevate your competitive programming skills with structured
-            training, real-time contests, and a supportive community of problem
-            solvers.
+    <div className="container mx-auto px-4">
+      <main className="mt-8 text-center">
+        <section className="py-16">
+          <TypographyH1>Welcome</TypographyH1>
+          <p className="mt-4 text-lg">
+            Elevate your skills with our structured training and community
+            support.
           </p>
-          <div className={styles.ctas}>
-            <Link
-              href="/register"
-              className={`${styles.cta} ${styles.primary}`}
-            >
-              Get Started
+          <div className="mt-8 flex justify-center">
+            <Link href="/register">
+              <Button variant="default" className="flex items-center space-x-1">
+                <FaUserPlus className={iconSize} />
+                <span>Get Started</span>
+              </Button>
             </Link>
             {isLoggedIn ? (
-              <button
+              <Button
+                variant="secondary"
+                className="flex items-center space-x-1 ml-4"
                 onClick={async () => {
-                  "use server"
+                  "use server";
                   const cookie = await cookies();
                   cookie.delete("session");
                   redirect("/");
                 }}
-                className={`${styles.cta} ${styles.secondary}`} >
-                Sign Out
-                </button>
-            ) : (
-              <Link
-                href="/login"
-                className={`${styles.cta} ${styles.secondary}`}
               >
-                  Sign In
-                </Link>
+                <FaSignOutAlt className={iconSize} />
+                <span>Sign Out</span>
+              </Button>
+            ) : (
+              <Link href="/login">
+                <Button
+                  variant="secondary"
+                  className="flex items-center space-x-1 ml-4"
+                >
+                  <FaSignInAlt className={iconSize} />
+                  <span>Sign In</span>
+                </Button>
+              </Link>
             )}
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className={styles.features}>
-          <h2 className={styles.sectionTitle}>Why Choose Our Platform?</h2>
-          <div className={styles.featureGrid}>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>📚</div>
-              <h3>Structured Learning</h3>
-              <p>
-                Carefully crafted training paths from beginner to advanced
-                levels
-              </p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>🏆</div>
-              <h3>Practice Contests</h3>
-              <p>
-                Regular contests to test your skills in real competition
-                settings
-              </p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>👥</div>
-              <h3>Community Support</h3>
-              <p>
-                Connect with fellow programmers and learn from experienced
-                mentors
-              </p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>📈</div>
-              <h3>Progress Tracking</h3>
-              <p>
-                Monitor your improvement with detailed performance analytics
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Call to Action Section */}
-        <section className={styles.joinSection}>
-          <h2>Ready to Begin Your Journey?</h2>
-          <p>
-            Join thousands of programmers who are already improving their skills
+        <section className="py-16">
+          <TypographyH2>Join Our Community</TypographyH2>
+          <p className="mt-4">
+            Connect with fellow programmers and enhance your skills.
           </p>
-          <Link href="/register" className={`${styles.cta} ${styles.primary}`}>
-            Create Your Account
-          </Link>
         </section>
       </main>
 
-      <footer className={styles.footer}>
-        <div className={styles.footerContent}>
-          <div className={styles.footerLinks}>
-            <Link href="/about">About Us</Link>
-            <Link href="/contact">Contact</Link>
-            <Link href="/faq">FAQ</Link>
-            <a href="mailto:icpcplatform@gmail.com">Support</a>
-          </div>
-          <p className={styles.copyright}>
-            © {new Date().getFullYear()} ICPC Training Platform. All rights
-            reserved.
-          </p>
-        </div>
+      <footer className="py-8 text-center">
+        <p>
+          © {new Date().getFullYear()} ICPC Training Platform. All rights
+          reserved.
+        </p>
       </footer>
     </div>
   );

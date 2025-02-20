@@ -1,0 +1,70 @@
+.navbar {
+  width: 100%;
+  flex-shrink: 0;
+  background-color: hsl(var(--card));
+  border-right: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 2rem 1.5rem;
+  & ul {
+    padding-top: 2rem;
+    width: 100%;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    & li {
+      width: 100%;
+      display: flex;
+      gap: 1rem;
+      & button {
+        width: 100%;
+        color: hsl(var(--muted-foreground));
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        background-color: transparent;
+        border: 1px solid transparent;
+
+        &:hover {
+          color: hsl(var(--foreground));
+          background-color: hsl(var(--accent));
+        }
+
+        &[data-active="true"] {
+          color: hsl(var(--foreground));
+          background-color: hsl(var(--accent));
+          border-color: hsl(var(--border));
+        }
+      }
+    }
+  }
+}
+
+.main {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) 1fr;
+  height: 100%;
+  background-color: hsl(var(--background));
+}
+
+.submit {
+  margin-top: 2rem !important;
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  font-weight: 600 !important;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.formContainer {
+  padding: 2rem 3rem;
+  max-width: 800px;
+  width: 100%;
+}

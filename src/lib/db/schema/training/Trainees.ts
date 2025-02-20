@@ -1,14 +1,39 @@
-import { integer, pgTable, serial } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgTable,
+  primaryKey,
+  uuid,
+  timestamp,
+  foreignKey,
+} from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
 import { Trainings } from "./Trainings";
-
-export const Trainees = pgTable("trainees", {
-  traineeId: serial().primaryKey(),
-  userId: integer()
-    .references(() => Users.userId)
-    .notNull(),
-  trainingId: integer()
-    .references(() => Trainings.trainingId)
-    .notNull(),
-});
+import { Staff } from "./Staff";
+export const Trainees = pgTable(
+  "trainees",
+  {
+    userId: uuid()
+      .references(() => Users.userId, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      })
+      .notNull(),
+    trainingId: integer()
+      .references(() => Trainings.trainingId, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      })
+      .notNull(),
+    mentorId: uuid().notNull(),
+    mentor_assigned_date: timestamp().defaultNow(),
+    deleted: timestamp(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.trainingId] }),
+    foreignKey({
+      columns: [table.mentorId, table.trainingId],
+      foreignColumns: [Staff.userId, Staff.trainingId],
+    }),
+  ],
+);

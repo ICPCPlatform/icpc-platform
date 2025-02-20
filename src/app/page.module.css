@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: var(--font-geist-sans);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,17 +29,14 @@
 
 .main {
   flex: 1;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
 }
 
 .hero {
   text-align: center;
-  padding: 4rem 0;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 60px 20px;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 .title {
@@ -60,6 +57,7 @@
 }
 
 .ctas {
+  margin-top: 20px;
   display: flex;
   gap: 1rem;
   justify-content: center;
@@ -72,11 +70,18 @@
   font-weight: 500;
   transition: all 0.2s ease;
   text-decoration: none;
+  background-color: var(--primary-color);
+  color: var(--foreground);
+}
+
+.cta:hover {
+  background-color: var(--primary-hover);
 }
 
 .primary {
   background-color: var(--primary-color);
   color: white;
+  border: none;
 }
 
 .primary:hover {
@@ -85,12 +90,13 @@
 }
 
 .secondary {
-  background-color: var(--gray-alpha-100);
-  color: inherit;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
 }
 
 .secondary:hover {
-  background-color: var(--gray-alpha-200);
+  background-color: #e0e0e0;
   transform: translateY(-1px);
 }
 

@@ -1,5 +1,4 @@
 import { Resend } from "resend";
-const resend = new Resend(process.env.RESEND_API_KEY);
 export default async function send({
   to,
   subject,
@@ -9,6 +8,7 @@ export default async function send({
   subject: string;
   html: string;
 }) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   return await resend.emails.send({
     from: "Icpc assiut Community <no-replay@icpcpassiut.tech>",
     to,
@@ -16,9 +16,3 @@ export default async function send({
     html,
   });
 }
-
-console.log(await send({
-  to: ["tammwy22@gmail.com"],
-  subject: "Hello",
-  html: "<h1>Hello</h1>",
-}))

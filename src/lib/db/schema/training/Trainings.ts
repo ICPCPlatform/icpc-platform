@@ -1,15 +1,36 @@
-import { integer, pgTable, varchar, date, serial } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgTable,
+  varchar,
+  date,
+  serial,
+  uuid,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
+import { citext } from "@/lib/db/util";
+
 type Status = "active" | "inactive";
 export const Trainings = pgTable("trainings", {
+  // TODO make serial start from 1000
   trainingId: serial().primaryKey(),
-  headId: integer()
-    .references(() => Users.userId)
+  headId: uuid()
+    .references(() => Users.userId, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    })
     .notNull(),
-  title: varchar().notNull(),
-  description: varchar().notNull(),
+  chiefJudge: uuid()
+    .references(() => Users.userId, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    })
+    .notNull(),
+  title: citext({ length: 128 }).notNull().unique(),
+  description: varchar({ length: 512 }).notNull(),
   startDate: date().notNull(),
-  duration: integer(), // number of weeks/days
-  status: varchar({ length: 40 }).$type<Status>().notNull().default("active"),
+  duration: integer().notNull().default(1), // number of weeks/days
+  status: varchar({ length: 20 }).$type<Status>().notNull().default("active"),
+  deleted: timestamp(),
 });

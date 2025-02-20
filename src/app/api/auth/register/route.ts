@@ -3,13 +3,14 @@ import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
 import { eq, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import expectedBody from "./expectedBody";
+import { userRegisterValid } from "@/lib/validation/userValidations";
 import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
 import sendEmail from "@/lib/email/sendEmail";
+import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 
 export async function POST(request: NextRequest) {
   try {
-    const { success, data: registerData } = expectedBody.safeParse(
+    const { success, data: registerData } = userRegisterValid.safeParse(
       await request.json(),
     );
     if (!success)
@@ -23,6 +24,8 @@ export async function POST(request: NextRequest) {
           eq(Users.username, registerData.username),
           eq(Users.gmail, registerData.gmail),
           eq(Users.cfHandle, registerData.cfHandle),
+          eq(Users.vjHandle, registerData.vjHandle ?? ""),
+          eq(Users.phoneNumber, registerData.phoneNumber),
         ),
       )
       .execute();
@@ -44,14 +47,13 @@ export async function POST(request: NextRequest) {
       );
 
     const { result } = await handleRes.json();
-    console.log(result);
     if (!result)
       return NextResponse.json(
         { error: "Invalid Codeforces handle or codefoces error" },
         { status: 400 },
       );
 
-    const { handle } = result[0];
+    const { handle, titlePhoto } = result[0];
 
     if (handle.toLowerCase() !== registerData.cfHandle.toLowerCase())
       return NextResponse.json(
@@ -71,7 +73,14 @@ export async function POST(request: NextRequest) {
         token: randomToken,
       })
       .execute();
-    emailActivation(registerData,randomToken)
+    await db
+      .insert(UsersFullData)
+      .values({
+        userId: userId,
+        imageUrl: titlePhoto,
+      })
+      .execute();
+    emailActivation(registerData, randomToken);
 
     return NextResponse.json(
       { message: "registered" },
@@ -88,7 +97,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function emailActivation(registerData: typeof Users.$inferInsert,randomToken: string) {
+function emailActivation(
+  registerData: typeof Users.$inferInsert,
+  randomToken: string,
+) {
   sendEmail({
     to: [registerData.gmail],
     subject: "Verify your email",
@@ -151,7 +163,7 @@ function emailActivation(registerData: typeof Users.$inferInsert,randomToken: st
             <div class="content">
                 <p>Dear ${registerData.username},</p>
                 <p>Thank you for registering on the ICPC Training Platform! To complete your registration and start your learning journey, please activate your account by clicking the button below.</p>
-                <a href="https://${process.env.URL}/api/auth/verify?token=${randomToken}" class="button">Activate My Account</a>
+                <a href="https://${process.env.URL ?? ""}/api/auth/verify?token=${randomToken}" class="button">Activate My Account</a>
                 <p>Our platform helps you:</p>
                 <ul style="text-align: left; padding-left: 20px;">
                     <li>Sign up, track tasks, and attend training sessions seamlessly.</li>
@@ -163,7 +175,7 @@ function emailActivation(registerData: typeof Users.$inferInsert,randomToken: st
                 <p>If you did not sign up, you can ignore this email.</p>
             </div>
             <div class="footer">
-                Need help? Contact us at <a href="mailto:support@${process.env.URL}">support@icpcplatform.com</a>
+                Need help? Contact us at <a href="mailto:support@${process.env.URL ?? ""}">support@icpcplatform.com</a>
             </div>
         </div>
     </body>

@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { cookies } from "next/headers";
 import { decryptSession, type userData } from "@/lib/session";
 import { redirect } from "next/navigation";
-import UserProvider from "@/providers/user";
 import "@/app/page.module.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "ICPC Platform",
@@ -28,13 +24,7 @@ export default async function RootLayout({
   const user = validation as userData;
   if (user.role !== "admin") {
     // unauthorized access
-    redirect("/profile");
+    redirect("/");
   }
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        <UserProvider user={user}>{children}</UserProvider>
-      </body>
-    </html>
-  );
+  return <>{children}</>;
 }

@@ -27,7 +27,12 @@ export async function POST(request: NextRequest) {
 
     // Querying the database for the user
     const users = await db
-      .select()
+      .select({
+        userId: Users.userId,
+        username: Users.username,
+        role: Users.role,
+        password: Users.password,
+      })
       .from(Users)
       .where(eq(Users.username, username))
       .execute();
