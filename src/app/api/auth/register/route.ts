@@ -3,14 +3,14 @@ import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
 import { eq, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import expectedBody from "./expectedBody";
+import { userRegisterValid } from "@/lib/validation/userValidations";
 import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
 import sendEmail from "@/lib/email/sendEmail";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 
 export async function POST(request: NextRequest) {
   try {
-    const { success, data: registerData } = expectedBody.safeParse(
+    const { success, data: registerData } = userRegisterValid.safeParse(
       await request.json(),
     );
     if (!success)
@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
           eq(Users.username, registerData.username),
           eq(Users.gmail, registerData.gmail),
           eq(Users.cfHandle, registerData.cfHandle),
+          eq(Users.vjHandle, registerData.vjHandle ?? ""),
+          eq(Users.phoneNumber, registerData.phoneNumber),
         ),
       )
       .execute();
@@ -75,9 +77,7 @@ export async function POST(request: NextRequest) {
       .insert(UsersFullData)
       .values({
         userId: userId,
-        cfHandle: registerData.cfHandle,
-        username: registerData.username,
-        imageURL: titlePhoto,
+        imageUrl: titlePhoto,
       })
       .execute();
     emailActivation(registerData, randomToken);
