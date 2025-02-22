@@ -149,3 +149,5 @@ ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_community_id_commu
 ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_country_id_countries_id_fk" FOREIGN KEY ("country_id") REFERENCES "public"."countries"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_city_id_cities_id_fk" FOREIGN KEY ("city_id") REFERENCES "public"."cities"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
 CREATE UNIQUE INDEX "users_username_idx" ON "users" USING btree ("username");
+
+ALTER SEQUENCE trainings_training_id_seq RESTART WITH 1000;
