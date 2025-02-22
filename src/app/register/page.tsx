@@ -23,6 +23,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const form = useForm<z.infer<typeof userRegisterValid>>({
     resolver: zodResolver(userRegisterValid),
     defaultValues: {
@@ -165,6 +166,34 @@ export default function RegisterPage() {
                       </FormItem>
                   )}
               />
+            <FormField
+              control={form.control}
+              name="termsAccepted"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+                  <FormControl>
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={(e) => {
+                        setTermsAccepted(e.target.checked);
+                        field.onChange(e);
+                      }}
+                      className="mt-1"
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      I agree to the{" "}
+                      <Link href="/privacy-policy" className="text-primary hover:underline">
+                        terms of service
+                      </Link>
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
             <Button
               type="submit"
               className="w-full bg-black text-white py-2 rounded-md dark:bg-white dark:text-black"
@@ -211,9 +240,9 @@ export default function RegisterPage() {
           setError(result.error || "Failed to register");
           return;
         }
-        setSuccess("Account created successfully! Redirecting to profile...");
+        setSuccess("Account created successfully! You will be redirected to the login page.");
         setTimeout(() => {
-          router.push("/profile");
+          router.push("/login");
         }, 2000);
       });
   }
