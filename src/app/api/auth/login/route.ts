@@ -3,27 +3,25 @@ import { serialize } from "cookie";
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
 import { encryptSession } from "@/lib/session";
-import { eq } from "drizzle-orm";
+import { eq, or, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
+import { userLoginValid } from "@/lib/validation/userLogin";
+import { errorMessageForPasswordMismatch } from "@/lib/const/error-messages";
 
-const expectBody = z.object({
-  username: z.string(),
-  password: z.string(),
-});
-const errorResponse = NextResponse.json(
-  { error: "Invalid username or password" },
-  { status: 401 },
-);
 export async function POST(request: NextRequest) {
   try {
     // Extracting credentials from the request body
 
-    const parseResult = expectBody.safeParse(await request.json());
-    if (!parseResult.success) return errorResponse;
+    const parseResult = userLoginValid.safeParse(await request.json());
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: parseResult.error?.errors.map((e) => e.message)[0] },
+        { status: 400 },
+      );
+    }
 
-    const { username, password } = parseResult.data;
-    console.log(`${username} is trying to logging`);
+    const { usernameOrGmail, password } = parseResult.data;
+    console.log(`${usernameOrGmail} is trying to logging`);
 
     // Querying the database for the user
     const users = await db
@@ -34,17 +32,29 @@ export async function POST(request: NextRequest) {
         password: Users.password,
       })
       .from(Users)
-      .where(eq(Users.username, username))
+      .where(
+        and(
+          or(
+            eq(Users.username, usernameOrGmail),
+            eq(Users.gmail, usernameOrGmail),
+          ),
+        ),
+      )
       .execute();
 
-    if (users.length === 0) return errorResponse;
+    if (users.length === 0)
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
 
     const user = users[0];
 
     // Verifying the password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) return errorResponse;
+    if (!isPasswordValid) return;
+    NextResponse.json(
+      { error: errorMessageForPasswordMismatch },
+      { status: 401 },
+    );
 
     // Preparing user data for the session
     const userJson = {

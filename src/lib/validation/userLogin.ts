@@ -1,7 +1,9 @@
 import { z } from "zod";
-import { password, username } from "./util";
+import { gmail, password, username } from "./util";
 
 export const userLoginValid = z.object({
-  username,
+  usernameOrGmail: username.or(
+    gmail
+  ),
   password,
 });

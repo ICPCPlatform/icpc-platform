@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -31,11 +31,12 @@ export default function LoginPage() {
 function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [error, setError] = useState("");
   const username = searchParams.get("username") ?? "";
   const form = useForm<z.infer<typeof userLoginValid>>({
     resolver: zodResolver(userLoginValid),
     defaultValues: {
-      username,
+      usernameOrGmail: username ?? "",
     },
   });
   return (
@@ -46,10 +47,10 @@ function Login() {
           Please enter your credentials to continue
         </p>
         <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="username"
+              name="usernameOrGmail"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
@@ -82,7 +83,7 @@ function Login() {
                     />
                   </FormControl>
                   <FormDescription></FormDescription>
-                  <FormMessage />
+                  <FormMessage id="cow" />
                 </FormItem>
               )}
             />
@@ -92,6 +93,10 @@ function Login() {
             >
               Sign In
             </Button>
+            <p className="text-sm text-center error-messages">
+              {form.formState.errors.root?.message || error}
+              
+            </p>
           </form>
         </Form>
         <p className="text-sm text-center mt-6">
@@ -104,11 +109,7 @@ function Login() {
     </div>
   );
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+  async function onSubmit(data: z.infer<typeof userLoginValid>) {
 
     fetch("/api/auth/login", {
       method: "POST",
@@ -118,10 +119,16 @@ function Login() {
       redirect: "follow",
       credentials: "include",
       body: JSON.stringify(data),
-    }).then((response) => {
-      if (response.status === 200 || response.status === 307) {
-        router.push("/profile");
-      }
-    });
+    })
+      .then(async (response) => {
+        if (response.status === 200 || response.status === 307) {
+          router.push("/profile");
+        }
+        const res = await response.json();
+        setError(res.error);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 }
