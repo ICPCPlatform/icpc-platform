@@ -1,11 +1,7 @@
 import { z } from "zod";
 import { username, password, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
-const gmail = z
-  .string()
-  .trim()
-  .email({ message: "Invalid gmail address" })
-  .regex(/@gmail.com$/, { message: "Email must be a gmail account" });
+import { gmail } from "./util";
 
 // TODO CF Handle
 const cfHandle = z
