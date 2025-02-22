@@ -6,7 +6,7 @@ import { encryptSession } from "@/lib/session";
 import { eq, or, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { userLoginValid } from "@/lib/validation/userLogin";
-import { errorMessageForPasswordMismatch } from "@/lib/const/error-messages";
+import { passwordMismatch } from "@/lib/const/error-messages";
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     if (!isPasswordValid) return;
     NextResponse.json(
-      { error: errorMessageForPasswordMismatch },
+      { error: passwordMismatch },
       { status: 401 },
     );
 

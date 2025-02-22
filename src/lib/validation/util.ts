@@ -1,16 +1,16 @@
 import { z } from "zod";
 import { type AnyPgTable } from "drizzle-orm/pg-core";
 import {
-  errorMessageForInvalidEmail,
-  errorMessageForPasswordExceedsMaxLength,
-  errorMessageForPasswordRequired,
-  errorMessageForShortPassword,
-  errorMessageForUserExist,
+  invalidEmail,
+  passwordExceedsMaxLength,
+    invalidPassword,
+  passwordRequired,
+  userExist,
 } from "@/lib/const/error-messages";
 
 export const username = z
   .string()
-  .nonempty(errorMessageForUserExist)
+  .nonempty(userExist)
   .trim()
   .min(3, { message: "Username too short" })
   .max(20, { message: "Username too long" })
@@ -21,9 +21,9 @@ export const username = z
 
 export const password = z
   .string()
-  .nonempty(errorMessageForPasswordRequired)
-  .min(8, { message: errorMessageForShortPassword })
-  .max(100, { message: errorMessageForPasswordExceedsMaxLength })
+  .nonempty(passwordRequired)
+  .min(8, { message:invalidPassword  })
+  .max(100, { message: passwordExceedsMaxLength })
   .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])(?!.*\s).{8,}$/, {
     message:
       "Password must be include an uppercase letter, a lowercase letter, a number, and a special character, with no spaces.",
@@ -32,7 +32,7 @@ export const password = z
 export const gmail = z
   .string()
   .trim()
-  .email({ message: errorMessageForInvalidEmail })
+  .email({ message: invalidEmail })
   .max(100, { message: "Email too long" })
   .regex(/@gmail.com$/, { message: "Email must be a gmail account" });
 
