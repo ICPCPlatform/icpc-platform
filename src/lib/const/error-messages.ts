@@ -60,7 +60,7 @@ export {
     errorMessageForPhoneNumberExist,
     errorMessageForTermsAndConditionsRequired,
     errorMessageForInvalidCharacters,
-    errorMessageForNetworkerror,
+    errorMessageForNetworkError,
     errorMessageForDuplicateSubmission,
     errorMessageForRateLimitExceeded
 };
