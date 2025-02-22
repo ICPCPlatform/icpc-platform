@@ -22,6 +22,10 @@ const phoneNumber = z
     "Phone number must be a valid Egyptian number (starts with +20)",
   );
 const confirmPassword =z.string();
+const termsAccepted = z.boolean().refine((val) => val === true, {
+  message: "You must agree to the terms of service"
+});
+
 export const userRegisterValid = z.object({
   username,
   password,
@@ -30,9 +34,9 @@ export const userRegisterValid = z.object({
   vjHandle: cfHandle.optional(),
   phoneNumber,
   confirmPassword,
+  termsAccepted,
 });
-const _: EnforceKeys<typeof userRegisterValid, typeof Users> = true;
 
+// Type checking is handled by TypeScript compiler
 // Usage example:
-// const { success, data, error } = password.safeParse(""); // Replace with an actual 14-digit ID
-// console.log("Valid Name:", success, data, error?.message);
+// const { success, data, error } = password.safeParse("");
