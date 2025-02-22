@@ -21,6 +21,7 @@ const phoneNumber = z
     /^\+201[0-9]{9}$/,
     "Phone number must be a valid Egyptian number (starts with +20)",
   );
+const confirmPassword =z.string();
 export const userRegisterValid = z.object({
   username,
   password,
@@ -28,6 +29,7 @@ export const userRegisterValid = z.object({
   cfHandle,
   vjHandle: cfHandle.optional(),
   phoneNumber,
+  confirmPassword,
 });
 const _: EnforceKeys<typeof userRegisterValid, typeof Users> = true;
 

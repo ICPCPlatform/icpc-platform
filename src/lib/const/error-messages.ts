@@ -23,7 +23,7 @@ const passwordContainsEmail = "Password cannot contain the email.";
 // Codeforces Handle errors
 const invalidCodeforces: string = "Invalid Codeforces handle.";
 const codeforcesHandleRequired: string = "Codeforces Handle is required.";
-
+const codeforcesHandleRequiredExist: string = "Phone number already in use.";
 // Phone Number errors
 const invalidPhoneNumber: string = "Invalid phone number.";
 const phoneNumberRequired: string = "Phone Number is required.";
@@ -52,6 +52,7 @@ export {
     passwordExceedsMaxLength,
     invalidCodeforces,
     codeforcesHandleRequired,
+    codeforcesHandleRequiredExist,
     invalidPhoneNumber,
     phoneNumberRequired,
     phoneNumberExist,

@@ -31,6 +31,7 @@ export default function RegisterPage() {
       cfHandle: "",
       phoneNumber: "",
       password: "",
+      confirmPassword:"",
     },
   });
 
@@ -143,6 +144,27 @@ export default function RegisterPage() {
                 </FormItem>
               )}
             />
+              <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                              <Input
+                                  type="password"
+                                  placeholder="*****"
+                                  {...field}
+                                  className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                              />
+                          </FormControl>
+                          <FormDescription>
+
+                          </FormDescription>
+                          <FormMessage />
+                      </FormItem>
+                  )}
+              />
             <Button
               type="submit"
               className="w-full bg-black text-white py-2 rounded-md dark:bg-white dark:text-black"
