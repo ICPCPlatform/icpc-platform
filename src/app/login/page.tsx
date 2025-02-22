@@ -39,10 +39,10 @@ function Login() {
     },
   });
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-      <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10">
+    <div className="flex items-center justify-center min-h-screen bg-background text-foreground dark:bg-black dark:text-white">
+      <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10 bg-white dark:bg-black">
         <h1 className="text-2xl font-bold mb-4 text-center">Welcome Back</h1>
-        <p className="text-sm text-muted-foreground mb-6 text-center">
+        <p className="text-sm text-muted-foreground mb-6 text-center dark:text-gray-400">
           Please enter your credentials to continue
         </p>
         <Form {...form}>
@@ -57,7 +57,7 @@ function Login() {
                     <Input
                       placeholder="username123"
                       {...field}
-                      className="mt-1 border border-gray-300 rounded-md p-2"
+                      className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600 dark:text-white"
                     />
                   </FormControl>
                   <FormDescription>
@@ -78,9 +78,8 @@ function Login() {
                       placeholder="strongpassword123"
                       {...field}
                       type="password"
-                      className="mt-1 border border-gray-300 rounded-md p-2"
+                      className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600  dark:text-white"
                     />
-                    {/* for the memes */}
                   </FormControl>
                   <FormDescription></FormDescription>
                   <FormMessage />
@@ -89,7 +88,7 @@ function Login() {
             />
             <Button
               type="submit"
-              className="w-full bg-black text-white py-2 rounded-md"
+              className="w-full bg-black text-white py-2 rounded-md dark:bg-white dark:text-black"
             >
               Sign In
             </Button>
@@ -97,7 +96,7 @@ function Login() {
         </Form>
         <p className="text-sm text-center mt-6">
           Don{"'"}t have an account?{" "}
-          <Link href="/register" className="text-primary">
+          <Link href="/register" className="text-primary dark:text-white">
             Sign up
           </Link>
         </p>

@@ -27,14 +27,18 @@ export default function RegisterPage() {
     resolver: zodResolver(userRegisterValid),
     defaultValues: {
       username: "",
+      gmail: "",
+      cfHandle: "",
+      phoneNumber: "",
+      password: "",
     },
   });
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-      <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10">
+    <div className="flex items-center justify-center min-h-screen bg-background text-foreground dark:bg-black dark:text-white">
+      <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10 bg-white dark:bg-black">
         <h1 className="text-2xl font-bold mb-4 text-center">Create Account</h1>
-        <p className="text-sm text-muted-foreground mb-6 text-center">
+        <p className="text-sm text-muted-foreground mb-6 text-center dark:text-gray-400">
           Join our competitive programming community
         </p>
 
@@ -50,7 +54,7 @@ export default function RegisterPage() {
                     <Input
                       placeholder="username123"
                       {...field}
-                      className="mt-1 border border-gray-300 rounded-md p-2"
+                      className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     />
                   </FormControl>
                   <FormDescription>
@@ -70,7 +74,7 @@ export default function RegisterPage() {
                     <Input
                       placeholder="example@gmail.com"
                       {...field}
-                      className="mt-1 border border-gray-300 rounded-md p-2"
+                      className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     />
                   </FormControl>
                   <FormDescription>
@@ -90,7 +94,7 @@ export default function RegisterPage() {
                     <Input
                       placeholder="mohamed_reda"
                       {...field}
-                      className="mt-1 border border-gray-300 rounded-md p-2"
+                      className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     />
                   </FormControl>
                   <FormDescription>
@@ -100,7 +104,6 @@ export default function RegisterPage() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="phoneNumber"
@@ -111,7 +114,7 @@ export default function RegisterPage() {
                     <Input
                       placeholder="01001001000"
                       {...field}
-                      className="mt-1 border border-gray-300 rounded-md p-2"
+                      className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     />
                   </FormControl>
                   <FormDescription>This is your phone number.</FormDescription>
@@ -119,7 +122,6 @@ export default function RegisterPage() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -131,12 +133,11 @@ export default function RegisterPage() {
                       type="password"
                       placeholder="*****"
                       {...field}
-                      className="mt-1 border border-gray-300 rounded-md p-2"
+                      className="mt-1 border border-gray-300 rounded-md p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                     />
                   </FormControl>
                   <FormDescription>
-                    At least 8 characters with a mix of letters, numbers, and
-                    symbols.
+                    At least 8 characters with a mix of letters, numbers, and symbols.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -144,7 +145,7 @@ export default function RegisterPage() {
             />
             <Button
               type="submit"
-              className="w-full bg-black text-white py-2 rounded-md"
+              className="w-full bg-black text-white py-2 rounded-md dark:bg-white dark:text-black"
             >
               Create Account
             </Button>
@@ -158,7 +159,7 @@ export default function RegisterPage() {
 
         <p className="text-sm text-center mt-6">
           Already have an account?{" "}
-          <Link href="/login" className="text-primary">
+          <Link href="/login" className="text-primary dark:text-white">
             Sign in
           </Link>
         </p>
