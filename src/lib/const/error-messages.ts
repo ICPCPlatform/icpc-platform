@@ -43,6 +43,18 @@ const termsNotAccepted: string = "You must agree to the terms of service.";
 const invalidCharacters: string = "Invalid characters.";
 const networkError : string = "Network Error occurred.";
 
+// UserFulldataValidations errors
+const academicYearInvalid = "Academic Year must be a number between 1 and 7";
+const academicYearNotNumber = "Academic Year must be Number";
+const academicYearNotPositive = "Academic Year must be Positive";
+const academicYearOutOfRange = "Academic Year must be between 1 and 5";
+const englishNameTooShort = "too short";
+const englishNameInvalid = "Name must contain only letters";
+const arabicNameTooShort = "too short";
+const arabicNameInvalid = "Name must contain only Arabic letters";
+const nationalIdInvalidLength = "Egyptian National ID must be exactly 14 digits";
+const nationalIdInvalid = "Invalid National ID";
+
 export {
     userExist,
     usernameRequired,
@@ -74,5 +86,15 @@ export {
     invalidCharacters,
     networkError,
     passwordContainsUsername,
-    passwordContainsEmail
+    passwordContainsEmail,
+    academicYearInvalid,
+    academicYearNotNumber,
+    academicYearNotPositive,
+    academicYearOutOfRange,
+    englishNameTooShort,
+    englishNameInvalid,
+    arabicNameTooShort,
+    arabicNameInvalid,
+    nationalIdInvalidLength,
+    nationalIdInvalid
 };

@@ -10,6 +10,21 @@ import {
   communities,
 } from "@/lib/const";
 
+import {
+  academicYearInvalid,
+  academicYearNotNumber,
+  academicYearNotPositive,
+  academicYearOutOfRange,
+  usernameTooShort,
+  usernameInvalidCharacters,
+  englishNameTooShort,
+  englishNameInvalid,
+  arabicNameTooShort,
+  arabicNameInvalid,
+  nationalIdInvalidLength,
+  nationalIdInvalid
+} from "../const/error-messages";
+
 // Academic
 const universitiesValues = [...universities, "Other"] as const;
 const institute = z.enum(universitiesValues).default("Other");
@@ -22,14 +37,14 @@ const academicYear = z
   .string()
   .trim()
   .regex(/^[1-7]$/, {
-    message: "Academic Year must be a number between 1 and 7",
+    message: academicYearInvalid,
   })
   .transform((value) => Number(value))
   .or(
     z
-      .number({ message: " Academic Year must be Number" })
-      .positive({ message: " Academic Year must be Positive" })
-      .max(7, { message: " Academic Year must be between 1 and 5" }),
+      .number({ message: academicYearNotNumber })
+      .positive({ message: academicYearNotPositive })
+      .max(7, { message: academicYearOutOfRange }),
   )
   .optional();
 const graduationDate = z.string().date().optional();
@@ -37,9 +52,9 @@ const graduationDate = z.string().date().optional();
 const handle = z
   .string()
   .trim()
-  .min(3, { message: "Username too short" })
+  .min(3, { message: usernameTooShort })
   .regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Username must contain only letters, numbers, and underscores",
+    message: usernameInvalidCharacters,
   })
   .optional();
 
@@ -48,23 +63,23 @@ const handle = z
 const englishName = z
   .string()
   .trim()
-  .min(3, { message: "too short" })
-  .regex(/^[a-zA-Z]+$/)
+  .min(3, { message: englishNameTooShort })
+  .regex(/^[a-zA-Z]+$/, { message: englishNameInvalid })
   .optional();
 const arabicName = z
   .string()
   .trim()
-  .min(2, { message: "too short" })
-  .regex(/^[ء-ي]+$/)
+  .min(2, { message: arabicNameTooShort })
+  .regex(/^[ء-ي]+$/, { message: arabicNameInvalid })
   .optional();
 
 const nationalId = z
   .string()
   .trim()
-  .regex(/^\d{14}$/, "Egyptian National ID must be exactly 14 digits")
-  .refine(birthdate, "Invalid National ID")
-  .refine(govNumber, "Invalid National ID")
-  .refine(isValidEgyptianNIDChecksum, "Invalid National ID")
+  .regex(/^\d{14}$/, nationalIdInvalidLength)
+  .refine(birthdate, nationalIdInvalid)
+  .refine(govNumber, nationalIdInvalid)
+  .refine(isValidEgyptianNIDChecksum, nationalIdInvalid)
   .optional();
 
 const country = z.enum(countries).optional();
