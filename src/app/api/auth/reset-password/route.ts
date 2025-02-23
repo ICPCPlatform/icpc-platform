@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { ResetPassword } from "@/lib/db/schema/user/ResetPassword";
 import { Users } from "@/lib/db/schema/user/Users";
+import send from "@/lib/email/sendEmail";
 import { gmail } from "@/lib/validation/util";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -37,6 +38,15 @@ export default async function POST(request: NextRequest) {
     db.insert(ResetPassword).values({
       userId,
       token,
+    });
+    send({
+      to: [data.gmail],
+      subject: "Reset Password",
+      html: `
+        <h1>Reset Password</h1>
+        <p>Click the link below to reset your password</p>
+        <a href="https://${process.env.URL}/change-password-reset?token=${token}">Reset Password</a>
+      `,
     });
     // send email
     return new NextResponse("Email sent", { status: 200 });
