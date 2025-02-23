@@ -1,7 +1,8 @@
 import { char, pgTable, uuid } from "drizzle-orm/pg-core";
+import { Users } from "./Users";
 
 
-const ResetPassword = pgTable("reset_password", {
+export const ResetPassword = pgTable("reset_password", {
   userId: uuid().primaryKey().references(() => Users.userId, {
     onDelete: "cascade",
     onUpdate: "cascade
