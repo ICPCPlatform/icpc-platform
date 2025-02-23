@@ -37,7 +37,7 @@ export const userRegisterValid = z.object({
   termsAccepted,
 });
 
-const _: EnforceKeys<typeof userRegisterValid, typeof Users>; // Ensure validation matches Users schema
+const _: EnforceKeys<typeof userRegisterValid, typeof Users> = {} as EnforceKeys<typeof userRegisterValid, typeof Users>; // Ensure validation matches Users schema
 
 // Type checking is handled by TypeScript compiler
 // Usage example:
