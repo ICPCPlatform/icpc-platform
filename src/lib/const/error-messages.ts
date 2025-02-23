@@ -25,6 +25,8 @@ const passwordExceedsMaxLength: string = "Password exceeds maximum length.";
 const passwordContainsUsername = "Password cannot contain the username.";
 const passwordContainsEmail = "Password cannot contain the email.";
 const passwordInvalidFormat = "Password must include an uppercase letter, a lowercase letter, a number, and a special character, with no spaces.";
+const passwordsMustMatch: string = "Passwords must match.";
+const passwordMinLength: string = "Password must be at least 8 characters long.";
 
 // Codeforces Handle errors
 const invalidCodeforces: string = "Invalid Codeforces handle.";
@@ -104,5 +106,7 @@ export {
     usernameTooLong,
     usernameInvalidFormat,
     passwordInvalidFormat,
-    emailNotGmail
+    emailNotGmail,
+    passwordsMustMatch,
+    passwordMinLength
 };

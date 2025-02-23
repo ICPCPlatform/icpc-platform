@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { username, password, gmail, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
-import { usernameTooShort, usernameInvalidCharacters, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted } from "../const/error-messages";
+import { usernameTooShort, usernameInvalidCharacters, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordsMustMatch, passwordMinLength } from "../const/error-messages";
 
 // TODO CF Handle
 const cfHandle = z
@@ -21,7 +21,7 @@ const phoneNumber = z
     /^\+201[0-9]{9}$/,
     phoneNumberInvalid,
   );
-const confirmPassword =z.string();
+const confirmPassword = z.string().min(8, { message: passwordMinLength });
 const termsAccepted = z.boolean().refine((val) => val === true, {
   message: termsNotAccepted
 });
@@ -35,6 +35,9 @@ export const userRegisterValid = z.object({
   phoneNumber,
   confirmPassword,
   termsAccepted,
+}).refine((data) => data.password === data.confirmPassword, {
+  message: passwordsMustMatch,
+  path: ['confirmPassword'],
 });
 
 const _: EnforceKeys<typeof userRegisterValid, typeof Users> = {} as EnforceKeys<typeof userRegisterValid, typeof Users>; // Ensure validation matches Users schema
