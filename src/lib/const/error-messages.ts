@@ -5,13 +5,16 @@ const usernameContainsBannedWords: string = "Username contains banned words.";
 const invalidUsername: string = "Invalid Username";
 const usernameTooShort: string = "Username too short.";
 const usernameInvalidCharacters: string = "Username must contain only letters, numbers, and underscores.";
+const usernameTooLong = "Username too long";
+const usernameInvalidFormat = "Username must contain only letters, numbers, and underscores and start with a letter or underscore";
 
 // Email errors
 const invalidEmail: string = "Invalid email format.";
 const emailExist: string = "Email already in use.";
 const emailRequired: string = "Email is required.";
-const emailTooLong: string = "Email too long.";
+const emailTooLong = "Email too long";
 const unsupportedEmailDomain: string = "Unsupported email domain.";
+const emailNotGmail = "Email must be a gmail account";
 
 // Password errors
 const invalidPassword: string = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
@@ -21,6 +24,7 @@ const passwordMismatch: string = "Passwords do not match.";
 const passwordExceedsMaxLength: string = "Password exceeds maximum length.";
 const passwordContainsUsername = "Password cannot contain the username.";
 const passwordContainsEmail = "Password cannot contain the email.";
+const passwordInvalidFormat = "Password must include an uppercase letter, a lowercase letter, a number, and a special character, with no spaces.";
 
 // Codeforces Handle errors
 const invalidCodeforces: string = "Invalid Codeforces handle.";
@@ -96,5 +100,9 @@ export {
     arabicNameTooShort,
     arabicNameInvalid,
     nationalIdInvalidLength,
-    nationalIdInvalid
+    nationalIdInvalid,
+    usernameTooLong,
+    usernameInvalidFormat,
+    passwordInvalidFormat,
+    emailNotGmail
 };
