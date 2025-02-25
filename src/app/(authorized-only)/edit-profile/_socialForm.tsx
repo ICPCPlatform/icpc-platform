@@ -10,6 +10,15 @@ import { Input } from "@/components/ui/input";
 import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { useFormContext } from "react-hook-form";
 import { z } from "zod";
+import { Eye, EyeOff, Facebook, Linkedin, Twitter, Github } from "lucide-react";
+import { useState } from "react";
+
+const socialIcons = {
+  facebook: <Facebook className="mr-2 h-4 w-4" />,
+  linkedIn: <Linkedin className="mr-2 h-4 w-4" />,
+  twitter: <Twitter className="mr-2 h-4 w-4" />,
+  github: <Github className="mr-2 h-4 w-4" />,
+};
 
 export default function SocialForm() {
   const form = useFormContext<z.infer<typeof userFullDataValid>>();
@@ -36,6 +45,11 @@ export default function SocialForm() {
     },
   ] as const;
 
+  const [isFacebookPublic, setIsFacebookPublic] = useState(false);
+  const [isLinkedInPublic, setIsLinkedInPublic] = useState(false);
+  const [isTwitterPublic, setIsTwitterPublic] = useState(false);
+  const [isGithubPublic, setIsGithubPublic] = useState(false);
+
   return (
     <div className="space-y-4">
       {socialProfiles.map((profile) => (
@@ -45,16 +59,40 @@ export default function SocialForm() {
           name={profile.id}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{profile.label}</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder={profile.placeholder}
-                  className="w-full"
-                  type="url"
-                />
-              </FormControl>
-              <FormMessage >
+              <FormLabel className="flex items-center">
+                {socialIcons[profile.id]}
+                {profile.label}
+              </FormLabel>
+              <div className="flex items-center space-x-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder={profile.placeholder}
+                    className="w-full"
+                    type="url"
+                  />
+                </FormControl>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (profile.id === "facebook") setIsFacebookPublic(!isFacebookPublic);
+                    if (profile.id === "linkedIn") setIsLinkedInPublic(!isLinkedInPublic);
+                    if (profile.id === "twitter") setIsTwitterPublic(!isTwitterPublic);
+                    if (profile.id === "github") setIsGithubPublic(!isGithubPublic);
+                  }}
+                  className="text-muted-foreground"
+                >
+                  {(profile.id === "facebook" && isFacebookPublic) ||
+                  (profile.id === "linkedIn" && isLinkedInPublic) ||
+                  (profile.id === "twitter" && isTwitterPublic) ||
+                  (profile.id === "github" && isGithubPublic) ? (
+                    <Eye className="h-5 w-5" />
+                  ) : (
+                    <EyeOff className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+              <FormMessage>
                 {form.formState.errors[profile.id]?.message}
               </FormMessage>
             </FormItem>
