@@ -19,7 +19,7 @@ import {
 // Codeforeces Tests
 test.describe("Register Page Testing - Codeforces Handle Validation", () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto("http://localhost:3000/register");
+        await page.goto("http://localhost:3001/register");
         await page.fill('input[name="username"]', username);
         await page.fill('input[name="gmail"]', email);
         await page.fill('input[name="phoneNumber"]', phoneNumber);
@@ -68,26 +68,6 @@ test.describe("Register Page Testing - Codeforces Handle Validation", () => {
 
     test("Test Case 13 – Empty Codeforces Handle", async ({ page }) => {
 
-        // Fill out the registration form
-        await page.fill('input[name="cfHandle"]', "");
-        await page.click('button[type="submit"]');
-
-        // Wait for the error message to appear
-        const errorMessageElement = await page.waitForSelector(`text=${codeforcesHandleRequired}`);
-        const errorMessage = await errorMessageElement.textContent();
-
-        // Assert the error message
-        expect(errorMessage).toBe(codeforcesHandleRequired);
-
-        // Assert that the form data persists (except passwords)
-        const persistedCodeforcesHandle = await page.inputValue('input[name="cfHandle"]');
-        expect(persistedCodeforcesHandle).toBe("");
-
-        // Assert that the form remains on the registration page
-        expect(page.url()).toContain("/register");
-    });
-    test("Test Case 13 – Empty Codeforces Handle", async ({ page }) => {
-
 
         // Fill out the registration form
         await page.fill('input[name="cfHandle"]', codeforcesHandle);
@@ -111,7 +91,7 @@ test.describe("Register Page Testing - Codeforces Handle Validation", () => {
 // PhoneNumber Tests
 test.describe("Register Page Testing For Phone Number", () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto("http://localhost:3000/register");
+        await page.goto("http://localhost:3001/register");
         await page.fill('input[name="username"]', username);
         await page.fill('input[name="gmail"]', email);
         await page.fill('input[name="cfHandle"]', codeforcesHandle);

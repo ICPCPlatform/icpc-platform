@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { username, password, gmail, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
-import { usernameTooShort, usernameInvalidCharacters, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordsMustMatch, passwordMinLength } from "../const/error-messages";
+import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordsMustMatch, passwordMinLength, invalidPassword } from "../const/error-messages";
 
 // TODO CF Handle
 const cfHandle = z
@@ -9,7 +9,7 @@ const cfHandle = z
   .trim()
   .min(3, { message: usernameTooShort })
   .regex(/^[a-zA-Z0-9_]+$/, {
-    message: usernameInvalidCharacters,
+    message: usernameInvalidFormat,
   });
 
 const phoneNumber = z
@@ -21,7 +21,7 @@ const phoneNumber = z
     /^\+201[0-9]{9}$/,
     phoneNumberInvalid,
   );
-const confirmPassword = z.string().min(8, { message: passwordMinLength });
+const confirmPassword = z.string().min(8, { message: invalidPassword });
 const termsAccepted = z.boolean().refine((val) => val === true, {
   message: termsNotAccepted
 });

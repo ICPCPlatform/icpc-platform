@@ -1,5 +1,6 @@
 "use client";
 import { userRegisterValid } from "@/lib/validation/userValidations";
+import { successMessage } from "@/lib/const/error-messages";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -240,7 +241,7 @@ export default function RegisterPage() {
           setError(result.error || "Failed to register");
           return;
         }
-        setSuccess("Account created successfully! You will be redirected to the login page.");
+        setSuccess(successMessage);
         setTimeout(() => {
           router.push("/login");
         }, 2000);

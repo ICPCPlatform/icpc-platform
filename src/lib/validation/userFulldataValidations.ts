@@ -16,7 +16,7 @@ import {
   academicYearNotPositive,
   academicYearOutOfRange,
   usernameTooShort,
-  usernameInvalidCharacters,
+  usernameInvalidFormat,
   englishNameTooShort,
   englishNameInvalid,
   arabicNameTooShort,
@@ -54,7 +54,7 @@ const handle = z
   .trim()
   .min(3, { message: usernameTooShort })
   .regex(/^[a-zA-Z0-9_]+$/, {
-    message: usernameInvalidCharacters,
+    message: usernameInvalidFormat,
   })
   .optional();
 

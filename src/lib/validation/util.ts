@@ -5,18 +5,16 @@ import {
   passwordExceedsMaxLength,
   invalidPassword,
   passwordRequired,
-  userExist,
   usernameTooShort,
   usernameTooLong,
+  usernameRequired,
   usernameInvalidFormat,
-  passwordInvalidFormat,
-  emailTooLong,
-  emailNotGmail
+  emailTooLong, unsupportedEmailDomain, emailRequired
 } from "../const/error-messages";
 
 export const username = z
   .string()
-  .nonempty(userExist)
+  .nonempty(usernameRequired)
   .trim()
   .min(3, { message: usernameTooShort })
   .max(20, { message: usernameTooLong })
@@ -30,15 +28,16 @@ export const password = z
   .min(8, { message: invalidPassword })
   .max(100, { message: passwordExceedsMaxLength })
   .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])(?!.*\s).{8,}$/, {
-    message: passwordInvalidFormat,
+    message: invalidPassword,
   });
 
 export const gmail = z
   .string()
+    .nonempty({message : emailRequired})
   .trim()
   .email({ message: invalidEmail })
   .max(100, { message: emailTooLong })
-  .regex(/@gmail.com$/, { message: emailNotGmail });
+  .regex(/@gmail.com$/, { message: unsupportedEmailDomain });
 
 /**
  * check if the keys of the zod object are the same as the keys of the pgTable

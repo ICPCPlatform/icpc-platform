@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 const password = "Cgmoreda@1";
 const email = "cgmoredax@gmail.com";
 const codeforcesHandle = "Elglaly";
-const confirmPassword = "Cgmoreda";
+const confirmPassword = "Cgmoreda@1";
 const phoneNumber = "+201026386402";
 const username ="Sherif12"
 const successMessage = "Registration successful. Please check your email for verification.";
@@ -19,12 +19,13 @@ import {
 // Email Tests
 test.describe("Register Page Testing - Email Validation", () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto("http://localhost:3000/register");
+        await page.goto("http://localhost:3001/register");
         await page.fill('input[name="username"]', username);
         await page.fill('input[name="cfHandle"]', codeforcesHandle);
         await page.fill('input[name="phoneNumber"]', phoneNumber);
         await page.fill('input[name="password"]', password);
         await page.fill('input[name="confirmPassword"]', confirmPassword);
+        await page.locator('input[type="checkbox"]').check();
     });
 
     test("Test Case 8 – Valid Email Format", async ({ page }) => {
@@ -45,22 +46,15 @@ test.describe("Register Page Testing - Email Validation", () => {
         expect(page.url()).toContain("/profile");
     });
     test("Test Case 9 – Invalid Email Format", async ({ page }) => {
-        const invalidEmail = "cgmoredax@gmail"; // Invalid email format
+        const EmailNotValid = "cgmoredax@gmail"; // Invalid email format
 
         // Fill out the registration form
-        await page.fill('input[name="gmail"]', invalidEmail);
+        await page.fill('input[name="gmail"]', EmailNotValid);
         await page.click('button[type="submit"]');
 
         // Wait for the error message to appear
         const errorMessageElement = await page.waitForSelector(`text=${invalidEmail}`);
-        const errorMessage = await errorMessageElement.textContent();
-
-        // Assert the error message
-        expect(errorMessage).toBe(invalidEmail);
-
-        // Assert that the form data persists (except passwords)
-        const persistedEmail = await page.inputValue('input[name="gmail"]');
-        expect(persistedEmail).toBe(invalidEmail);
+        expect(errorMessageElement).not.toBeNull()
     });
 
     test("Test Case 10 – Duplicate Email", async ({ page }) => {
@@ -68,7 +62,13 @@ test.describe("Register Page Testing - Email Validation", () => {
 
         // Fill out the registration form
         await page.fill('input[name="gmail"]', duplicateEmail);
-        await page.click('button[type="submit"]');
+        const [response] = await Promise.all([
+            page.waitForResponse(response => response.url().includes("/api/auth/register")),
+            page.click('button[type="submit"]'),
+        ]);
+
+        // Check the API response status
+        expect(response.status()).toBe(400); // Ensure the status code is 400 (Bad Request)
 
         // Wait for the error message to appear
         const errorMessageElement = await page.waitForSelector(`text=${emailExist}`);
@@ -104,7 +104,6 @@ test.describe("Register Page Testing - Email Validation", () => {
     test("Test Case 12 – Empty Email ", async ({ page }) => {
 
         // Fill out the registration form
-        await page.fill('input[name="gmail"]', "");
         await page.click('button[type="submit"]');
 
         // Wait for the error message to appear

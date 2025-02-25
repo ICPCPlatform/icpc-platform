@@ -1,12 +1,10 @@
 // Username errors
-const userExist: string = "Username already exists.";
+const userExist: string = "User already exists";
 const usernameRequired: string = "Username is required.";
 const usernameContainsBannedWords: string = "Username contains banned words.";
-const invalidUsername: string = "Invalid Username";
 const usernameTooShort: string = "Username too short.";
-const usernameInvalidCharacters: string = "Username must contain only letters, numbers, and underscores.";
+const usernameInvalidFormat: string = "Username must contain only letters, numbers, and underscores.";
 const usernameTooLong = "Username too long";
-const usernameInvalidFormat = "Username must contain only letters, numbers, and underscores and start with a letter or underscore";
 
 // Email errors
 const invalidEmail: string = "Invalid email format.";
@@ -14,13 +12,11 @@ const emailExist: string = "Email already in use.";
 const emailRequired: string = "Email is required.";
 const emailTooLong = "Email too long";
 const unsupportedEmailDomain: string = "Unsupported email domain.";
-const emailNotGmail = "Email must be a gmail account";
 
 // Password errors
 const invalidPassword: string = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
 const passwordRequired: string = "Password is required.";
 const confirmPasswordRequired: string = "Confirm Password is required.";
-const passwordMismatch: string = "Passwords do not match.";
 const passwordExceedsMaxLength: string = "Password exceeds maximum length.";
 const passwordContainsUsername = "Password cannot contain the username.";
 const passwordContainsEmail = "Password cannot contain the email.";
@@ -42,7 +38,6 @@ const phoneNumberTooLong: string = "Phone number too long.";
 const phoneNumberInvalid: string = "Phone number must be a valid Egyptian number (starts with +20).";
 
 // Terms and Conditions errors
-const termsAndConditionsRequired: string = "You must accept the terms and conditions.";
 const termsNotAccepted: string = "You must agree to the terms of service.";
 
 // General errors
@@ -61,13 +56,14 @@ const arabicNameInvalid = "Name must contain only Arabic letters";
 const nationalIdInvalidLength = "Egyptian National ID must be exactly 14 digits";
 const nationalIdInvalid = "Invalid National ID";
 
+const successMessage = "Registration successful. Please check your email for verification.";
+
 export {
     userExist,
     usernameRequired,
-    invalidUsername,
+    usernameInvalidFormat,
     usernameContainsBannedWords,
     usernameTooShort,
-    usernameInvalidCharacters,
     invalidEmail,
     emailExist,
     emailRequired,
@@ -76,7 +72,6 @@ export {
     invalidPassword,
     passwordRequired,
     confirmPasswordRequired,
-    passwordMismatch,
     passwordExceedsMaxLength,
     invalidCodeforces,
     codeforcesHandleRequired,
@@ -87,7 +82,6 @@ export {
     phoneNumberTooShort,
     phoneNumberTooLong,
     phoneNumberInvalid,
-    termsAndConditionsRequired,
     termsNotAccepted,
     invalidCharacters,
     networkError,
@@ -104,9 +98,8 @@ export {
     nationalIdInvalidLength,
     nationalIdInvalid,
     usernameTooLong,
-    usernameInvalidFormat,
     passwordInvalidFormat,
-    emailNotGmail,
     passwordsMustMatch,
-    passwordMinLength
+    passwordMinLength,
+    successMessage
 };
