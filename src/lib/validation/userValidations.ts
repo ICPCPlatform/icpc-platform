@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { username, password, gmail, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
-import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordsMustMatch, passwordMinLength, invalidPassword } from "../const/error-messages";
+import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordsMustMatch, invalidPassword } from "../const/error-messages";
 
 // TODO CF Handle
 const cfHandle = z
