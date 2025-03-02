@@ -124,8 +124,8 @@ function Login() {
         if (response.status === 200 || response.status === 307) {
           router.push("/profile");
         }
-        const res = await response.json();
-        setError(res.error);
+        // const res = await response.json();
+        // setError(res.error);
       })
       .catch((e) => {
         console.error(e);

@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import { userLoginValid } from "@/lib/validation/userLogin";
 import { passwordMismatch } from "@/lib/const/error-messages";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) : Promise<NextResponse> {
   try {
     // Extracting credentials from the request body
 
@@ -50,8 +50,7 @@ export async function POST(request: NextRequest) {
     // Verifying the password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) return;
-    NextResponse.json(
+    if (!isPasswordValid) return NextResponse.json(
       { error: passwordMismatch },
       { status: 401 },
     );
