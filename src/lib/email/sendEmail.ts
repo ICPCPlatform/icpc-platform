@@ -10,7 +10,7 @@ export default async function send({
 }) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   return await resend.emails.send({
-    from: "Icpc assiut Community <no-replay@icpcpassiut.tech>",
+    from: "Icpc assiut Community <no-reply@icpcpassiut.tech>",
     to,
     subject,
     html,

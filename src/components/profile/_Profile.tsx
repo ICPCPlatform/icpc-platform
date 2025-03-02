@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 import { SiLeetcode, SiCodechef, SiCodeforces } from "react-icons/si";
 import Link from "next/link";
+import { useUserContext } from "@/providers/user";
 
 const activeButtonStyle = "text-primary border-b-2 border-primary";
 const unactiveButtonStyle =
@@ -31,14 +32,13 @@ const UserContext = React.createContext(
 export default function Profile<T extends boolean>({
   user,
   className,
-  allowEdit = false,
 }: {
   user: UserProfile<T>;
   className?: string;
-  allowEdit: boolean;
 }) {
   const userContent = userData(user);
   const [activeTab, setActiveTab] = useState<keyof typeof userContent>("cp");
+  const allowEdit = useUserContext()?.username === user.username;
 
   return (
     <UserContext.Provider value={user}>
