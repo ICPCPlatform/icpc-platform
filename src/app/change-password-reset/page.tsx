@@ -11,6 +11,7 @@ export default async function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const token = searchParams.token as string;
+  console.log(token)
   const users = await db.select({ userId: ResetPassword.userId })
     .from(ResetPassword)
     .where(eq(ResetPassword.token, token))
@@ -30,6 +31,7 @@ export default async function Page({
     </>
   );
   async function handleSubmit(formData: FormData) {
+    "use server"
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
     if (password !== confirmPassword) {

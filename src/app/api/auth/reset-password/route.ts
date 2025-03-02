@@ -10,7 +10,7 @@ import { z } from "zod";
 const validationSchema = z.object({
   gmail,
 });
-export default async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const { success, data } = validationSchema.safeParse(await request.json());
     if (!success) {
@@ -35,7 +35,7 @@ export default async function POST(request: NextRequest) {
       .where(eq(Users.gmail, data.gmail))
       .execute();
 
-    db.insert(ResetPassword).values({
+    await db.insert(ResetPassword).values({
       userId,
       token,
     });

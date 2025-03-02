@@ -8,12 +8,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { gmail } from "@/lib/validation/util";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const validationSchema = z.object({
@@ -43,7 +44,7 @@ export default function Page() {
               name="gmail"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Gmail</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter your gmail"
@@ -52,7 +53,7 @@ export default function Page() {
                     />
                   </FormControl>
                   <FormDescription>
-                    This is your public display name.
+                    enter your gmail to reset your password
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -79,7 +80,7 @@ export default function Page() {
     </div>
   );
 
-  function onSubmit(data: z.infer<typeof validationSchema>) {
+  async function onSubmit(data: z.infer<typeof validationSchema>) {
     fetch("/api/auth/reset-password", {
       method: "POST",
       headers: {
