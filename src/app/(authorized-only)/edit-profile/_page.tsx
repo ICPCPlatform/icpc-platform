@@ -14,6 +14,7 @@ import {
   FaLink,
   FaSave,
 } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 type PageType = "personal" | "academic" | "competitive" | "social";
 
@@ -58,6 +59,7 @@ export default function Profile({
   const form = useForm<z.infer<typeof userFullDataValid>>({
     defaultValues: userData,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <div className="container mx-auto py-6">
@@ -84,9 +86,10 @@ export default function Profile({
                 type="submit"
                 form="edit-profile-form"
                 className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium text-left"
+                disabled={isSubmitting}
               >
                 <FaSave className="w-4 h-4 inline-block mr-3 mb-1" />
-                Save Changes
+                {isSubmitting ? "Saving..." : "Save Changes"}
               </button>
             </nav>
           </div>
@@ -107,15 +110,27 @@ export default function Profile({
     </div>
   );
 
-  function onSubmit(data: z.infer<typeof userFullDataValid>) {
-    console.log(data);
-    fetch("/api/edit-profile", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+  async function onSubmit(data: z.infer<typeof userFullDataValid>) {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/edit-profile", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        toast.success("Changes saved successfully!");
+      } else {
+        toast.error("Failed to save changes. Please try again.");
+      }
+    } catch {
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 }
