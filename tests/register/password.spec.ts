@@ -93,7 +93,7 @@ test.describe("Register Page Testing For Password", () => {
     //     const password = "Password123";
     //     await page.fill('input[name="password"]', password);
     //     await page.fill('input[name="confirmPassword"]', password);
-    //     await page.click('button[type="submit"]');
+    //     awgit statuait page.click('button[type="submit"]');
     //     const errorMessageElement = await page.waitForSelector(`text=${errorMessageForPassword}`);
     //     expect(errorMessageElement).not.toBeNull();
     // });

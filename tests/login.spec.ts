@@ -5,7 +5,7 @@ test.describe("Login Test Suite", () => {
   const password = "Cgmoreda@123";
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/login");
+    await page.goto("http://localhost:3001/login");
   });
 
   // Positive Test: Successful Login
