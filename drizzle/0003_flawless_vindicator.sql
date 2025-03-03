@@ -1,0 +1,1 @@
+ALTER TABLE "reset_password" ALTER COLUMN "end_at" SET NOT NULL;

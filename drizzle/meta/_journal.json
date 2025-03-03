@@ -15,6 +15,13 @@
       "when": 1741032081211,
       "tag": "0002_dark_dust",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1741038996047,
+      "tag": "0003_flawless_vindicator",
+      "breakpoints": true
     }
   ]
 }
