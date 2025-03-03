@@ -9,6 +9,6 @@ export const ResetPassword = pgTable("reset_password", {
     onUpdate: "no action"
   }).notNull(),
   token: char({ length: 25 }).notNull(),
-  endAt: timestamp().default(sql`now() + interval '1 day'`),
+  endAt: timestamp().default(sql`now() + interval '1 day'`).notNull(),
 
 })
