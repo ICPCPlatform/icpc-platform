@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { ResetPassword } from "@/lib/db/schema/user/ResetPassword";
 import { Users } from "@/lib/db/schema/user/Users";
 import send from "@/lib/email/sendEmail";
+import { DefaultResponse } from "@/lib/types/DefaultResponse";
 import { gmail } from "@/lib/validation/util";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,7 +11,7 @@ import { z } from "zod";
 const validationSchema = z.object({
   gmail,
 });
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<DefaultResponse> {
   try {
     const { success, data } = validationSchema.safeParse(await request.json());
     if (!success) {

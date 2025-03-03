@@ -90,11 +90,16 @@ export default function Page() {
     })
       .then(async (response) => {
         const res = await response.json();
-        if ("error" in res) return setError(res.error);
-        else if ("message" in res) return setSuccess(res.message);
+        console.log(res)
+        if ("err" in res) return setError(res.err);
+        else if ("msg" in res) return setSuccess(res.msg);
       })
-      .catch((error) => {
-        console.error("Error:", error);
+      .catch(async(response) => {
+        const res = await response.json();
+        console.log(res)
+        if ("err" in res) return setError(res.err);
+        else if ("msg" in res) return setSuccess(res.msg);
+        // console.error("Error:", error);
       });
   }
 }
