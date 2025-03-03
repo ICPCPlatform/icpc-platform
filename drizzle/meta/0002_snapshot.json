@@ -1,6 +1,6 @@
 {
-  "id": "ecd070f0-5228-4187-8081-f28d754d21d0",
-  "prevId": "171cf4bf-49ca-4e9a-94fa-e3ab31de9c1a",
+  "id": "c76e6830-ab5f-4c08-b4e7-88e96ee3f1ca",
+  "prevId": "ecd070f0-5228-4187-8081-f28d754d21d0",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -618,7 +618,14 @@
           "name": "token",
           "type": "char(25)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "end_at": {
+          "name": "end_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now() + interval '1 day'"
         }
       },
       "indexes": {},
@@ -633,8 +640,8 @@
           "columnsTo": [
             "user_id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
