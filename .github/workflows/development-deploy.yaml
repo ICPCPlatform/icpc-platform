@@ -1,0 +1,28 @@
+name: deploy dev
+
+on:
+  push:
+    branches:
+      - development
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/icpcplatform/icpc-platform:latest-dev
+            ghcr.io/icpcplatform/icpc-platform:dev-${{ github.sha }}
