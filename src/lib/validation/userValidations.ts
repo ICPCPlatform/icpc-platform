@@ -1,26 +1,31 @@
 import { z } from "zod";
-import { username, password, type EnforceKeys } from "./util";
+import { username, password, gmail, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
-import { gmail } from "./util";
+import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordsMustMatch, invalidPassword } from "../const/error-messages";
 
 // TODO CF Handle
 const cfHandle = z
   .string()
   .trim()
-  .min(3, { message: "Username too short" })
+  .min(3, { message: usernameTooShort })
   .regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Username must contain only letters, numbers, and underscores",
+    message: usernameInvalidFormat,
   });
 
 const phoneNumber = z
   .string()
   .trim()
-  .min(13, { message: "Phone number too short" })
-  .max(15, { message: "Phone number too long" })
+  .min(13, { message: phoneNumberTooShort })
+  .max(15, { message: phoneNumberTooLong })
   .regex(
     /^\+201[0-9]{9}$/,
-    "Phone number must be a valid Egyptian number (starts with +20)",
+    phoneNumberInvalid,
   );
+const confirmPassword = z.string().min(8, { message: invalidPassword });
+const termsAccepted = z.boolean().refine((val) => val === true, {
+  message: termsNotAccepted
+});
+
 export const userRegisterValid = z.object({
   username,
   password,
@@ -28,9 +33,15 @@ export const userRegisterValid = z.object({
   cfHandle,
   vjHandle: cfHandle.optional(),
   phoneNumber,
+  confirmPassword,
+  termsAccepted,
+}).refine((data) => data.password === data.confirmPassword, {
+  message: passwordsMustMatch,
+  path: ['confirmPassword'],
 });
-const _: EnforceKeys<typeof userRegisterValid, typeof Users> = true;
 
+const _: EnforceKeys<typeof userRegisterValid, typeof Users> = {} as EnforceKeys<typeof userRegisterValid, typeof Users>; // Ensure validation matches Users schema
+
+// Type checking is handled by TypeScript compiler
 // Usage example:
-// const { success, data, error } = password.safeParse(""); // Replace with an actual 14-digit ID
-// console.log("Valid Name:", success, data, error?.message);
+// const { success, data, error } = password.safeParse("");

@@ -6,7 +6,7 @@ const communities = [
   "Icpc Assiut National Community",
   "Icpc EELU Community",
   "Icpc SVU Community",
-];
+] as const;
 
 
 

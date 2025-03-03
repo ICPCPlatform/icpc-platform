@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 import { SiLeetcode, SiCodechef, SiCodeforces } from "react-icons/si";
 import Link from "next/link";
+import { useUserContext } from "@/providers/user";
 
 const activeButtonStyle = "text-primary border-b-2 border-primary";
 const unactiveButtonStyle =
@@ -31,14 +32,13 @@ const UserContext = React.createContext(
 export default function Profile<T extends boolean>({
   user,
   className,
-  allowEdit = false,
 }: {
   user: UserProfile<T>;
   className?: string;
-  allowEdit: boolean;
 }) {
   const userContent = userData(user);
   const [activeTab, setActiveTab] = useState<keyof typeof userContent>("cp");
+  const allowEdit = useUserContext()?.username === user.username;
 
   return (
     <UserContext.Provider value={user}>
@@ -124,7 +124,7 @@ export default function Profile<T extends boolean>({
 }
 
 function Info() {
-  const user = useContext<User>(UserContext);
+  const user = useContext< UserProfile<true> | UserProfile<false>>(UserContext);
   return (
     <div className="user-info flex flex-col md:flex-row gap-6 md:gap-8">
       <div className="photo-section flex md:block items-center gap-4 md:gap-0">
@@ -172,7 +172,7 @@ type EntryType = {
   icon: JSX.Element;
 };
 
-function userData(user: User): {
+function userData(user:  UserProfile<true> | UserProfile<false>): {
   socials: EntryType[];
   academics: EntryType[];
   cp: EntryType[];

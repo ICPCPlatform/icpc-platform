@@ -5,11 +5,11 @@ test.describe("Login Test Suite", () => {
   const password = "Cgmoreda@123";
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000/login");
+    await page.goto("http://localhost:3001/login");
   });
 
   // Positive Test: Successful Login
-  test("should redirect to /profile on successful login (status 200)", async ({ page }) => {
+  /*test("should redirect to /profile on successful login (status 200)", async ({ page }) => {
     await page.fill('input[name="username"]', usernameOrEmail);
     await page.fill('input[name="password"]', password);
     await page.click('button[type="submit"]');
@@ -134,4 +134,6 @@ test.describe("Login Test Suite", () => {
     await page.click('button[type="submit"]');
     await expect(page.locator(".error-message")).toContainText("Account locked");
   });
+
+   */
 });

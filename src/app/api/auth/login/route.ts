@@ -6,7 +6,7 @@ import { encryptSession } from "@/lib/session";
 import { eq, or, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { userLoginValid } from "@/lib/validation/userLogin";
-import { passwordMismatch } from "@/lib/const/error-messages";
+import { passwordsMustMatch } from "@/lib/const/error-messages";
 
 export async function POST(request: NextRequest) : Promise<NextResponse> {
   try {
