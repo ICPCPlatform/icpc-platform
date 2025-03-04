@@ -64,7 +64,7 @@ export async function POST(request: NextRequest): Promise<DefaultResponse> {
     });
 
     // send email
-    send({
+    await send({
       to: [data.gmail],
       subject: "Reset Password",
       html: `

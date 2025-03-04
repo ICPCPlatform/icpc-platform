@@ -30,6 +30,7 @@ export default function Page() {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   return (
     <div className="flex items-center justify-center min-h-screen bg-background text-foreground dark:bg-black dark:text-white">
       <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10 bg-white dark:bg-black">
@@ -62,8 +63,9 @@ export default function Page() {
             <Button
               type="submit"
               className="w-full bg-black text-white py-2 rounded-md dark:bg-white dark:text-black"
+              disabled={loading}
             >
-              Sign In
+              {loading ? "Loading..." : "Send Reset Link"}
             </Button>
 
             {error && (
@@ -81,6 +83,7 @@ export default function Page() {
   );
 
   async function onSubmit(data: z.infer<typeof validationSchema>) {
+    setLoading(true);
     fetch("/api/auth/reset-password", {
       method: "POST",
       headers: {
@@ -90,16 +93,14 @@ export default function Page() {
     })
       .then(async (response) => {
         const res = await response.json();
-        console.log(res)
+        setLoading(false);
         if ("err" in res) return setError(res.err);
-        else if ("msg" in res) return setSuccess(res.msg);
+        else if ("msg" in res) setSuccess(res.msg);
       })
-      .catch(async(response) => {
-        const res = await response.json();
-        console.log(res)
-        if ("err" in res) return setError(res.err);
-        else if ("msg" in res) return setSuccess(res.msg);
-        // console.error("Error:", error);
+      .catch(async (err) => {
+        setLoading(false);
+        const res = await err.json();
+        setError(res.err);
       });
   }
 }
