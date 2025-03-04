@@ -1,9 +1,7 @@
 "use client";
 import { userRegisterValid } from "@/lib/validation/userValidations";
-import { successMessage } from "@/lib/const/error-messages";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,12 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { XCircle, CheckCircle } from "lucide-react";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const router = useRouter();
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof userRegisterValid>>({
     resolver: zodResolver(userRegisterValid),
     defaultValues: {
@@ -198,15 +199,24 @@ export default function RegisterPage() {
             <Button
               type="submit"
               className="w-full bg-black text-white py-2 rounded-md dark:bg-white dark:text-black"
+              disabled={loading}
             >
-              Create Account
+              {loading ? "Loading..." : "Create Account"}
             </Button>
           </form>
         </Form>
 
-        {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
+        {error && (
+          <p className="text-red-500 mt-4 text-center flex items-center">
+            <XCircle className="mr-2" />
+            {error}
+          </p>
+        )}
         {success && (
-          <div className="text-green-500 mt-4 text-center">{success}</div>
+          <p className="text-green-500 mt-4 text-center flex items-center">
+            <CheckCircle className="mr-2" />
+            {success}
+          </p>
         )}
 
         <p className="text-sm text-center mt-6">
@@ -220,9 +230,7 @@ export default function RegisterPage() {
   );
 
   async function onSubmit(data: z.infer<typeof userRegisterValid>) {
-    setError("");
-    setSuccess("");
-
+    setLoading(true);
     fetch("/api/auth/register", {
       method: "POST",
       headers: {
@@ -230,21 +238,24 @@ export default function RegisterPage() {
       },
       body: JSON.stringify(data),
     })
-      .catch((err) => {
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      })
       .then(async (response) => {
-        if (!response) return;
-
-        const result = await response.json();
-        if (!response.ok) {
-          setError(result.error || "Failed to register");
-          return;
+        const res = await response.json();
+        console.log(res);
+        setLoading(false);
+        if ("err" in res) return setError(res.err);
+        else if ("msg" in res) {
+          setSuccess(res.msg);
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
         }
-        setSuccess(successMessage);
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+      })
+      .catch(async (err) => {
+        const res = await err.json();
+        console.log(res);
+        setLoading(false);
+        if ("err" in res) return setError(res.err);
+        else if ("msg" in res) return setSuccess(res.msg);
       });
   }
 }
