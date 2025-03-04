@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { username, password, gmail, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
-import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordsMustMatch, invalidPassword } from "../const/error-messages";
+import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordMustMatch, invalidPassword } from "../const/error-messages";
 
 // TODO CF Handle
 const cfHandle = z
@@ -36,7 +36,7 @@ export const userRegisterValid = z.object({
   confirmPassword,
   termsAccepted,
 }).refine((data) => data.password === data.confirmPassword, {
-  message: passwordsMustMatch,
+  message: passwordMustMatch,
   path: ['confirmPassword'],
 });
 

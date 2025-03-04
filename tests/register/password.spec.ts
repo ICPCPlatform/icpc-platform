@@ -7,7 +7,7 @@ const username ="Sherif121"
 import {
     invalidPassword,
     passwordRequired,
-    passwordsMustMatch,
+    passwordMustMatch,
     passwordExceedsMaxLength,
     passwordContainsUsername,
     passwordContainsEmail,
@@ -102,7 +102,7 @@ test.describe("Register Page Testing For Password", () => {
         await page.fill('input[name="password"]', password);
         await page.fill('input[name="confirmPassword"]', password+"ee");
         await page.click('button[type="submit"]');
-        const errorMessageElement = await page.waitForSelector(`text=${passwordsMustMatch}`);
+        const errorMessageElement = await page.waitForSelector(`text=${passwordMustMatch}`);
         expect(errorMessageElement).not.toBeNull();
     });
 
