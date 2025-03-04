@@ -6,16 +6,17 @@ import { encryptSession } from "@/lib/session";
 import { eq, or, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { userLoginValid } from "@/lib/validation/userLogin";
-import { passwordsMustMatch } from "@/lib/const/error-messages";
+import { passwordMustMatch } from "@/lib/const/error-messages";
+import { type DefaultResponse } from "@/lib/types/DefaultResponse";
 
-export async function POST(request: NextRequest) : Promise<NextResponse> {
+export async function POST(request: NextRequest) : Promise<DefaultResponse> {
   try {
     // Extracting credentials from the request body
 
     const parseResult = userLoginValid.safeParse(await request.json());
     if (!parseResult.success) {
       return NextResponse.json(
-        { error: parseResult.error?.errors.map((e) => e.message)[0] },
+        { err: parseResult.error?.errors.map((e) => e.message)[0] },
         { status: 400 },
       );
     }
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) : Promise<NextResponse> {
       .execute();
 
     if (users.length === 0)
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+      return NextResponse.json({ err: "User not found" }, { status: 404 });
 
     const user = users[0];
 
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) : Promise<NextResponse> {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) return NextResponse.json(
-      { error: passwordMismatch },
+      { err: passwordMustMatch },
       { status: 401 },
     );
 
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) : Promise<NextResponse> {
 
     // Redirecting to the home page
     return NextResponse.json(
-      { message: "authenticated" },
+      { msg: "authenticated" },
       {
         status: 307,
         headers: {
@@ -83,6 +84,6 @@ export async function POST(request: NextRequest) : Promise<NextResponse> {
     );
   } catch (error) {
     console.error("Error logging in:", error);
-    return NextResponse.json({ message: "Failed to log in" }, { status: 500 });
+    return NextResponse.json({ err: "Failed to log in" }, { status: 500 });
   }
 }
