@@ -8,6 +8,7 @@ import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
 import sendEmail from "@/lib/email/sendEmail";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import { type DefaultResponse } from "@/lib/types/DefaultResponse";
+import {invalidCodeforces, successMessage, userExist} from "@/lib/const/error-messages";
 
 export async function POST(request: NextRequest) : Promise<DefaultResponse> {
   try {
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) : Promise<DefaultResponse> {
       .execute();
     if (dbResult.length > 0)
       return NextResponse.json(
-        { err: "User already exists" },
+        { err: userExist },
         { status: 400 },
       );
 
@@ -43,14 +44,14 @@ export async function POST(request: NextRequest) : Promise<DefaultResponse> {
 
     if (handleRes.status !== 200)
       return NextResponse.json(
-        { err: "Invalid Codeforces handle or codefoces error" },
+        { err: invalidCodeforces },
         { status: 400 },
       );
 
     const { result } = await handleRes.json();
     if (!result)
       return NextResponse.json(
-        { err: "Invalid Codeforces handle or codefoces error" },
+        { err: invalidCodeforces },
         { status: 400 },
       );
 
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) : Promise<DefaultResponse> {
 
     if (handle.toLowerCase() !== registerData.cfHandle.toLowerCase())
       return NextResponse.json(
-        { err: "Invalid Codeforces handle or codefoces error" },
+        { err: invalidCodeforces},
         { status: 400 },
       );
 
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) : Promise<DefaultResponse> {
     emailActivation(registerData, randomToken);
 
     return NextResponse.json(
-      { msg: "registered" },
+      { msg: successMessage },
       {
         status: 200,
       },

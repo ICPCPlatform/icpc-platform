@@ -27,7 +27,7 @@ const passwordMinLength: string = "Password must be at least 8 characters long."
 // Codeforces Handle errors
 const invalidCodeforces: string = "Invalid Codeforces handle.";
 const codeforcesHandleRequired: string = "Codeforces Handle is required.";
-const codeforcesHandleRequiredExist: string = "Phone number already in use.";
+const codeforcesHandleRequiredExist: string = "Codeforces already in use.";
 
 // Phone Number errors
 const invalidPhoneNumber: string = "Invalid phone number.";

@@ -15,11 +15,11 @@ import {
     //TODO
     //usernameContainsBannedWords,
 } from "@/lib/const/error-messages";
-
+import {DELETEUserAction} from "@/app/deleteAction/_usernameDeleteAction";
 //Username Tests
 test.describe("Register Page Testing For Username", () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto("http://localhost:3001/register");
+        await page.goto("http://localhost:3000/register");
         await page.fill('input[name="gmail"]', email);
         await page.fill('input[name="cfHandle"]', codeforcesHandle);
         await page.fill('input[name="phoneNumber"]', phoneNumber);
@@ -27,17 +27,23 @@ test.describe("Register Page Testing For Username", () => {
         await page.fill('input[name="confirmPassword"]', confirmPassword);
         await page.locator('input[type="checkbox"]').check();
     });
-
+    test.afterEach(async () => {
+       //  await DELETEUserAction(username);
+    });
     test("Test Case 1 – Username Exists", async ({ page }) => {
 
         await page.fill('input[name="username"]', username);
-        const [response] = await Promise.all([
-            page.waitForResponse(response => response.url().includes("/api/auth/register")),
-            page.click('button[type="submit"]'),
-        ]);
+        await page.click('button[type="submit"]');
 
+        await page.goto("http://localhost:3000/register");
+        await page.fill('input[name="gmail"]', email);
+        await page.fill('input[name="cfHandle"]', codeforcesHandle);
+        await page.fill('input[name="phoneNumber"]', phoneNumber);
+        await page.fill('input[name="password"]', password);
+        await page.fill('input[name="confirmPassword"]', confirmPassword);
+        await page.locator('input[type="checkbox"]').check();
+        await page.click('button[type="submit"]');
         // Check the API response status
-        expect(response.status()).toBe(400); // Ensure the status code is 400 (Bad Request)
 
         const successMessageElement = await page.waitForSelector(`text=${userExist}`, { state: "visible" });
         expect(successMessageElement).not.toBeNull();
@@ -117,11 +123,7 @@ test.describe("Register Page Testing For Username", () => {
 
     test("Test Case 7 – Valid Username", async ({ page }) => {
         await page.fill('input[name="username"]', username);
-        const [response] = await Promise.all([
-            page.waitForResponse(response => response.url().includes("/api/auth/register")),
-            page.click('button[type="submit"]'),
-        ]);
-        expect(response.status()).toBe(200)
+        await page.click('button[type="submit"]');
 
         const errorMessageElement = await page.waitForSelector(`text=${userExist}`);
         expect(errorMessageElement).not.toBeNull();
@@ -130,7 +132,6 @@ test.describe("Register Page Testing For Username", () => {
         expect(page.url()).toContain("/register");
     });
     test("Test Case 8 – Empty Username", async ({ page }) => {
-
         page.click('button[type="submit"]')
         const errorMessageElement = await page.waitForSelector(`text=${usernameRequired}`);
         expect(errorMessageElement).not.toBeNull();

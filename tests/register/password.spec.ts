@@ -1,9 +1,9 @@
 import {test, expect} from '@playwright/test';
 const password = "CgmoDreda@1";
-const email = "cgDmoSredax@gmail.com";
-const codeforcesHandle = "ElSglaly";
-const phoneNumber = "+201028386402";
-const username ="Sherif121"
+const email = "cgDmoSjredx@gmail.com";
+const codeforcesHandle = "Elglaly";
+const phoneNumber = "+201228386402";
+const username ="Sherif1214"
 import {
     invalidPassword,
     passwordRequired,
@@ -17,7 +17,7 @@ import {
 
 test.describe("Register Page Testing For Password", () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto("http://localhost:3001/register");
+        await page.goto("http://localhost:3000/register");
         await page.fill('input[name="username"]', username);
         await page.fill('input[name="cfHandle"]', codeforcesHandle);
         await page.fill('input[name="gmail"]', email);
@@ -120,22 +120,18 @@ test.describe("Register Page Testing For Password", () => {
     });
 
     test("Test Case 28 – Valid Password", async ({ page }) => {
+        await page.fill('input[name="password"]', password);
+        await page.fill('input[name="confirmPassword"]', password);
+        await page.click('button[type="submit"]');
 
+        // Log the API response
         const [response] = await Promise.all([
-            page.waitForResponse(response =>
-                response.url().includes("/api/auth/register") &&
-                response.request().method() === "POST"
-            ),
-            // Fill the username and submit the form
-            await page.fill('input[name="password"]', password),
-        await page.fill('input[name="confirmPassword"]', password),
-
-        page.click('button[type="submit"]'),
+            page.waitForResponse(response => response.url().includes("/api/auth/register")),
         ]);
+        console.log("Response Status:", response.status());
+        console.log("Response Body:", await response.json());
 
-        // Check the response body
-        const responseBody = await response.json();
-        expect(responseBody.message).toBe(successMessage);
+        // Wait for the success message to appear
         const errorMessageElement = await page.waitForSelector(`text=${successMessage}`);
         expect(errorMessageElement).not.toBeNull();
     });

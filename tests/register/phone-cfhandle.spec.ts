@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+
 const password = "Cgmoreda@1";
 const email = "cgmoredax@gmail.com";
 const codeforcesHandle = "Elglaly";
@@ -10,16 +11,14 @@ import {
     invalidCodeforces,
     invalidPhoneNumber,
     phoneNumberRequired,
-    phoneNumberExist,
     codeforcesHandleRequired,
-    codeforcesHandleRequiredExist,
+    userExist,
 
 } from "@/lib/const/error-messages";
-
 // Codeforeces Tests
 test.describe("Register Page Testing - Codeforces Handle Validation", () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto("http://localhost:3001/register");
+        await page.goto("http://localhost:3000/register");
         await page.fill('input[name="username"]', username);
         await page.fill('input[name="gmail"]', email);
         await page.fill('input[name="phoneNumber"]', phoneNumber);
@@ -42,6 +41,7 @@ test.describe("Register Page Testing - Codeforces Handle Validation", () => {
 
         // Assert the URL after successful registration
         expect(page.url()).toContain("/profile");
+
     });
 
     test("Test Case 13 – Invalid Codeforces Handle", async ({ page }) => {
@@ -70,22 +70,40 @@ test.describe("Register Page Testing - Codeforces Handle Validation", () => {
 
 
         // Fill out the registration form
-        await page.fill('input[name="cfHandle"]', codeforcesHandle);
+        await page.fill('input[name="cfHandle"]', "");
         await page.click('button[type="submit"]');
 
         // Wait for the error message to appear
-        const errorMessageElement = await page.waitForSelector(`text=${codeforcesHandleRequiredExist}`);
+        const errorMessageElement = await page.waitForSelector(`text=${codeforcesHandleRequired}`);
         const errorMessage = await errorMessageElement.textContent();
 
         // Assert the error message
-        expect(errorMessage).toBe(codeforcesHandleRequiredExist);
+        expect(errorMessage).toBe(codeforcesHandleRequired);
+    });
 
-        // Assert that the form data persists (except passwords)
-        const persistedCodeforcesHandle = await page.inputValue('input[name="cfHandle"]');
-        expect(persistedCodeforcesHandle).toBe(codeforcesHandle);
+    test("Test Case 12 – Exist Codeforces Handle", async ({ page }) => {
 
-        // Assert that the form remains on the registration page
-        expect(page.url()).toContain("/register");
+        // Fill out the registration form
+        await page.fill('input[name="cfHandle"]', codeforcesHandle);
+        await page.click('button[type="submit"]');
+
+        await page.goto("http://localhost:3000/register");
+        await page.fill('input[name="username"]', "Sherif1234");
+        await page.fill('input[name="gmail"]', "sherif@gmail.com");
+        await page.fill('input[name="phoneNumber"]', "+201026386405");
+        await page.fill('input[name="password"]', password);
+        await page.fill('input[name="confirmPassword"]', confirmPassword);
+        await page.fill('input[name="cfHandle"]', codeforcesHandle);
+        await page.click('button[type="submit"]');
+        // Wait for the success message to appear
+        const successMessageElement = await page.waitForSelector(`text=${userExist}`);
+        const successMessageForm = await successMessageElement.textContent();
+
+        // Assert the success message
+        expect(successMessageForm).toBe(successMessage);
+        // Assert the URL after successful registration
+        expect(page.url()).toContain("/profile");
+
     });
 });
 // PhoneNumber Tests
@@ -114,12 +132,10 @@ test.describe("Register Page Testing For Phone Number", () => {
         // Assert the error message
         expect(errorMessage).toBe(invalidPhoneNumber);
         expect(page.url()).toContain("/profile");
-
     });
 
     test("Test Case 15 – Short Phone Number", async ({ page }) => {
         const shortPhoneNumber = "123456"; // Too short (less than 10 digits)
-
         // Fill out the registration form
         await page.fill('input[name="phoneNumber"]', shortPhoneNumber);
         await page.click('button[type="submit"]');
@@ -138,7 +154,6 @@ test.describe("Register Page Testing For Phone Number", () => {
 
     test("Test Case 16 – Empty Phone Number", async ({ page }) => {
         // Contains non-numeric characters
-
         await page.fill('input[name="phoneNumber"]', "");
         await page.click('button[type="submit"]');
 
@@ -160,16 +175,23 @@ test.describe("Register Page Testing For Phone Number", () => {
         await page.fill('input[name="phoneNumber"]', phoneNumber);
         await page.click('button[type="submit"]');
 
-        // Wait for the error message to appear
-        const errorMessageElement = await page.waitForSelector(`text=${phoneNumberExist}`);
-        const errorMessage = await errorMessageElement.textContent();
+        await page.goto("http://localhost:3000/register");
+        await page.fill('input[name="username"]', "Sherif1234");
+        await page.fill('input[name="gmail"]', "sherif@gmail.com");
+        await page.fill('input[name="phoneNumber"]', phoneNumber);
+        await page.fill('input[name="password"]', password);
+        await page.fill('input[name="confirmPassword"]', confirmPassword);
+        await page.fill('input[name="cfHandle"]', "tammwy22");
+        await page.click('button[type="submit"]');
 
+        // Wait for the error message to appear
+        const errorMessageElement = await page.waitForSelector(`text=${userExist}`);
+        const errorMessage = await errorMessageElement.textContent();
         // Assert the error message
-        expect(errorMessage).toBe(phoneNumberExist);
+        expect(errorMessage).toBe(userExist);
         const persistedPhone = await page.inputValue('input[name="phoneNumber"]');
         expect(persistedPhone).toBe(phoneNumber);
         expect(page.url()).toContain("/profile");
-
     });
 
 });
