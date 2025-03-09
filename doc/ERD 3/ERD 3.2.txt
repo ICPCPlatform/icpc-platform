@@ -90,7 +90,8 @@ Table training {
   title varchar(128) [not null]
   description varchar(512)
   material_id int [null, ref: > Material.id] 
-
+  standing json
+  standingview json
   start_date date [not null]
   duration smallint [not null] // in days
   status varchar(50) // e.g., 'planned', 'active', 'completed','RoadMap'
@@ -102,7 +103,8 @@ Table Block{
   block_number integer
 
   title varchar(255) [not null]
-  description text
+  description varchar
+  hidden boolean
   date date [not null]
   deleted  timestamp
   Indexes {
@@ -115,11 +117,14 @@ Table Contest{
 
   training_id int 
   block_number int 
-  judge string
-  group_id int
   contest_id int
-  
-  type string //practice,contest
+
+  group_id int
+  judge varchar
+  title varchar
+  description varchar
+
+  type varchar //practice,contest
   pointspp int
   first_points int
   calcsystem int // default 0 => 90%
@@ -129,7 +134,7 @@ Table Contest{
   }
 
 }
-ref: Contest.(training_id,block_number) - Block.(training_id,block_number)
+ref: Contest.(training_id,block_number) > Block.(training_id,block_number)
 
 
 Table Material{
