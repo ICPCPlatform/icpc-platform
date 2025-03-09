@@ -18,8 +18,8 @@ export const Blocks = pgTable(
     blockNumber: integer().notNull(),
     title: varchar({ length: 128 }).notNull(),
     description: varchar({ length: 512 }).notNull(),
-    hidden: boolean().default(false),
-    date: timestamp().notNull(),
+    hidden: boolean().default(false).notNull(),
+    date: timestamp().defaultNow().notNull(),
     deleted: timestamp(),
   },
   (table) => [
