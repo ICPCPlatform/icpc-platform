@@ -11,7 +11,6 @@ import {
 
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
-import {Materials} from "./Materials";
 type Status = "active" | "inactive";
 
 
@@ -32,7 +31,7 @@ export const Trainings = pgTable("trainings", {
     .notNull(),
   title: citext({ length: 128 }).notNull().unique(),
   description: varchar({ length: 512 }).notNull(),
-  materialId: integer().references(()=>Materials.id).notNull(),
+  material: json(),
   standing: json(),
   standingView: json(),// saves which attributes of standing are visible to trainees 
   startDate: date().notNull(),
