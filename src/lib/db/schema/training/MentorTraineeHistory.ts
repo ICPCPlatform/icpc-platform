@@ -15,17 +15,8 @@ import { Trainees } from "./Trainees";
 export const MentorTraineeHistory = pgTable(
   "mentorTraineeHistory",
   {
-    mentorId: uuid()
-      .references(() => Staff.userId, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      })
-      .notNull(),
-    traineeid: uuid()
-      .references(() => Users.userId, {
-        onDelete: "cascade",
-        onUpdate: "cascade",  
-      }).notNull(),
+    mentorId: uuid().notNull(),
+    traineeId: uuid().notNull(),
     trainingId: integer()
       .references(() => Trainings.trainingId, {
         onDelete: "cascade",
@@ -37,12 +28,12 @@ export const MentorTraineeHistory = pgTable(
     endDate: timestamp(),
   },
   (table) => [
-    primaryKey({ columns: [table.trainingId,table.mentorId, table.trainingId] }),
+    primaryKey({ columns: [table.trainingId,table.mentorId, table.traineeId] }),
     foreignKey({
       columns: [table.mentorId, table.trainingId],
       foreignColumns: [Staff.userId, Staff.trainingId],
     }),foreignKey({
-      columns: [table.traineeid, table.trainingId],
+      columns: [table.traineeId, table.trainingId],
       foreignColumns: [Trainees.userId, Trainees.trainingId],
     }),
   ],
