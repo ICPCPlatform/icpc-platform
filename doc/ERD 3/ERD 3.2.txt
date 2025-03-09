@@ -89,7 +89,7 @@ Table training {
   chief_judge  uuid [ref: > users.user_id]
   title varchar(128) [not null]
   description varchar(512)
-  material_id int [null, ref: > Material.id] 
+  material json 
   standing json
   standingview json
   start_date date [not null]
@@ -119,7 +119,7 @@ Table Contest{
   block_number int 
   contest_id int
 
-  group_id int
+  group_id varchar
   judge varchar
   title varchar
   description varchar
@@ -137,11 +137,6 @@ Table Contest{
 ref: Contest.(training_id,block_number) > Block.(training_id,block_number)
 
 
-Table Material{
-  id integer [pk]
-  data json 
-}
-
 Table staff {
   training_id  id [ref: > training.training_id]
   user_id  uuid [ref: > users.user_id]
@@ -150,7 +145,7 @@ Table staff {
   problem_setter boolean [default: false]
   instructor boolean [default: false]
   co_head boolean [default: false]
-  coach boolean [default: false]
+  manager boolean [default: false]
   
   deleted timestamp
   indexes {
@@ -180,5 +175,6 @@ Table mentor_trainee_history{
     (trainee_id,mentor_id,training_id) [pk]
   }
 }
-Ref: mentor_trainee_history.(trainee_id, training_id) - trainee.(user_id, training_id)
 Ref: mentor_trainee_history.(mentor_id, training_id) - staff.(user_id, training_id)
+Ref: mentor_trainee_history.(trainee_id, training_id) - trainee.(user_id, training_id)
+
