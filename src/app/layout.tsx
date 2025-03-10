@@ -23,7 +23,7 @@ export default async function RootLayout({
   const session = cookieStore.get("session")?.value;
   const user = await decryptSession(session);
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
         <ThemeProvider attribute="class">
           <UserProvider user={user}>

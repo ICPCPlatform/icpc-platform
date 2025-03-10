@@ -39,10 +39,12 @@ export default function AboutPage() {
         <h2 className="text-3xl font-bold tracking-tight">About Us</h2>
         <div className="prose prose-gray dark:prose-invert max-w-none">
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Welcome to ICPC Assiut University Community - where coding excellence meets innovation! 🚀
-            As a student-led initiative at Assiut University, we&apos;re dedicated to nurturing the next generation
-            of competitive programmers. Our mission is simple: transform passionate students into problem-solving
-            champions through comprehensive training and mentorship in competitive programming.
+            Welcome to ICPC Assiut University Community - where coding
+            excellence meets innovation! 🚀 As a student-led initiative at
+            Assiut University, we&apos;re dedicated to nurturing the next
+            generation of competitive programmers. Our mission is simple:
+            transform passionate students into problem-solving champions through
+            comprehensive training and mentorship in competitive programming.
           </p>
         </div>
       </section>
@@ -177,14 +179,19 @@ export default function AboutPage() {
 
       {/* Achievements */}
       <section className="space-y-6">
-        <h2 className="text-3xl font-bold tracking-tight">Achievements and Impact</h2>
+        <h2 className="text-3xl font-bold tracking-tight">
+          Achievements and Impact
+        </h2>
         <div className="prose prose-gray dark:prose-invert max-w-none">
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Our community consistently qualifies teams for prestigious contests like ECPC, ACPC, and ICPC.
-            Our alumni have gone on to conquer the tech world, landing roles at giants like Microsoft, Amazon,
-            and Huawei. But we&apos;re not just creating programmers – we&apos;re building a community of problem
-            solvers who can tackle any challenge, debug any error, and maybe even fix the office printer!
-            (Okay, maybe not the printer... those are beyond anyone&apos;s skills 🖨️)
+            Our community consistently qualifies teams for prestigious contests
+            like ECPC, ACPC, and ICPC. Our alumni have gone on to conquer the
+            tech world, landing roles at giants like Microsoft, Amazon, and
+            Huawei. But we&apos;re not just creating programmers – we&apos;re
+            building a community of problem solvers who can tackle any
+            challenge, debug any error, and maybe even fix the office printer!
+            (Okay, maybe not the printer... those are beyond anyone&apos;s
+            skills 🖨️)
           </p>
         </div>
       </section>
@@ -193,7 +200,7 @@ export default function AboutPage() {
       <section className="space-y-6">
         <h2 className="text-3xl font-bold tracking-tight">Get in Touch</h2>
         <div className="flex gap-4">
-          <Link 
+          <Link
             href="https://www.facebook.com/icpcassiutt/"
             target="_blank"
             rel="noopener noreferrer"
@@ -202,7 +209,7 @@ export default function AboutPage() {
             <Facebook className="h-5 w-5" />
             <span>Follow us on Facebook</span>
           </Link>
-          <Link 
+          <Link
             href="https://eg.linkedin.com/company/icpc-assiut"
             target="_blank"
             rel="noopener noreferrer"
@@ -217,7 +224,15 @@ export default function AboutPage() {
   );
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
   return (
     <Card className="p-6 space-y-2">
       <div className="flex items-center gap-2">
@@ -229,7 +244,15 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
   );
 }
 
-function ProgramCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function ProgramCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
   return (
     <Card className="p-6 space-y-2">
       <div className="flex items-center gap-2">
@@ -239,4 +262,4 @@ function ProgramCard({ icon, title, description }: { icon: React.ReactNode; titl
       <p className="text-sm text-muted-foreground">{description}</p>
     </Card>
   );
-} 
+}

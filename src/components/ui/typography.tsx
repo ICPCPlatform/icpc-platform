@@ -1,25 +1,49 @@
-export function TypographyH1({ children, className }: { children: React.ReactNode, className?: string }) {
+export function TypographyH1({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}>
+    <h1
+      className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl ${className}`}
+    >
       {children}
     </h1>
-  )
+  );
 }
 
-export function TypographyH2({ children, className }: { children: React.ReactNode, className?: string }) {
+export function TypographyH2({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <h2 className={`scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${className}`}>
+    <h2
+      className={`scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 ${className}`}
+    >
       {children}
     </h2>
-  )
+  );
 }
 
-export function TypographyH3({ children, className }: { children: React.ReactNode, className?: string }) {
+export function TypographyH3({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <h3 className={`scroll-m-20 text-2xl font-semibold tracking-tight ${className}`}>
+    <h3
+      className={`scroll-m-20 text-2xl font-semibold tracking-tight ${className}`}
+    >
       {children}
     </h3>
-  )
+  );
 }
 
 export function TypographyH4() {
@@ -27,7 +51,7 @@ export function TypographyH4() {
     <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
       People stopped telling jokes
     </h4>
-  )
+  );
 }
 
 export function TypographyP() {
@@ -36,15 +60,14 @@ export function TypographyP() {
       The king, seeing how much happier his subjects were, realized the error of
       his ways and repealed the joke tax.
     </p>
-  )
+  );
 }
 
 export function TypographyBlockquote() {
   return (
     <blockquote className="mt-6 border-l-2 pl-6 italic">
-      {'"'}After all,{'"'} he said, {'"'}everyone enjoys a good joke, so it{"'"}s only fair that
-     they should pay for the privilege.{'"'}
+      {'"'}After all,{'"'} he said, {'"'}everyone enjoys a good joke, so it{"'"}
+      s only fair that they should pay for the privilege.{'"'}
     </blockquote>
-  )
+  );
 }
-

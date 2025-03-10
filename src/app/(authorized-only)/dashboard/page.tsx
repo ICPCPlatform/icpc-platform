@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { TrainingCard } from "@/components/training/TrainingCard";
-import { mockUserTrainings, mockAvailableTrainings } from "@/lib/mock/trainings";
+import {
+  mockUserTrainings,
+  mockAvailableTrainings,
+} from "@/lib/mock/trainings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -10,14 +13,16 @@ import { Search } from "lucide-react";
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredUserTrainings = mockUserTrainings.filter(training =>
-    training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    training.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUserTrainings = mockUserTrainings.filter(
+    (training) =>
+      training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      training.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const filteredAvailableTrainings = mockAvailableTrainings.filter(training =>
-    training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    training.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAvailableTrainings = mockAvailableTrainings.filter(
+    (training) =>
+      training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      training.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleEnroll = async (trainingId: string) => {
@@ -42,12 +47,18 @@ export default function DashboardPage() {
         {/* My Trainings Section */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold tracking-tight">My Trainings</h2>
-            <Button variant="outline" size="sm">View All</Button>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              My Trainings
+            </h2>
+            <Button variant="outline" size="sm">
+              View All
+            </Button>
           </div>
           {filteredUserTrainings.length === 0 ? (
             <div className="text-center py-8 bg-muted/50 rounded-lg">
-              <p className="text-muted-foreground">You haven&apos;t joined any trainings yet.</p>
+              <p className="text-muted-foreground">
+                You haven&apos;t joined any trainings yet.
+              </p>
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
@@ -65,12 +76,18 @@ export default function DashboardPage() {
         {/* Available Trainings Section */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold tracking-tight">Available Trainings</h2>
-            <Button variant="outline" size="sm">View All</Button>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Available Trainings
+            </h2>
+            <Button variant="outline" size="sm">
+              View All
+            </Button>
           </div>
           {filteredAvailableTrainings.length === 0 ? (
             <div className="text-center py-8 bg-muted/50 rounded-lg">
-              <p className="text-muted-foreground">No trainings found matching your search.</p>
+              <p className="text-muted-foreground">
+                No trainings found matching your search.
+              </p>
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
@@ -87,4 +104,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-} 
+}

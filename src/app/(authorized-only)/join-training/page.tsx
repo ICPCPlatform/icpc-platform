@@ -7,7 +7,8 @@ import styles from "./training.module.css";
 
 export const metadata: Metadata = {
   title: "Available Trainings | ICPC Platform",
-  description: "Browse and join upcoming ICPC-style programming training sessions",
+  description:
+    "Browse and join upcoming ICPC-style programming training sessions",
 };
 export const dynamic = "force-dynamic";
 export default async function Page() {
@@ -29,7 +30,8 @@ export default async function Page() {
         <div className={styles.headerSection}>
           <h1 className={styles.pageTitle}>Available Trainings</h1>
           <p className={styles.pageDescription}>
-            Join our ICPC-style programming training sessions to enhance your competitive programming skills
+            Join our ICPC-style programming training sessions to enhance your
+            competitive programming skills
           </p>
         </div>
 
@@ -43,7 +45,8 @@ export default async function Page() {
           <div className={styles.emptyState}>
             <h3 className={styles.emptyStateTitle}>No Active Trainings</h3>
             <p className={styles.emptyStateText}>
-              There are no training sessions available at the moment. Please check back later.
+              There are no training sessions available at the moment. Please
+              check back later.
             </p>
           </div>
         )}

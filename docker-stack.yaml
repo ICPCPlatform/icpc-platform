@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  web:
+    image: ghcr.io/icpcplatform/icpc-platform:${GIT_SHA:-latest}
+    ports:
+      - "8000:3000"
+    deploy:
+      replicas: 1
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      SESSION_SECRET: ${SESSION_SECRET}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      URL: ${URL}
+    networks:
+      - web_network
+
+networks:
+  web_network:
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24

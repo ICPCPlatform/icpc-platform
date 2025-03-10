@@ -9,9 +9,10 @@ import { Search } from "lucide-react";
 export default function MyTrainingsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTrainings = mockUserTrainings.filter(training =>
-    training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    training.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTrainings = mockUserTrainings.filter(
+    (training) =>
+      training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      training.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -38,7 +39,9 @@ export default function MyTrainingsPage() {
         {/* Trainings Grid */}
         {filteredTrainings.length === 0 ? (
           <div className="text-center py-8 bg-muted/50 rounded-lg">
-            <p className="text-muted-foreground">You haven&apos;t joined any trainings yet.</p>
+            <p className="text-muted-foreground">
+              You haven&apos;t joined any trainings yet.
+            </p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
@@ -54,4 +57,4 @@ export default function MyTrainingsPage() {
       </div>
     </div>
   );
-} 
+}

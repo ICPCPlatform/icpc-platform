@@ -22,25 +22,23 @@ export interface Mentor {
 }
 
 export interface Training {
-    id: string;
-    title: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-    status: 'ongoing' | 'upcoming' | 'completed';
-    enrollmentStatus: 'open' | 'closed';
-    capacity: number;
-    enrolled: number;
-    level: 'beginner' | 'intermediate' | 'advanced';
-    mentors: string[];
-    topics: string[];
-    announcements: Announcement[];
-    tasks: Task[];
-    chatMessages: ChatMessage[];
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  status: "upcoming" | "ongoing" | "completed";
+  enrollmentStatus: "open" | "closed";
+  capacity: number;
+  enrolled: number;
+  level: "beginner" | "intermediate" | "advanced";
+  prerequisites?: string[];
+  mentors: string[];
+  topics: string[];
 }
 
 export interface UserTraining extends Training {
-    progress: number;
-    joinedAt: string;
-    lastAccessed?: string;
-} 
+  progress: number;
+  joinedAt: string;
+  lastAccessed?: string;
+}

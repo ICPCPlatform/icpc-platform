@@ -22,8 +22,9 @@ export default function NotFound() {
         </div>
 
         <p className="max-w-[600px] text-muted-foreground">
-          While our code monkeys are busy debugging, why not head back to safety?
-          They&apos;ve had too much coffee and might have misplaced this page.
+          While our code monkeys are busy debugging, why not head back to
+          safety? They&apos;ve had too much coffee and might have misplaced this
+          page.
         </p>
 
         <Button asChild className="gap-2">
@@ -34,9 +35,10 @@ export default function NotFound() {
         </Button>
 
         <p className="text-sm text-muted-foreground">
-          P.S. If you were looking for a 404 page, congratulations! You found it! 🎉
+          P.S. If you were looking for a 404 page, congratulations! You found
+          it! 🎉
         </p>
       </div>
     </div>
-  )
+  );
 }

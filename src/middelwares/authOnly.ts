@@ -11,7 +11,7 @@ import { decryptSession, type userData } from "@/lib/session";
  * `
  */
 export default function authOnly(
-  f: (_request: NextRequest, _user: userData) => Promise<NextResponse>
+  f: (_request: NextRequest, _user: userData) => Promise<NextResponse>,
 ) {
   return async (request: NextRequest) => {
     const session = request.cookies.get("session")?.value;

@@ -19,7 +19,5 @@ export async function GET(request: NextRequest) {
       .where(eq(Users.userId, user.userId))
       .execute()
   )[0];
-  return redirect(
-    `/login?username=${encodeURIComponent(username)}`,
-  );
+  return redirect(`/login?username=${encodeURIComponent(username)}`);
 }

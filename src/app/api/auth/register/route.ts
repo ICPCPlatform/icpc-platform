@@ -3,18 +3,19 @@ import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
 import { eq, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import expectedBody from "./expectedBody";
+import { userRegisterValid } from "@/lib/validation/userValidations";
 import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
 import sendEmail from "@/lib/email/sendEmail";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
+import { type DefaultResponse } from "@/lib/types/DefaultResponse";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) : Promise<DefaultResponse> {
   try {
-    const { success, data: registerData } = expectedBody.safeParse(
+    const { success, data: registerData } = userRegisterValid.safeParse(
       await request.json(),
     );
     if (!success)
-      return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+      return NextResponse.json({ err: "Invalid input" }, { status: 400 });
 
     const dbResult = await db
       .select()
@@ -24,12 +25,14 @@ export async function POST(request: NextRequest) {
           eq(Users.username, registerData.username),
           eq(Users.gmail, registerData.gmail),
           eq(Users.cfHandle, registerData.cfHandle),
+          eq(Users.vjHandle, registerData.vjHandle ?? ""),
+          eq(Users.phoneNumber, registerData.phoneNumber),
         ),
       )
       .execute();
     if (dbResult.length > 0)
       return NextResponse.json(
-        { error: "User already exists" },
+        { err: "User already exists" },
         { status: 400 },
       );
 
@@ -40,14 +43,14 @@ export async function POST(request: NextRequest) {
 
     if (handleRes.status !== 200)
       return NextResponse.json(
-        { error: "Invalid Codeforces handle or codefoces error" },
+        { err: "Invalid Codeforces handle or codefoces error" },
         { status: 400 },
       );
 
     const { result } = await handleRes.json();
     if (!result)
       return NextResponse.json(
-        { error: "Invalid Codeforces handle or codefoces error" },
+        { err: "Invalid Codeforces handle or codefoces error" },
         { status: 400 },
       );
 
@@ -55,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     if (handle.toLowerCase() !== registerData.cfHandle.toLowerCase())
       return NextResponse.json(
-        { error: "Invalid Codeforces handle or codefoces error" },
+        { err: "Invalid Codeforces handle or codefoces error" },
         { status: 400 },
       );
 
@@ -75,15 +78,13 @@ export async function POST(request: NextRequest) {
       .insert(UsersFullData)
       .values({
         userId: userId,
-        cfHandle: registerData.cfHandle,
-        username: registerData.username,
-        imageURL: titlePhoto,
+        imageUrl: titlePhoto,
       })
       .execute();
     emailActivation(registerData, randomToken);
 
     return NextResponse.json(
-      { message: "registered" },
+      { msg: "registered" },
       {
         status: 200,
       },
@@ -91,7 +92,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error registering:", error);
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { err: "Something went wrong" },
       { status: 500 },
     );
   }

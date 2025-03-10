@@ -112,10 +112,8 @@ export function Navbar() {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <a href="https://forms.gle/i22PhB5fZYF4THa46">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <a href="https://forms.gle/i22PhB5fZYF4THa46" target="_blank">
                     Report a bug
-                  </NavigationMenuLink>
                 </a>
               </NavigationMenuItem>
             </NavigationMenuList>
