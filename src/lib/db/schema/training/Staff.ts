@@ -31,7 +31,7 @@ export const Staff = pgTable(
     problemSetter: boolean().default(false),
     instructor: boolean().default(false),
     coHead: boolean().default(false),
-    coach: boolean().default(false),
+    manager: boolean().default(false),
     deleted: timestamp(),
   },
   (table) => ({

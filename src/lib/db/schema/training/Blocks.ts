@@ -4,26 +4,28 @@ import {
   integer,
   pgTable,
   varchar,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 import { Trainings } from "./Trainings";
 
-export const Sessions = pgTable(
-  "sessions",
+export const Blocks = pgTable(
+  "Blocks",
   {
     trainingId: integer()
       .references(() => Trainings.trainingId)
       .notNull(),
-    weekNumber: integer().notNull(),
+    blockNumber: integer().notNull(),
     title: varchar({ length: 128 }).notNull(),
     description: varchar({ length: 512 }).notNull(),
-    date: timestamp().notNull(),
+    hidden: boolean().default(false).notNull(),
+    date: timestamp().defaultNow().notNull(),
     deleted: timestamp(),
   },
   (table) => [
     primaryKey({
-      name: "sessions_pkey",
-      columns: [table.weekNumber, table.trainingId],
+      name: "block_pkey",
+      columns: [table.blockNumber, table.trainingId],
     }),
   ]
 );

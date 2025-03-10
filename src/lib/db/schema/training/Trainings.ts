@@ -6,12 +6,14 @@ import {
   serial,
   uuid,
   timestamp,
+  json,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
-
 type Status = "active" | "inactive";
+
+
 export const Trainings = pgTable("trainings", {
   // TODO make serial start from 1000
   trainingId: serial().primaryKey(),
@@ -29,6 +31,9 @@ export const Trainings = pgTable("trainings", {
     .notNull(),
   title: citext({ length: 128 }).notNull().unique(),
   description: varchar({ length: 512 }).notNull(),
+  material: json(),
+  standing: json(),
+  standingView: json(),// saves which attributes of standing are visible to trainees 
   startDate: date().notNull(),
   duration: integer().notNull().default(1), // number of weeks/days
   status: varchar({ length: 20 }).$type<Status>().notNull().default("active"),
