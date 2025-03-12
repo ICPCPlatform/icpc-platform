@@ -8,10 +8,13 @@ import { eq, and, isNull } from "drizzle-orm";
 
 type Permissions = "View:standing" | "View:material";
 
+let fetchCount = 0;
 async function getUserTrainingPermissionsNotCache(userId: string, trainingId: number) : Promise<Permissions[]> {
   if (isNaN(trainingId)) {
     return []
   }
+    fetchCount++;
+    console.log(`🔴 DB Fetch #${fetchCount} - User ${userId} Training ${trainingId}`);
   const staffRes = await db
     .select({
       mentor: Staff.mentor,
