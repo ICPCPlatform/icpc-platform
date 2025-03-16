@@ -84,7 +84,7 @@ export default function Profile<T extends boolean>({
               <span>Social Links</span>
             </button>
             {allowEdit && (
-              <Link className={tabStyle} href="/edit-profile">
+              <Link className={tabStyle} href="/protected/edit-profile">
                 <FaUserEdit className="inline-block mr-1.5" />
                 <span>edit profile</span>
               </Link>

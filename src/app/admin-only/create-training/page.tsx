@@ -93,7 +93,7 @@ export default function Page() {
         return;
       }
 
-      const response = await fetch("/api/create-training", {
+      const response = await fetch("/admin-only/api/create-training", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

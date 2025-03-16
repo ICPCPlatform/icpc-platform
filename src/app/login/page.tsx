@@ -24,7 +24,7 @@ import { useUserContext } from "@/providers/user";
 
 export default function LoginPage() {
   const user  = useUserContext();
-  if (user) return redirect("/profile");
+  if (user) return redirect("/protected/profile");
   return (
     <Suspense>
       <Login />
@@ -155,7 +155,7 @@ function Login() {
         setLoading(false);
         if ("err" in res) return setError(res.err);
         else if ("msg" in res) {
-          router.push("/profile");
+          router.push("/protected/profile");
         }
       })
       .catch(async (err) => {
