@@ -113,7 +113,7 @@ export default function Profile({
   async function onSubmit(data: z.infer<typeof userFullDataValid>) {
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/edit-profile", {
+      const response = await fetch("/protected/api/edit-profile", {
         headers: {
           "Content-Type": "application/json",
         },

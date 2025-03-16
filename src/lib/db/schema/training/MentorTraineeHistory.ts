@@ -12,7 +12,7 @@ import { Staff } from "./Staff";
 import { Trainees } from "./Trainees";
 
 export const MentorTraineeHistory = pgTable(
-  "mentorTraineeHistory",
+  "mentor_trainee_history",
   {
     mentorId: uuid().notNull(),
     traineeId: uuid().notNull(),

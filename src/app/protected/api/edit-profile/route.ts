@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import { type userData } from "@/lib/session";
-import authOnly from "@/middelwares/authOnly";
 import { eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { userFullDataValid as userFulldataValidations } from "@/lib/validation/userFulldataValidations";
@@ -13,8 +12,12 @@ import { Institutes } from "@/lib/db/schema/user/Institutes";
 import { Faculties } from "@/lib/db/schema/user/Faculties";
 import { Communities } from "@/lib/db/schema/user/Communities";
 
-async function POSTfn(request: NextRequest, user: userData) {
+export async function POST(request: NextRequest) {
   try {
+    if (request.headers.get("x-user") === null) {
+      return new NextResponse(null, { status: 401 });
+    }
+    const user = JSON.parse(request.headers.get("x-user") ?? "") as userData;
     const { success, data } = userFulldataValidations.safeParse(
       await request.json(),
     );
@@ -70,9 +73,6 @@ async function POSTfn(request: NextRequest, user: userData) {
     return new NextResponse(null, { status: 500 });
   }
 }
-
-const POST = authOnly(POSTfn);
-export { POST };
 
 async function insertOrGetLookupTable<T extends AnyPgTable>(
   name: string | undefined,

@@ -73,10 +73,10 @@ export default function TrainingComp({ training }: { training: TrainingType }) {
 
         <button
           onClick={() => {
-            fetch("/api/training/join/" + training.id).then((res) => {
+            fetch("/protected/api/training/join/" + training.id).then((res) => {
               if (res.ok) {
                 alert("You have successfully joined the training!");
-                router.push("/profile");
+                router.push("/protected/profile");
               } else {
                 alert("Failed to join the training. Please try again.");
               }

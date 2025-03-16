@@ -11,11 +11,21 @@ import {
 
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
-type Status = "active" | "inactive";
+type Status = "active" | "roadmap" | "private" | "over";
 
+type StandingView =
+  | "name"
+  | "cfhandle"
+  | "vjudge"
+  | "gmail"
+  | "numberofsolved"
+  | "points"
+  | "mentor"
+  | "level"
+  | "university"
+  | "facutly";
 
 export const Trainings = pgTable("trainings", {
-  // TODO make serial start from 1000
   trainingId: serial().primaryKey(),
   headId: uuid()
     .references(() => Users.userId, {
@@ -33,9 +43,13 @@ export const Trainings = pgTable("trainings", {
   description: varchar({ length: 512 }).notNull(),
   material: json(),
   standing: json(),
-  standingView: json(),// saves which attributes of standing are visible to trainees 
+  /// saves which attributes of standing are visible to trainees
+  standingView: json()
+    .notNull()
+    .default(["name", "handle", "numberofsolved", "mentor", "level"])
+    .$type<StandingView[]>(),
   startDate: date().notNull(),
   duration: integer().notNull().default(1), // number of weeks/days
-  status: varchar({ length: 20 }).$type<Status>().notNull().default("active"),
+  status: varchar({ length: 20 }).$type<Status>().notNull().default("private"),
   deleted: timestamp(),
 });
