@@ -11,7 +11,7 @@ export default async function middleware(
       return response;
     }
   }
-  return NextResponse.next();
+  return NextResponse.next({request:req});
 }
 
 export const config = {
