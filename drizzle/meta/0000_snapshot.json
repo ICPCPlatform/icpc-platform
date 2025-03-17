@@ -1,11 +1,11 @@
 {
-  "id": "171cf4bf-49ca-4e9a-94fa-e3ab31de9c1a",
+  "id": "79f43182-ec86-4a7e-af52-fad1b06a651b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.sessions": {
-      "name": "sessions",
+    "public.blocks": {
+      "name": "blocks",
       "schema": "",
       "columns": {
         "training_id": {
@@ -14,8 +14,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "week_number": {
-          "name": "week_number",
+        "block_number": {
+          "name": "block_number",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -29,6 +29,127 @@
         "description": {
           "name": "description",
           "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hidden": {
+          "name": "hidden",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted": {
+          "name": "deleted",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "blocks_training_id_trainings_training_id_fk": {
+          "name": "blocks_training_id_trainings_training_id_fk",
+          "tableFrom": "blocks",
+          "tableTo": "trainings",
+          "columnsFrom": [
+            "training_id"
+          ],
+          "columnsTo": [
+            "training_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "block_pkey": {
+          "name": "block_pkey",
+          "columns": [
+            "block_number",
+            "training_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.contests": {
+      "name": "contests",
+      "schema": "",
+      "columns": {
+        "training_id": {
+          "name": "training_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "block_number": {
+          "name": "block_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contest_id": {
+          "name": "contest_id",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "group_id": {
+          "name": "group_id",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "judge": {
+          "name": "judge",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "point_per_problem": {
+          "name": "point_per_problem",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "first_points": {
+          "name": "first_points",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "calc_sys": {
+          "name": "calc_sys",
+          "type": "varchar(128)",
           "primaryKey": false,
           "notNull": true
         },
@@ -47,9 +168,77 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "sessions_training_id_trainings_training_id_fk": {
-          "name": "sessions_training_id_trainings_training_id_fk",
-          "tableFrom": "sessions",
+        "contests_training_id_block_number_blocks_training_id_block_number_fk": {
+          "name": "contests_training_id_block_number_blocks_training_id_block_number_fk",
+          "tableFrom": "contests",
+          "tableTo": "blocks",
+          "columnsFrom": [
+            "training_id",
+            "block_number"
+          ],
+          "columnsTo": [
+            "training_id",
+            "block_number"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "Contest_pkey": {
+          "name": "Contest_pkey",
+          "columns": [
+            "block_number",
+            "training_id",
+            "contest_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.mentor_trainee_history": {
+      "name": "mentor_trainee_history",
+      "schema": "",
+      "columns": {
+        "mentor_id": {
+          "name": "mentor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "trainee_id": {
+          "name": "trainee_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "training_id": {
+          "name": "training_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end_date": {
+          "name": "end_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mentor_trainee_history_training_id_trainings_training_id_fk": {
+          "name": "mentor_trainee_history_training_id_trainings_training_id_fk",
+          "tableFrom": "mentor_trainee_history",
           "tableTo": "trainings",
           "columnsFrom": [
             "training_id"
@@ -57,16 +246,47 @@
           "columnsTo": [
             "training_id"
           ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "mentor_trainee_history_mentor_id_training_id_staff_user_id_training_id_fk": {
+          "name": "mentor_trainee_history_mentor_id_training_id_staff_user_id_training_id_fk",
+          "tableFrom": "mentor_trainee_history",
+          "tableTo": "staff",
+          "columnsFrom": [
+            "mentor_id",
+            "training_id"
+          ],
+          "columnsTo": [
+            "user_id",
+            "training_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "mentor_trainee_history_trainee_id_training_id_trainees_user_id_training_id_fk": {
+          "name": "mentor_trainee_history_trainee_id_training_id_trainees_user_id_training_id_fk",
+          "tableFrom": "mentor_trainee_history",
+          "tableTo": "trainees",
+          "columnsFrom": [
+            "trainee_id",
+            "training_id"
+          ],
+          "columnsTo": [
+            "user_id",
+            "training_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
-        "sessions_pkey": {
-          "name": "sessions_pkey",
+        "mentor_trainee_history_training_id_mentor_id_trainee_id_pk": {
+          "name": "mentor_trainee_history_training_id_mentor_id_trainee_id_pk",
           "columns": [
-            "week_number",
-            "training_id"
+            "training_id",
+            "mentor_id",
+            "trainee_id"
           ]
         }
       },
@@ -119,8 +339,8 @@
           "notNull": false,
           "default": false
         },
-        "coach": {
-          "name": "coach",
+        "manager": {
+          "name": "manager",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
@@ -304,6 +524,25 @@
           "primaryKey": false,
           "notNull": true
         },
+        "material": {
+          "name": "material",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "standing": {
+          "name": "standing",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "standing_view": {
+          "name": "standing_view",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[\"name\",\"handle\",\"numberofsolved\",\"mentor\",\"level\"]'::json"
+        },
         "start_date": {
           "name": "start_date",
           "type": "date",
@@ -322,7 +561,7 @@
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'active'"
+          "default": "'private'"
         },
         "deleted": {
           "name": "deleted",
@@ -600,6 +839,52 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.reset_password": {
+      "name": "reset_password",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "char(25)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "end_at": {
+          "name": "end_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now() + interval '1 day'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "reset_password_user_id_users_user_id_fk": {
+          "name": "reset_password_user_id_users_user_id_fk",
+          "tableFrom": "reset_password",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

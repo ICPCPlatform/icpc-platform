@@ -10,7 +10,7 @@ import {
 import { Trainings } from "./Trainings";
 
 export const Blocks = pgTable(
-  "Blocks",
+  "blocks",
   {
     trainingId: integer()
       .references(() => Trainings.trainingId)
