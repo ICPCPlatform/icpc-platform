@@ -13,7 +13,6 @@ export async function resetPasswordAction(
 ) {
   "use server";
   const { password, confirmPassword, token } = submitData;
-  console.log("Password:", password)
   if (password !== confirmPassword) {
     console.log("Passwords do not match");
     return;
