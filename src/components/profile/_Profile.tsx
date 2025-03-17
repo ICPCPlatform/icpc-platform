@@ -135,7 +135,6 @@ function Info() {
             width={140}
             height={140}
             className="object-cover rounded-lg w-24 h-24 md:w-[140px] md:h-[140px]"
-            placeholder="blur"
             unoptimized
           />
         </div>
