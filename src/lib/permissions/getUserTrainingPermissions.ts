@@ -1,5 +1,4 @@
-import "server-only";
-import { cache } from "react";
+"use server";
 import { db } from "@/lib/db";
 import { Staff } from "../db/schema/training/Staff";
 import { Trainees } from "../db/schema/training/Trainees";
@@ -32,7 +31,6 @@ async function getUserTrainingPermissionsNotCache(userId: string, trainingId: nu
   if (staffRes.length === 1) {
     return ["View:standing", "View:material"];
   }
-  console.log("staffRes", staffRes);
   const studentRes = await db
     .select({})
     .from(Trainees)
@@ -46,13 +44,10 @@ async function getUserTrainingPermissionsNotCache(userId: string, trainingId: nu
     .execute();
   // TODO: check if user is trainee
   //
-  console.log("studentRes", studentRes);
   if (studentRes.length === 1) {
     return ["View:standing", "View:material"];
   }
   return [];
 }
 
-export const getUserTrainingPermissions = cache(
-  getUserTrainingPermissionsNotCache,
-);
+export const getUserTrainingPermissions = getUserTrainingPermissionsNotCache
