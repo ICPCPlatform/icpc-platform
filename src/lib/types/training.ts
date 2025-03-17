@@ -1,44 +1,45 @@
-export interface Announcement {
-    date: string;
-    message: string;
-}
-
-export interface Task {
-    id: number;
-    title: string;
-    completed: boolean;
-}
-
-export interface ChatMessage {
-    sender: 'Mentor' | 'You';
-    message: string;
-    timestamp: string;
-}
-
-export interface Mentor {
-    id: number;
-    name: string;
-    status: 'Online' | 'Offline';
-}
-
-export interface Training {
-  id: string;
+export type TrainingFullData = {
+  standing: {
+    ContestInfo: ContestInfo;
+    rankings: StandingEntryWithDetails[];
+    problems: string[];
+  }[];
+};
+export type Training = {
+  standing: StandingData;
+  standingView: string[]; // Dynamic configuration
+};
+export type ContestInfo = {
+  id: number;
   title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  status: "upcoming" | "ongoing" | "completed";
-  enrollmentStatus: "open" | "closed";
-  capacity: number;
-  enrolled: number;
-  level: "beginner" | "intermediate" | "advanced";
-  prerequisites?: string[];
-  mentors: string[];
-  topics: string[];
-}
+  start_time: string;
+  duration: string;
+  participant_count: number;
+  problem_count: number;
+};
 
-export interface UserTraining extends Training {
-  progress: number;
-  joinedAt: string;
-  lastAccessed?: string;
-}
+export type StandingData = {
+  ContestInfo: ContestInfo;
+  rankings: StandingEntry[];
+  problems: string[];
+}[];
+
+export type StandingEntry = {
+  userId: string;
+  penalty: number;
+  solved: string[];
+  attempted: string[];
+};
+
+export type Trainee = {
+  userId?: string;
+  name?: string | null;
+  cfHandle?: string;
+  vjudge?: string | null;
+  gmail?: string;
+  level?: number;
+  university?: string;
+  faculty?: string;
+};
+
+export type StandingEntryWithDetails = Omit<Trainee & StandingEntry, "userId">;
