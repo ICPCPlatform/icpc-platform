@@ -36,6 +36,7 @@ export async function getTrainingFullData({
     .select({
       standing: Trainings.standing,
       standingView: Trainings.standingView,
+      material : Trainings.material
     })
     .from(Trainings)
     .where(eq(Trainings.trainingId, trainingId))
@@ -47,7 +48,7 @@ export async function getTrainingFullData({
 
   // Fetch trainee details for each trainee in the standing
 
-  const { standingView, standing } = training;
+  const { standingView, standing, material } = training;
   standingView.push("userId");
   const traineeIds = [
     ...new Set(standing.map((s) => s.rankings.map((r) => r.userId)).flat()),
@@ -87,7 +88,7 @@ export async function getTrainingFullData({
     },
   );
 
-  return { standing: standingWithDetails };
+  return { standing: standingWithDetails, material };
 }
 
 const ___ = {

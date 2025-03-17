@@ -4,10 +4,21 @@ export type TrainingFullData = {
     rankings: StandingEntryWithDetails[];
     problems: string[];
   }[];
+  material: Material;
 };
+export type Material = Record<
+  string,
+  {
+    title: string;
+    link: string;
+    des: string;
+  } | null
+>;
+
 export type Training = {
   standing: StandingData;
   standingView: string[]; // Dynamic configuration
+  material: Material;
 };
 export type ContestInfo = {
   id: number;
