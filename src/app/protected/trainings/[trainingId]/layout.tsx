@@ -1,5 +1,6 @@
 import { getTrainingFullData } from "@/actions/getTrainingFullData";
 import TrainingProvider from "@/providers/training";
+import NoSSR from "@/components/util/NoSSR";
 
 export default async function Layout({
   children,
@@ -14,6 +15,8 @@ export default async function Layout({
   console.log(trainingData);
 
   return (
-    <TrainingProvider trainingData={trainingData}>{children}</TrainingProvider>
+    <TrainingProvider trainingData={trainingData}>
+      <NoSSR>{children}</NoSSR>
+    </TrainingProvider>
   );
 }
