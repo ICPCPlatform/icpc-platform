@@ -53,6 +53,7 @@ export async function getTrainingFullData({
   const traineeIds = [
     ...new Set(standing.map((s) => s.rankings.map((r) => r.userId)).flat()),
   ].filter((id) => id !== undefined);
+  console.log(traineeIds);
   const trainees: Trainee[] = (await db
     .select(selectKeysFromObjects(___, standingView))
     .from(Users)
@@ -65,19 +66,21 @@ export async function getTrainingFullData({
   // Map standings to include trainee details
   const standingWithDetails: TrainingFullData["standing"] = standing.map(
     (contest) => {
+      
       return {
         ...contest,
         rankings: contest.rankings
           .map((s: StandingEntry) => {
+            console.log(s, contest.ContestInfo.id);
             if (s.userId === undefined) {
               return undefined;
             }
             const user = trainees.find((usr) => usr.userId === s.userId);
             if (user) {
-              user.userId = undefined;
               const obj = {
                 ...s,
                 ...user, // Assuming penalty is used as points
+                userId: undefined,
               };
               return obj;
             }
