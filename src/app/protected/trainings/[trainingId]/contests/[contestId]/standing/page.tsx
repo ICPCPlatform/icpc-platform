@@ -5,13 +5,38 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Clock, Users, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react";
+
 export default function Page() {
   const data = useTrainingContext();
+  const tableRef = useRef<HTMLTableElement>(null);
   const pathname = window.location.pathname;
 
   // Log the data structure to see what we're working with
   console.log("Training Context Data:", data);
 
+  useEffect(() => {
+    const setStickyColumnOffsets = () => {
+      if (!tableRef.current) return;
+
+      const stickyColumns = tableRef.current.querySelectorAll(".sticky-col");
+      let offset = 0;
+      const styleSheet = document.styleSheets[0];
+
+      stickyColumns.forEach((col, idx) => {
+        styleSheet.insertRule(
+          `#standingTable  td:nth-child(${idx + 1}) , #standingTable th:nth-child(${idx + 1}) {
+            left: ${offset}px;
+            z-index: 3;
+            position: sticky;
+          }`,
+        );
+        offset += col.getBoundingClientRect().width; // Add current column width for the next one
+      });
+    };
+
+    setStickyColumnOffsets();
+  }, []);
   // Check if data and standing exist
   if (!data || !data.standing || data.standing.length === 0) {
     return (
@@ -31,24 +56,24 @@ export default function Page() {
       standing.ContestInfo.id === Number(pathname.split("/").at(-2)),
   );
   if (!contestStanding) {
-    return <div className="container py-8 px-4 md:px-6">
-      <Card>
-        <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">
-            Contest standings not found
-          </p>
-        </CardContent>
-      </Card>
-    </div>;
+    return (
+      <div className="container py-8 px-4 md:px-6">
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-center text-muted-foreground">
+              Contest standings not found
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   // Get the first contest standing (assuming we're displaying one contest at a time)
   console.log("Contest Standing:", contestStanding);
 
   // Try to access the contest info with either property name
-  const contestInfo =
-    // @ts-expect-error - Handle property name mismatch between actual data and types
-    contestStanding.ContestInfo;
+  const contestInfo = contestStanding.ContestInfo;
   const { problems, rankings } = contestStanding;
 
   if (!contestInfo || !problems || !rankings) {
@@ -109,19 +134,23 @@ export default function Page() {
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+            <table
+              className="w-full border-collapse relative"
+              id="standingTable"
+              ref={tableRef}
+            >
               <thead>
                 <tr className="border-b">
-                  <th className="sticky left-0 bg-card px-4 py-3 text-left font-medium text-muted-foreground w-[80px]">
+                  <th className="sticky sticky-col bg-card px-4 py-3 text-left font-medium text-muted-foreground w-[80px]">
                     Rank
                   </th>
-                  <th className="sticky left-[80px] bg-card px-4 py-3 text-left font-medium text-muted-foreground w-[160px]">
+                  <th className="sticky sticky-col bg-card px-4 py-3 text-left font-medium text-muted-foreground w-[160px]">
                     Handle
                   </th>
-                  <th className="sticky left-[240px] bg-card px-4 py-3 text-center font-medium text-muted-foreground w-[80px]">
+                  <th className="sticky sticky-col  bg-card px-4 py-3 text-center font-medium text-muted-foreground w-[80px]">
                     Solved
                   </th>
-                  <th className="sticky left-[320px] bg-card px-4 py-3 text-center font-medium text-muted-foreground w-[80px]">
+                  <th className="sticky sticky-col bg-card px-4 py-3 text-center font-medium text-muted-foreground w-[80px]">
                     Penalty
                   </th>
                   {problems.map((problem, index) => {
@@ -153,7 +182,7 @@ export default function Page() {
                         rank === 3 && "bg-amber-700/10",
                       )}
                     >
-                      <td className="sticky left-0 bg-inherit px-4 py-3 font-medium">
+                      <td className="sticky bg-inherit px-4 py-3 font-medium">
                         <div className="flex items-center gap-2">
                           {rank === 1 && (
                             <Trophy className="h-5 w-5 text-amber-500" />
@@ -167,10 +196,10 @@ export default function Page() {
                           <span>{rank}</span>
                         </div>
                       </td>
-                      <td className="sticky left-[80px] bg-inherit px-4 py-3 font-medium">
+                      <td className="sticky  bg-inherit px-4 py-3 font-medium">
                         {ranking.cfHandle || "Anonymous"}
                       </td>
-                      <td className="sticky left-[240px] bg-inherit px-4 py-3 text-center">
+                      <td className="sticky  bg-inherit px-4 py-3 text-center">
                         <Badge
                           variant={isTopRank ? "default" : "outline"}
                           className="min-w-[28px]"
@@ -178,7 +207,7 @@ export default function Page() {
                           {solvedCount}
                         </Badge>
                       </td>
-                      <td className="sticky left-[320px] bg-inherit px-4 py-3 text-center">
+                      <td className="sticky  bg-inherit px-4 py-3 text-center">
                         {ranking.penalty}
                       </td>
                       {problems.map((problem, problemIndex) => {
@@ -194,6 +223,7 @@ export default function Page() {
                               "px-4 py-3 text-center",
                               isSolved && "bg-green-800/20",
                               !isSolved && isAttempted && "bg-red-800/20",
+                              "min-w-[60px]",
                             )}
                           >
                             {isSolved ? problemLetter : isAttempted ? "✗" : ""}
