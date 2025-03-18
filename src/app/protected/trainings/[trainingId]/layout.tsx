@@ -17,14 +17,15 @@ export default async function Layout({
   console.log(trainingData);
 
   return (
-
-    <div className={cn('w-max','flex','flex-row')}>
-      <TrainingProvider trainingData={trainingData}>
-        <TrainingNavigation trainingId={trainingId} />
-        <div>
-        <NoSSR>{children}</NoSSR>
-        </div>
-      </TrainingProvider>
+    <div className="mx-auto p-2 md:py-6">
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6 w-max max-w-full ">
+        <TrainingProvider trainingData={trainingData}>
+          <NoSSR>
+            <TrainingNavigation trainingId={trainingId} />
+            {children}
+          </NoSSR>
+        </TrainingProvider>
+      </div>
     </div>
   );
 }
