@@ -30,7 +30,6 @@ export async function getTrainingFullData({
 }: {
   trainingId: number;
 }): Promise<TrainingFullData> {
-  "use server";
   // Fetch training details
   const trainingResult = await db
     .select({
@@ -53,7 +52,6 @@ export async function getTrainingFullData({
   const traineeIds = [
     ...new Set(standing.map((s) => s.rankings.map((r) => r.userId)).flat()),
   ].filter((id) => id !== undefined);
-  console.log(traineeIds);
   const trainees: Trainee[] = (await db
     .select(selectKeysFromObjects(___, standingView))
     .from(Users)
@@ -71,7 +69,6 @@ export async function getTrainingFullData({
         ...contest,
         rankings: contest.rankings
           .map((s: StandingEntry) => {
-            console.log(s, contest.ContestInfo.id);
             if (s.userId === undefined) {
               return undefined;
             }
