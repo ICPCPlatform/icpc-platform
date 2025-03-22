@@ -5,13 +5,13 @@ import { JWTPayload, SignJWT, jwtVerify } from "jose";
 //
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
-export type userData = {
+export type UserDataJWT = {
   userId: string;
   username: string;
   role: string;
 };
 
-export async function encryptSession(data: userData) {
+export async function encryptSession(data: UserDataJWT) {
   const session = await new SignJWT(data)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -25,7 +25,7 @@ export async function encryptSession(data: userData) {
  */
 export async function decryptSession(
   session: string | undefined,
-): Promise<(JWTPayload & userData) | null> {
+): Promise<(JWTPayload & UserDataJWT) | null> {
   if (!session) return null;
 
   // bad
@@ -35,7 +35,7 @@ export async function decryptSession(
     return {
       payload: null,
     };
-  })) as { payload: (JWTPayload & userData) | null };
+  })) as { payload: (JWTPayload & UserDataJWT) | null };
 
   return payload;
 }
