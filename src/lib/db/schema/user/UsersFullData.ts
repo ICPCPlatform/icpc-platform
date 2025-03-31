@@ -59,7 +59,7 @@ export const UsersFullData = pgTable("users_full_data", {
   nameAR2: varchar({ length: 20 }),
   nameAR3: varchar({ length: 20 }),
   nameAR4: varchar({ length: 20 }),
-  nationalId: char({ length: 14 }).unique(), // for Egyptians
+  nationalId: char({ length: 14 }).unique(), // EG
   countryId: integer().references(() => Countries.id, {
     onDelete: "set null",
     onUpdate: "cascade",

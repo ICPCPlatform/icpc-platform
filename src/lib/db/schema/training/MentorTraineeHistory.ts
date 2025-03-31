@@ -23,17 +23,25 @@ export const MentorTraineeHistory = pgTable(
       })
       .notNull(),
 
-    startDate: timestamp(),
+    startDate: timestamp().notNull(),
     endDate: timestamp(),
   },
   (table) => [
-    primaryKey({ columns: [table.trainingId,table.mentorId, table.traineeId] }),
+    primaryKey({
+      columns: [
+        table.trainingId,
+        table.mentorId,
+        table.traineeId,
+        table.startDate,
+      ],
+    }),
     foreignKey({
       columns: [table.mentorId, table.trainingId],
       foreignColumns: [Staff.userId, Staff.trainingId],
-    }),foreignKey({
+    }),
+    foreignKey({
       columns: [table.traineeId, table.trainingId],
       foreignColumns: [Trainees.userId, Trainees.trainingId],
     }),
-  ],
+  ]
 );
