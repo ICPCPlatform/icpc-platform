@@ -14,8 +14,7 @@ export const Users = pgTable(
   {
     userId: uuid().primaryKey().defaultRandom(),
     username: citext().notNull().unique(),
-    password: varchar().notNull(),// TBD make lenth 80 ? 
-
+    password: varchar().notNull(),// TBD make length 80 ?
     gmail: citext().notNull().unique(),
     cfHandle: citext().notNull().unique(),
     vjHandle: citext().unique(),
