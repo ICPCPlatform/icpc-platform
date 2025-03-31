@@ -5,6 +5,7 @@ import {
   primaryKey,
   timestamp,
   uuid,
+  index,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
@@ -27,17 +28,18 @@ export const Staff = pgTable(
       })
       .notNull(),
 
-    mentor: boolean().default(false),
-    problemSetter: boolean().default(false),
-    instructor: boolean().default(false),
-    coHead: boolean().default(false),
-    manager: boolean().default(false),
+    mentor: boolean().default(false).notNull(),
+    problemSetter: boolean().default(false).notNull(),
+    instructor: boolean().default(false).notNull(),
+    coHead: boolean().default(false).notNull(),
+    manager: boolean().default(false).notNull(),
     deleted: timestamp(),
   },
-  (table) => ({
-    pk: primaryKey({
+  (table) => [
+    primaryKey({
       columns: [table.userId, table.trainingId],
       name: "staff_pk",
     }),
-  }),
+    index("mentor_idx").on(table.mentor),
+  ]
 );
