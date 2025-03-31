@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { Blocks } from "./Blocks";
+type Judge = "cf" | "vj";
 
 export const Contests = pgTable(
   "contests",
@@ -18,7 +19,7 @@ export const Contests = pgTable(
 
     groupId: varchar({ length: 32 }), // if group contest either codeforces or vjudge could be null
 
-    judge: varchar({ length: 32 }).notNull(), // cf or vjudge
+    judge: varchar({ length: 2 }).notNull().$type<Judge>(), // codeforces or vjudge
     type: varchar({ length: 32 }).notNull(), // practice or contest => for points calculation
     title: varchar({ length: 128 }).notNull(),
     description: varchar({ length: 512 }).default("").notNull(),
@@ -26,7 +27,7 @@ export const Contests = pgTable(
     pointPerProblem: integer().default(20).notNull(),
     firstPoints: integer().default(1000).notNull(),
     calcSys: varchar({ length: 32 }).default("90%").notNull(),
-    date: timestamp().defaultNow().notNull(),
+    date: timestamp().notNull(),
     deleted: timestamp(),
   },
   (table) => [

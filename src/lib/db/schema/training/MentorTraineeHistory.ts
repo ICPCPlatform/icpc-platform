@@ -24,7 +24,7 @@ export const MentorTraineeHistory = pgTable(
       .notNull(),
 
     startDate: timestamp().notNull(),
-    endDate: timestamp().defaultNow().notNull(),
+    endDate: timestamp(),
   },
   (table) => [
     primaryKey({
@@ -32,7 +32,7 @@ export const MentorTraineeHistory = pgTable(
         table.trainingId,
         table.mentorId,
         table.traineeId,
-        table.endDate,
+        table.startDate,
       ],
     }),
     foreignKey({
