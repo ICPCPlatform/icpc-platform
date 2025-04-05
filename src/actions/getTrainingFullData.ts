@@ -13,7 +13,7 @@ import {
   Trainee,
   Training,
   TrainingFullData,
-} from "@/lib/types/training";
+} from "@/lib/types/Training";
 
 const selectKeysFromObjects = (data: typeof ___, keys: string[]) => {
   return keys.reduce((acc, key) => {

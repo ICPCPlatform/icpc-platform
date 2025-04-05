@@ -27,7 +27,6 @@ export default function Page() {
         styleSheet.insertRule(
           `#standingTable  td:nth-child(${idx + 1}) , #standingTable th:nth-child(${idx + 1}) {
             left: ${offset}px;
-            z-index: 3;
             position: sticky;
           }`,
         );

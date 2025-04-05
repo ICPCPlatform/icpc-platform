@@ -1,5 +1,5 @@
 "use client";
-import { TrainingFullData } from "@/lib/types/training";
+import { TrainingFullData } from "@/lib/types/Training";
 import { createContext, useContext } from "react";
 const trainingContext = createContext<TrainingFullData | null>(null);
 export default function TrainingProvider({
