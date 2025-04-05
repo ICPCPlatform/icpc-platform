@@ -6,6 +6,14 @@ import { composeMiddlewares, NoAction } from "./middlewares/utils";
 export default async function middleware(
   req: NextRequest,
 ): Promise<NextResponse> {
+  // check if x-user header is present
+  // if present, refuse the request 
+  if (req.headers.has("x-user")) {
+    // this prevent security issues stop
+    return new NextResponse(null , {status: 403});
+  }
+  
+
   const composedMiddleware = composeMiddlewares(middlewares.functions);
   const response = await composedMiddleware(req);
   if (response !== NoAction) {
