@@ -1,11 +1,15 @@
+/**
+ * Training Data send to the client
+ */
 export type TrainingFullData = {
   standing: {
     ContestInfo: ContestInfo;
-    rankings: StandingEntryWithDetails[];
+    rankings: RankingEntryWithDetails[];
     problems: string[];
   }[];
   material: Material;
 };
+
 export type Material = Record<
   string,
   {
@@ -15,11 +19,19 @@ export type Material = Record<
   } | null
 >;
 
+/**
+ * Training Data riveted from the Database
+ */
 export type Training = {
   standing: StandingData;
   standingView: string[]; // Dynamic configuration
   material: Material;
 };
+
+
+/**
+ * Contest Info 
+ */
 export type ContestInfo = {
   id: number;
   title: string;
@@ -29,19 +41,31 @@ export type ContestInfo = {
   problem_count: number;
 };
 
+
+/**
+ * Standing type from db.training.standing 
+ */
 export type StandingData = {
   ContestInfo: ContestInfo;
-  rankings: StandingEntry[];
+  rankings: RankingEntry[];
   problems: string[];
 }[];
 
-export type StandingEntry = {
+
+/**
+ * Ranking Entry
+ */
+export type RankingEntry = {
   userId: string;
   penalty: number;
   solved: string[];
   attempted: string[];
 };
 
+/** 
+ * Trainee Details
+ * this type is used from the database
+ */
 export type Trainee = {
   userId?: string;
   name?: string | null;
@@ -53,4 +77,12 @@ export type Trainee = {
   faculty?: string;
 };
 
-export type StandingEntryWithDetails = Omit<Trainee & StandingEntry, "userId">;
+/**
+ * Standing Entry with Trainee Details
+ */
+export type RankingEntryWithDetails = Omit<Trainee & RankingEntry, "userId">;
+
+
+
+
+

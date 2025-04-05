@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { getUserFullData } from "@/actions/getUserFullData";
 import { UserProfile } from "@/lib/types/userProfileType";
 
-export default async function ProfilePage() {
+export default async function Page() {
   const cookieStore = await cookies();
   const session = cookieStore.get("session")?.value;
   const validation = await decryptSession(session);

@@ -22,7 +22,7 @@ import { z } from "zod";
 import { CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { useUserContext } from "@/providers/user";
 
-export default function LoginPage() {
+export default function Page() {
   const user  = useUserContext();
   if (user) return redirect("/protected/profile");
   return (

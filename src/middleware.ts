@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { middlewares } from "./middelwares/index";
+import { middlewares } from "./middlewares/index";
+import { composeMiddlewares, NoAction } from "./middlewares/utils";
 
 export default async function middleware(
   req: NextRequest,
 ): Promise<NextResponse> {
-  for (let i = 0; i < middlewares.functions.length; i++) {
-    const response = await middlewares.functions[i](req);
-    if (response) {
-      return response;
-    }
+  const composedMiddleware = composeMiddlewares(middlewares.functions);
+  const response = await composedMiddleware(req);
+  if (response !== NoAction) {
+    return response;
   }
   return NextResponse.next({request:req});
 }

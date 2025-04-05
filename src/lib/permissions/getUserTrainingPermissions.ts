@@ -5,9 +5,9 @@ import { Trainees } from "../db/schema/training/Trainees";
 import { eq, and, isNull } from "drizzle-orm";
 
 
-type Permissions = "View:standing" | "View:material";
+export type TrainingPermissions = "View:standing" | "View:material";
 
-async function getUserTrainingPermissionsNotCache(userId: string, trainingId: number) : Promise<Permissions[]> {
+async function getUserTrainingPermissionsNotCache(userId: string, trainingId: number) : Promise<TrainingPermissions[]> {
   if (isNaN(trainingId)) {
     return []
   }

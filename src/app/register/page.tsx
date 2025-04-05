@@ -20,7 +20,7 @@ import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { XCircle, CheckCircle } from "lucide-react";
 
-export default function RegisterPage() {
+export default function Page() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");

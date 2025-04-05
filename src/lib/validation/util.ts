@@ -1,3 +1,6 @@
+/**
+ * commanly used validation 
+ */
 import { z } from "zod";
 import { type AnyPgTable } from "drizzle-orm/pg-core";
 import {

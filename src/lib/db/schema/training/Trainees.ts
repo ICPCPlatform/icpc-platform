@@ -10,6 +10,11 @@ import {
 import { Users } from "../user/Users";
 import { Trainings } from "./Trainings";
 import { Staff } from "./Staff";
+
+
+/**
+ * Trainees is the table that holds the trainees for a training
+ */
 export const Trainees = pgTable(
   "trainees",
   {
@@ -19,13 +24,16 @@ export const Trainees = pgTable(
         onUpdate: "cascade",
       })
       .notNull(),
+
     trainingId: integer()
       .references(() => Trainings.trainingId, {
         onDelete: "cascade",
         onUpdate: "cascade",
       })
       .notNull(),
+
     mentorId: uuid().notNull(),
+
     mentor_assigned_date: timestamp().defaultNow(),
     deleted: timestamp(),
   },

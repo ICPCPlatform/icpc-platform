@@ -8,8 +8,8 @@ import { eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import {
-  StandingEntry,
-  StandingEntryWithDetails,
+  RankingEntry,
+  RankingEntryWithDetails,
   Trainee,
   Training,
   TrainingFullData,
@@ -68,7 +68,7 @@ export async function getTrainingFullData({
       return {
         ...contest,
         rankings: contest.rankings
-          .map((s: StandingEntry) => {
+          .map((s: RankingEntry) => {
             if (s.userId === undefined) {
               return undefined;
             }
@@ -83,7 +83,7 @@ export async function getTrainingFullData({
             }
             return undefined;
           })
-          .filter((x) => x !== undefined) as StandingEntryWithDetails[],
+          .filter((x) => x !== undefined) as RankingEntryWithDetails[],
       };
     },
   );

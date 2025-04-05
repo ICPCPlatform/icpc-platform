@@ -7,10 +7,12 @@ import {
   uuid,
   timestamp,
   json,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
+
 type Status = "active" | "roadmap" | "private" | "over";
 
 type StandingView =
@@ -25,6 +27,9 @@ type StandingView =
   | "university"
   | "facutly";
 
+/**
+ * Trainings is the table that holds the training information
+ */
 export const Trainings = pgTable("trainings", {
   trainingId: serial().primaryKey(),
   headId: uuid()
@@ -33,16 +38,18 @@ export const Trainings = pgTable("trainings", {
       onUpdate: "cascade",
     })
     .notNull(),
+
   chiefJudge: uuid()
     .references(() => Users.userId, {
       onDelete: "restrict",
       onUpdate: "cascade",
     })
     .notNull(),
+
   title: citext({ length: 128 }).notNull().unique(),
   description: varchar({ length: 512 }).notNull(),
-  material: json(),
-  standing: json(),
+  material: jsonb(),
+  standing: jsonb(),
   /// saves which attributes of standing are visible to trainees
   standingView: json()
     .notNull()

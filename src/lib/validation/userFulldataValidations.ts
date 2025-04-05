@@ -22,7 +22,7 @@ import {
   arabicNameTooShort,
   arabicNameInvalid,
   nationalIdInvalidLength,
-  nationalIdInvalid
+  nationalIdInvalid,
 } from "../const/error-messages";
 
 // Academic
@@ -98,7 +98,6 @@ function govNumber(id: string) {
   return validGovernorateCodes.includes(govCode);
 }
 
-
 const city = z.string().optional();
 
 function birthdate(id: string) {
@@ -146,6 +145,10 @@ function isValidEgyptianNIDChecksum(id: string) {
   return expectedCheckDigit === givenCheckDigit;
 }
 
+/**
+ * User full data validation schema
+ * used in edit-profile
+ */
 const userFullDataValid = z.object({
   institute,
   faculty,
@@ -178,6 +181,5 @@ const userFullDataValid = z.object({
   visibilityMask: z.number().int().optional(),
   community,
 });
-
 
 export { userFullDataValid };

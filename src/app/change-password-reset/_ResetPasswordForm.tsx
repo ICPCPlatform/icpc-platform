@@ -39,8 +39,6 @@ export function FromReset({ token }: { token: string }) {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((e) => {
-              const req = { ...e, token };
-              console.log("req", req);
               resetPasswordAction(e);
             })}
             className="space-y-6"
