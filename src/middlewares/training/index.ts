@@ -1,4 +1,4 @@
-import { decryptSession } from "@/lib/session";
+import { getUserData  } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 import { extractTrainingId, userTrainingPermissions } from "./utils";
 import { TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
@@ -56,23 +56,21 @@ function trainingMiddlewareBuilder({ pathRegex, permissions }: { pathRegex: RegE
       return NoAction;
 
     const trainingId = extractTrainingId(url);
-
-    const session = req.cookies.get("session")?.value;
-    const validation = await decryptSession(session);
+    const user = await getUserData();
 
     if (trainingId === null) {
       return NoAction;
     }
 
     // Handle authentication
-    if (!validation) {
+    if (!user) {
       // User not logged in, redirect to login
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
     const userPermissions = new Set(... await userTrainingPermissions({
       trainingId,
-      userId: validation.userId
+      userId: user.userId
     }));
 
     // Extract training ID from URL if it's a training path

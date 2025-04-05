@@ -39,3 +39,11 @@ export async function decryptSession(
 
   return payload;
 }
+
+export async function getUserData(): Promise<UserDataJWT | null> {
+  const headers = new Headers();
+  const userData = headers.get("x-user");
+  if (!userData) return null;
+  const user = await decryptSession(userData);
+  return user;
+}
