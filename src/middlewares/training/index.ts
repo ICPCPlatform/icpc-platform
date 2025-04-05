@@ -22,6 +22,21 @@ const permissionNeedToPath: {
       permissions: [
         "View:standing"
       ]
+    },
+    // Match paths like /protected/trainings/123/edit-contests
+    {
+      pathRegex: /^\/protected\/trainings\/(?<trainingId>\d+)\/edit-contests\/?$/,
+      permissions: [
+        "Edit:contest"
+      ]
+    }
+    ,
+    // Match paths like /protected/trainings/123/edit-materials/1
+    {
+      pathRegex: /^\/protected\/trainings\/(?<trainingId>\d+)\/edit-materials\/(?<blockNumber>\d+)\/?$/,
+      permissions: [
+        "Edit:material"
+      ]
     }
   ]
 
