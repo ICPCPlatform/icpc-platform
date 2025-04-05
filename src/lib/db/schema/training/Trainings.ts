@@ -6,7 +6,6 @@ import {
   serial,
   uuid,
   timestamp,
-  json,
   jsonb,
 } from "drizzle-orm/pg-core";
 
@@ -51,12 +50,12 @@ export const Trainings = pgTable("trainings", {
   material: jsonb(),
   standing: jsonb(),
   /// saves which attributes of standing are visible to trainees
-  standingView: json()
+  standingView: jsonb()
     .notNull()
     .default(["name", "handle", "numberofsolved", "mentor", "level"])
     .$type<StandingView[]>(),
   startDate: date().notNull(),
   duration: integer().notNull().default(1), // number of weeks/days
-  status: varchar({ length: 20 }).$type<Status>().notNull().default("private"),
+  status: varchar({ length: 20 }).$type<Status>().default("private").notNull(),
   deleted: timestamp(),
 });

@@ -33,8 +33,7 @@ export const Trainees = pgTable(
       .notNull(),
 
     mentorId: uuid().notNull(),
-
-    mentor_assigned_date: timestamp().defaultNow(),
+    mentor_assigned_date: timestamp().defaultNow().notNull(),
     deleted: timestamp(),
   },
   (table) => [

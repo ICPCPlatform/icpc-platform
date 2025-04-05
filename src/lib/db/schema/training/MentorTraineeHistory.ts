@@ -31,25 +31,22 @@ export const MentorTraineeHistory = pgTable(
       })
       .notNull(),
 
-    // Timestamp marking the start of the mentorship relationship.
-    startDate: timestamp(),
-
-    // Timestamp marking the end of the mentorship relationship.
-    // If null, it indicates that the training is still ongoing.
-    
+    startDate: timestamp().notNull(),
     endDate: timestamp(),
   },
   (table) => [
-     // Primary key ensuring unique mentor-trainee-training relationships.
     primaryKey({
-      columns: [table.trainingId, table.mentorId, table.traineeId],
+      columns: [
+        table.trainingId,
+        table.mentorId,
+        table.traineeId,
+        table.startDate,
+      ],
     }),
-
     foreignKey({
       columns: [table.mentorId, table.trainingId],
       foreignColumns: [Staff.userId, Staff.trainingId],
     }),
-
     foreignKey({
       columns: [table.traineeId, table.trainingId],
       foreignColumns: [Trainees.userId, Trainees.trainingId],
