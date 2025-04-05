@@ -11,6 +11,7 @@ import {
 
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
+import { StandingData } from "@/lib/types/Training";
 
 type Status = "active" | "roadmap" | "private" | "over";
 
@@ -47,8 +48,8 @@ export const Trainings = pgTable("trainings", {
 
   title: citext({ length: 128 }).notNull().unique(),
   description: varchar({ length: 512 }).notNull(),
-  material: jsonb(),
-  standing: jsonb(),
+  material: jsonb(), // this should get Deleted
+  standing: jsonb().$type<StandingData[]>(),
   /// saves which attributes of standing are visible to trainees
   standingView: jsonb()
     .notNull()

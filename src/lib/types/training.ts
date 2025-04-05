@@ -10,6 +10,11 @@ export type TrainingFullData = {
   material: Material;
 };
 
+
+/**
+ * Material type from db.training.material
+ * this type is used from the database
+ */
 export type Material = Record<
   string,
   {
@@ -18,6 +23,16 @@ export type Material = Record<
     des: string;
   } | null
 >;
+
+/** 
+ * Materail type `db.Blocks.material`
+ */
+export type MaterialData = {
+  title: string;
+  link: string;
+  des: string;
+}[];
+
 
 /**
  * Training Data riveted from the Database
@@ -50,6 +65,7 @@ export type StandingData = {
   rankings: RankingEntry[];
   problems: string[];
 }[];
+
 
 
 /**
