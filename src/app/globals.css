@@ -268,5 +268,76 @@
   .status-offline {
     @apply bg-[hsl(var(--muted))];
   }
+
+  /* Auth Components */
+  .auth-container {
+    @apply flex min-h-screen items-center justify-center bg-[hsl(var(--background))];
+  }
+
+  .auth-card {
+    @apply w-full max-w-md p-8 shadow-lg rounded-lg mt-10 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))];
+  }
+
+  .auth-title {
+    @apply text-2xl font-bold mb-4 text-center text-[hsl(var(--foreground))];
+  }
+
+  .auth-subtitle {
+    @apply text-sm text-[hsl(var(--muted-foreground))] mb-6 text-center;
+  }
+
+  .auth-form {
+    @apply space-y-6;
+  }
+
+  .auth-input-wrapper {
+    @apply relative;
+  }
+
+  .auth-input {
+    @apply w-full bg-[hsl(var(--background))] border border-[hsl(var(--input))] text-[hsl(var(--foreground))]
+           rounded-md p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))];
+  }
+
+  .auth-button {
+    @apply w-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] 
+           py-2 rounded-md hover:opacity-90 transition-colors
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .auth-link {
+    @apply text-sm text-center mt-6 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))];
+  }
+
+  .auth-error {
+    @apply flex items-center justify-center text-[hsl(var(--destructive))] text-sm mt-2;
+  }
+
+  .auth-success {
+    @apply flex items-center justify-center text-green-500 text-sm mt-2;
+  }
+
+  /* Additional Auth Form Elements */
+  .auth-form-description {
+    @apply text-xs text-[hsl(var(--muted-foreground))] mt-1;
+  }
+
+  .auth-form-label {
+    @apply text-sm font-medium text-[hsl(var(--foreground))];
+  }
+
+  .auth-checkbox-wrapper {
+    @apply flex flex-row items-start space-x-3 space-y-0 rounded-md;
+  }
+
+  .auth-checkbox {
+    @apply mt-1 h-4 w-4 rounded border border-[hsl(var(--input))] 
+           bg-[hsl(var(--background))] text-[hsl(var(--primary))]
+           focus:ring-2 focus:ring-[hsl(var(--ring))];
+  }
+
+  .auth-link-text {
+    @apply text-[hsl(var(--primary))] hover:underline;
+  }
 }
 
