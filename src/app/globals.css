@@ -1,3 +1,18 @@
+/* Import base styles */
+@import url('../styles/base/variables.css');
+@import url('../styles/base/base.css');
+
+/* Import shared components */
+@import url('../styles/components/shared/buttons.css');
+
+/* Import auth components */
+@import url('../styles/components/auth/auth.css');
+
+/* Import profile components */
+@import url('../styles/components/profile/profile-view.css');
+@import url('../styles/components/profile/profile-edit.css');
+@import url('../styles/components/profile/profile-form.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,55 +20,61 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 4%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 4%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 4% 8%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 8%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 240 4% 8%;
-    --accent-foreground: 0 0% 98%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 240 5% 65%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
   }
 
   * {
-    @apply border-[hsl(var(--border))];
+    @apply border-border;
   }
   
   body {
-    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .truncate {
+    @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
   .font-arabic {
@@ -68,26 +89,6 @@
 
   .card {
     @apply rounded-lg border bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow-sm;
-  }
-
-  .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
-  }
-
-  .btn-primary {
-    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90;
-  }
-
-  .btn-secondary {
-    @apply bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] hover:bg-[hsl(var(--secondary))]/80;
-  }
-
-  .btn-destructive {
-    @apply bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] hover:bg-[hsl(var(--destructive))]/90;
-  }
-
-  .btn-outline {
-    @apply border border-[hsl(var(--input))] bg-[hsl(var(--background))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))];
   }
 
   .input {
@@ -108,10 +109,6 @@
 
   .badge-outline {
     @apply text-[hsl(var(--foreground))];
-  }
-
-  .truncate {
-    @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
   .user-handle {
@@ -171,72 +168,6 @@
            dark:bg-[hsl(var(--background))]/95 dark:supports-[backdrop-filter]:bg-[hsl(var(--background))]/80;
   }
 
-  .profile-container {
-    @apply bg-[hsl(var(--background))] p-8 border border-[hsl(var(--border))] rounded-lg shadow-sm;
-  }
-
-  .user-info {
-    @apply grid grid-cols-[1fr,auto] gap-8 mb-8 pb-8 border-b border-[hsl(var(--border))];
-  }
-
-  .info-section {
-    @apply flex flex-col gap-4;
-  }
-
-  .info-section div {
-    @apply text-[0.95rem];
-  }
-
-  .info-section span {
-    @apply text-[hsl(var(--muted-foreground))] mr-2;
-  }
-
-  .info-section .info-value {
-    @apply text-[hsl(var(--foreground))];
-  }
-
-  .photo-section {
-    @apply text-center;
-  }
-
-  .photo-placeholder {
-    @apply w-[140px] h-[140px] bg-[hsl(var(--muted))] rounded-lg mb-4 border border-[hsl(var(--border))] 
-           overflow-hidden flex items-center justify-center;
-  }
-
-  .photo-placeholder img {
-    @apply w-full h-full object-cover;
-  }
-
-  .username {
-    @apply text-base font-medium text-[hsl(var(--foreground))];
-  }
-
-  .platform {
-    @apply py-3 border-b border-[hsl(var(--border))] flex items-center gap-4 text-sm last:border-b-0 last:pb-0;
-  }
-
-  .platform-icon {
-    @apply text-[hsl(var(--muted-foreground))] w-5 h-5 flex-shrink-0;
-  }
-
-  .platform-name {
-    @apply text-[hsl(var(--muted-foreground))] w-[120px] flex-shrink-0;
-  }
-
-  .platform-handle {
-    @apply font-medium text-[hsl(var(--foreground))] flex-1;
-  }
-
-  .profile-section {
-    @apply bg-[hsl(var(--background))] p-6 border border-[hsl(var(--border))] rounded-lg mb-4;
-  }
-
-  .chatbot-section {
-    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] p-3 rounded-md text-center 
-           my-4 text-sm font-medium;
-  }
-
   /* Friends and Mentors List */
   .list-group-item {
     @apply flex items-center gap-3 p-3 rounded-md border border-[hsl(var(--border))] mb-2 
@@ -270,268 +201,6 @@
 
   .status-offline {
     @apply bg-[hsl(var(--muted))];
-  }
-
-  /* Auth Components */
-  .auth-container {
-    @apply flex min-h-screen items-center justify-center bg-[hsl(var(--background))];
-  }
-
-  .auth-card {
-    @apply w-full max-w-md p-8 shadow-lg rounded-lg mt-10 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))];
-  }
-
-  .auth-title {
-    @apply text-2xl font-bold mb-4 text-center text-[hsl(var(--foreground))];
-  }
-
-  .auth-subtitle {
-    @apply text-sm text-[hsl(var(--muted-foreground))] mb-6 text-center;
-  }
-
-  .auth-form {
-    @apply space-y-6;
-  }
-
-  .auth-input-wrapper {
-    @apply relative;
-  }
-
-  .auth-input {
-    @apply w-full bg-[hsl(var(--background))] border border-[hsl(var(--input))] text-[hsl(var(--foreground))]
-           rounded-md p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))];
-  }
-
-  .auth-button {
-    @apply w-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] 
-           py-2 rounded-md hover:opacity-90 transition-colors
-           disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .auth-link {
-    @apply text-sm text-center mt-6 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))];
-  }
-
-  .auth-error {
-    @apply flex items-center justify-center text-[hsl(var(--destructive))] text-sm mt-2;
-  }
-
-  .auth-success {
-    @apply flex items-center justify-center text-green-500 text-sm mt-2;
-  }
-
-  /* Additional Auth Form Elements */
-  .auth-form-description {
-    @apply text-xs text-[hsl(var(--muted-foreground))] mt-1;
-  }
-
-  .auth-form-label {
-    @apply text-sm font-medium text-[hsl(var(--foreground))];
-  }
-
-  .auth-checkbox-wrapper {
-    @apply flex flex-row items-start space-x-3 space-y-0 rounded-md;
-  }
-
-  .auth-checkbox {
-    @apply mt-1 h-4 w-4 rounded border border-[hsl(var(--input))] 
-           bg-[hsl(var(--background))] text-[hsl(var(--primary))]
-           focus:ring-2 focus:ring-[hsl(var(--ring))];
-  }
-
-  .auth-link-text {
-    @apply text-[hsl(var(--primary))] hover:underline;
-  }
-
-  /* Profile Edit Components */
-  .profile-edit-container {
-    @apply container mx-auto py-6;
-  }
-
-  .profile-edit-layout {
-    @apply flex gap-6;
-  }
-
-  .profile-edit-sidebar {
-    @apply flex-shrink-0 w-64 bg-[hsl(var(--card))] rounded-lg border p-4;
-  }
-
-  .profile-edit-nav-button {
-    @apply w-full flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap;
-  }
-
-  .profile-edit-nav-button-active {
-    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))];
-  }
-
-  .profile-edit-nav-button-inactive {
-    @apply hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))];
-  }
-
-  .profile-edit-save-button {
-    @apply w-full mt-6 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] 
-           hover:bg-[hsl(var(--primary))]/90 px-4 py-2 rounded-md text-sm font-medium text-left
-           disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .profile-edit-main {
-    @apply flex-1 bg-[hsl(var(--card))] rounded-lg border p-6;
-  }
-
-  .profile-edit-form {
-    @apply space-y-6;
-  }
-
-  .profile-edit-icon {
-    @apply w-4 h-4 inline-block mr-3 mb-1;
-  }
-
-  /* Profile Form Components */
-  .profile-form-container {
-    @apply space-y-6;
-  }
-
-  .profile-form-section {
-    @apply space-y-4;
-  }
-
-  .profile-form-row {
-    @apply flex space-x-4 items-center;
-  }
-
-  .profile-form-label {
-    @apply text-[hsl(var(--foreground))] flex items-center;
-  }
-
-  .profile-form-icon {
-    @apply mr-2 h-4 w-4;
-  }
-
-  .profile-form-input {
-    @apply w-full bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
-  }
-
-  .profile-form-select {
-    @apply bg-[hsl(var(--background))];
-  }
-
-  .profile-form-select-content {
-    @apply !bg-[hsl(var(--popover))] border shadow-md !z-[100];
-  }
-
-  .profile-form-visibility-btn {
-    @apply text-[hsl(var(--muted-foreground))];
-  }
-
-  .profile-form-description {
-    @apply text-[hsl(var(--muted-foreground))];
-  }
-
-  .profile-form-group {
-    @apply flex items-center space-x-2;
-  }
-
-  /* Profile View Components */
-  .profile-wrapper {
-    @apply bg-[hsl(var(--background))]/50 rounded-xl;
-  }
-
-  .profile-content {
-    @apply p-4 md:p-6;
-  }
-
-  .profile-tabs {
-    @apply flex flex-wrap md:flex-nowrap space-x-4 mt-6 border-b border-[hsl(var(--border))];
-  }
-
-  .profile-tab {
-    @apply px-3 md:px-4 py-2 font-medium text-sm md:text-base;
-  }
-
-  .profile-tab-active {
-    @apply text-[hsl(var(--primary))] border-b-2 border-[hsl(var(--primary))];
-  }
-
-  .profile-tab-inactive {
-    @apply text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))];
-  }
-
-  .profile-tab-content {
-    @apply px-4 md:px-6 pt-4;
-  }
-
-  .profile-section {
-    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8;
-  }
-
-  .profile-platform-card {
-    @apply h-[72px];
-  }
-
-  .profile-platform {
-    @apply flex items-center h-full space-x-4 px-4 md:px-5 bg-[hsl(var(--background))] 
-           rounded-xl border border-[hsl(var(--border))] hover:shadow-md transition-all duration-200;
-  }
-
-  .profile-platform-icon {
-    @apply flex-shrink-0 w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-lg 
-           bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))];
-  }
-
-  .profile-platform-content {
-    @apply flex-1 min-w-0 flex flex-col justify-center py-3;
-  }
-
-  .profile-platform-label {
-    @apply text-sm font-medium text-[hsl(var(--muted-foreground))];
-  }
-
-  .profile-platform-value {
-    @apply text-base font-semibold text-[hsl(var(--foreground))] truncate 
-           hover:text-[hsl(var(--primary))] transition-colors;
-  }
-
-  .profile-user-info {
-    @apply flex flex-col md:flex-row gap-6 md:gap-8;
-  }
-
-  .profile-photo-section {
-    @apply flex md:block items-center gap-4 md:gap-0;
-  }
-
-  .profile-photo {
-    @apply flex-shrink-0;
-  }
-
-  .profile-photo-image {
-    @apply object-cover rounded-lg w-24 h-24 md:w-[140px] md:h-[140px];
-  }
-
-  .profile-username {
-    @apply mt-2 text-center font-medium text-[hsl(var(--muted-foreground))] md:mt-2;
-  }
-
-  .profile-info-section {
-    @apply flex-1;
-  }
-
-  .profile-name {
-    @apply text-xl md:text-2xl font-bold text-[hsl(var(--foreground))] mb-4;
-  }
-
-  .profile-name-ar {
-    @apply text-base md:text-lg text-[hsl(var(--muted-foreground))] mt-1;
-    font-family: "Noto Kufi Arabic", "Noto Sans Arabic", Arial, sans-serif;
-  }
-
-  .profile-location {
-    @apply flex items-center text-[hsl(var(--muted-foreground))];
-  }
-}
-
-@layer utilities {
-  .font-arabic {
-    font-family: "Noto Kufi Arabic", "Noto Sans Arabic", Arial, sans-serif;
   }
 }
 
