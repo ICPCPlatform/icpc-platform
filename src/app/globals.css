@@ -339,5 +339,93 @@
   .auth-link-text {
     @apply text-[hsl(var(--primary))] hover:underline;
   }
+
+  /* Profile Edit Components */
+  .profile-edit-container {
+    @apply container mx-auto py-6;
+  }
+
+  .profile-edit-layout {
+    @apply flex gap-6;
+  }
+
+  .profile-edit-sidebar {
+    @apply flex-shrink-0 w-64 bg-[hsl(var(--card))] rounded-lg border p-4;
+  }
+
+  .profile-edit-nav-button {
+    @apply w-full flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap;
+  }
+
+  .profile-edit-nav-button-active {
+    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))];
+  }
+
+  .profile-edit-nav-button-inactive {
+    @apply hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))];
+  }
+
+  .profile-edit-save-button {
+    @apply w-full mt-6 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] 
+           hover:bg-[hsl(var(--primary))]/90 px-4 py-2 rounded-md text-sm font-medium text-left
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .profile-edit-main {
+    @apply flex-1 bg-[hsl(var(--card))] rounded-lg border p-6;
+  }
+
+  .profile-edit-form {
+    @apply space-y-6;
+  }
+
+  .profile-edit-icon {
+    @apply w-4 h-4 inline-block mr-3 mb-1;
+  }
+
+  /* Profile Form Components */
+  .profile-form-container {
+    @apply space-y-6;
+  }
+
+  .profile-form-section {
+    @apply space-y-4;
+  }
+
+  .profile-form-row {
+    @apply flex space-x-4 items-center;
+  }
+
+  .profile-form-label {
+    @apply text-[hsl(var(--foreground))] flex items-center;
+  }
+
+  .profile-form-icon {
+    @apply mr-2 h-4 w-4;
+  }
+
+  .profile-form-input {
+    @apply w-full bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+  }
+
+  .profile-form-select {
+    @apply bg-[hsl(var(--background))];
+  }
+
+  .profile-form-select-content {
+    @apply !bg-[hsl(var(--popover))] border shadow-md !z-[100];
+  }
+
+  .profile-form-visibility-btn {
+    @apply text-[hsl(var(--muted-foreground))];
+  }
+
+  .profile-form-description {
+    @apply text-[hsl(var(--muted-foreground))];
+  }
+
+  .profile-form-group {
+    @apply flex items-center space-x-2;
+  }
 }
 

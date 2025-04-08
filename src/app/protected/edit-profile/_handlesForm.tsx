@@ -44,14 +44,14 @@ export default function HandlesForm() {
   const [isCsesPublic, setIsCsesPublic] = useState(false);
 
   const handleIcons = {
-    atcoder: <Terminal className="mr-2 h-4 w-4" />,
-    codechef: <Code className="mr-2 h-4 w-4" />,
-    leetcode: <Code className="mr-2 h-4 w-4" />,
-    cses: <Terminal className="mr-2 h-4 w-4" />,
+    atcoder: <Terminal className="profile-form-icon" />,
+    codechef: <Code className="profile-form-icon" />,
+    leetcode: <Code className="profile-form-icon" />,
+    cses: <Terminal className="profile-form-icon" />,
   };
 
   return (
-    <div className="space-y-4">
+    <div className="profile-form-section">
       {handles.map((handle) => (
         <FormField
           key={handle.id}
@@ -59,16 +59,16 @@ export default function HandlesForm() {
           name={handle.id}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center">
+              <FormLabel className="profile-form-label">
                 {handleIcons[handle.id]}
                 {handle.label}
               </FormLabel>
-              <div className="flex items-center space-x-2">
+              <div className="profile-form-group">
                 <FormControl>
                   <Input
                     {...field}
                     placeholder={handle.placeholder}
-                    className="w-full"
+                    className="profile-form-input"
                   />
                 </FormControl>
                 <button
@@ -79,7 +79,7 @@ export default function HandlesForm() {
                     if (handle.id === "leetcode") setIsLeetcodePublic(!isLeetcodePublic);
                     if (handle.id === "cses") setIsCsesPublic(!isCsesPublic);
                   }}
-                  className="text-muted-foreground"
+                  className="profile-form-visibility-btn"
                 >
                   {(handle.id === "atcoder" && isAtcoderPublic) ||
                   (handle.id === "codechef" && isCodechefPublic) ||
