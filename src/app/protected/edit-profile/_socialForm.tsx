@@ -12,6 +12,7 @@ import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { Eye, EyeOff, Facebook, Linkedin, Twitter, Github } from "lucide-react";
 import { useState } from "react";
+import "@/styles/components/profile/profile-form.css";
 
 const socialIcons = {
   facebook: <Facebook className="profile-form-icon" />,

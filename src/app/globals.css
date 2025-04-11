@@ -6,12 +6,12 @@
 @import url('../styles/components/shared/buttons.css');
 
 /* Import auth components */
-@import url('../styles/components/auth/auth.css');
+/* @import url('../styles/components/auth/auth.css'); */
 
 /* Import profile components */
-@import url('../styles/components/profile/profile-view.css');
-@import url('../styles/components/profile/profile-edit.css');
-@import url('../styles/components/profile/profile-form.css');
+/* @import url('../styles/components/profile/profile-view.css'); */
+/* @import url('../styles/components/profile/profile-edit.css'); */
+/* @import url('../styles/components/profile/profile-form.css'); */
 
 @tailwind base;
 @tailwind components;

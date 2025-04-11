@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Eye, EyeOff, GraduationCap, Building, Calendar, Layers, Users } from "lucide-react";
 import { useState } from "react";
+import "@/styles/components/profile/profile-form.css";
 
 export default function AcademicForm() {
   const form = useFormContext<z.infer<typeof userFullDataValid>>();

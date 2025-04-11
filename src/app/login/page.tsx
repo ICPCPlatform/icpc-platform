@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { useUserContext } from "@/providers/user";
+import "@/styles/components/auth/auth.css";
 
 export default function LoginPage() {
   const user = useUserContext();
@@ -123,13 +124,13 @@ function Login() {
         </Form>
         <p className="auth-link">
           Don't have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline">
+          <Link href="/register" className="auth-link-text">
             Sign up
           </Link>
         </p>
         <p className="auth-link">
           Forgot your password?{" "}
-          <Link href="/reset-password" className="text-primary hover:underline">
+          <Link href="/reset-password" className="auth-link-text">
             Reset it here
           </Link>
         </p>

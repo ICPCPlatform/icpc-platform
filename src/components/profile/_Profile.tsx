@@ -19,6 +19,7 @@ import {
 import { SiLeetcode, SiCodechef, SiCodeforces } from "react-icons/si";
 import Link from "next/link";
 import { useUserContext } from "@/providers/user";
+import "@/styles/components/profile/profile-view.css";
 
 const UserContext = React.createContext(
   {} as UserProfile<true> | UserProfile<false>,

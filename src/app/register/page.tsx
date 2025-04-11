@@ -19,6 +19,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { XCircle, CheckCircle } from "lucide-react";
+import "@/styles/components/auth/auth.css";
 
 export default function RegisterPage() {
   const router = useRouter();
