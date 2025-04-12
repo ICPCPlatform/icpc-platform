@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Profile from "./_page";
 import { z } from "zod";
+import "@/styles/components/profile/profile-edit.css";
 
 export default async function Page() {
   const cookieStore = await cookies();

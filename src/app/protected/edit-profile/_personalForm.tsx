@@ -1,7 +1,6 @@
 "use client";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,6 +21,7 @@ import { Eye, EyeOff, User, IdCard, Globe, MapPin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import React from "react";
+import "@/styles/components/profile/profile-form.css";
 
 export default function PersonList() {
   const form = useFormContext<z.infer<typeof userFullDataValid>>();
@@ -44,7 +44,6 @@ export default function PersonList() {
   const [isCityPublic, setIsCityPublic] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("submit");
     event.preventDefault();
     form.handleSubmit(
       () => {
@@ -57,9 +56,9 @@ export default function PersonList() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="space-y-4">
-        <div className="flex space-x-4 items-center">
+    <form onSubmit={handleSubmit} className="profile-form-container">
+      <div className="profile-form-section">
+        <div className="profile-form-row">
           {personalFields.slice(0, 2).map((field) => (
             <FormField
               key={field.name}
@@ -67,15 +66,15 @@ export default function PersonList() {
               name={field.name}
               render={({ field: formField }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground flex items-center">
-                    <User className="mr-2 h-4 w-4" />
+                  <FormLabel className="profile-form-label">
+                    <User className="profile-form-icon" />
                     {field.label}
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...formField}
                       required={false}
-                      className="bg-background text-foreground"
+                      className="profile-form-input"
                     />
                   </FormControl>
                 </FormItem>
@@ -85,13 +84,13 @@ export default function PersonList() {
           <button
             type="button"
             onClick={() => setIsEnglishNamePublic(!isEnglishNamePublic)}
-            className="text-muted-foreground"
+            className="profile-form-visibility-btn"
           >
             {isEnglishNamePublic ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
           </button>
         </div>
 
-        <div className="flex space-x-4 items-center">
+        <div className="profile-form-row">
           {personalFields.slice(2).map((field) => (
             <FormField
               key={field.name}
@@ -99,15 +98,15 @@ export default function PersonList() {
               name={field.name}
               render={({ field: formField }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground flex items-center">
-                    <User className="mr-2 h-4 w-4" />
+                  <FormLabel className="profile-form-label">
+                    <User className="profile-form-icon" />
                     {field.label}
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...formField}
                       required={false}
-                      className="bg-background text-foreground"
+                      className="profile-form-input"
                     />
                   </FormControl>
                 </FormItem>
@@ -117,7 +116,7 @@ export default function PersonList() {
           <button
             type="button"
             onClick={() => setIsArabicNamePublic(!isArabicNamePublic)}
-            className="text-muted-foreground"
+            className="profile-form-visibility-btn"
           >
             {isArabicNamePublic ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
           </button>
@@ -128,28 +127,27 @@ export default function PersonList() {
           name="nationalId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground flex items-center">
-                <IdCard className="mr-2 h-4 w-4" />
+              <FormLabel className="profile-form-label">
+                <IdCard className="profile-form-icon" />
                 National ID Number
               </FormLabel>
-              <div className="flex items-center space-x-2">
+              <div className="profile-form-group">
                 <FormControl>
                   <Input
                     {...field}
                     required={false}
                     placeholder="14 digits national ID"
-                    className="bg-background text-foreground"
+                    className="profile-form-input"
                   />
                 </FormControl>
                 <button
                   type="button"
                   onClick={() => setIsNationalIdPublic(!isNationalIdPublic)}
-                  className="text-muted-foreground"
+                  className="profile-form-visibility-btn"
                 >
                   {isNationalIdPublic ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                 </button>
               </div>
-              <FormDescription />
               <FormMessage />
             </FormItem>
           )}
@@ -160,25 +158,18 @@ export default function PersonList() {
           name="country"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground flex items-center">
-                <Globe className="mr-2 h-4 w-4" />
+              <FormLabel className="profile-form-label">
+                <Globe className="profile-form-icon" />
                 Country of Residence
               </FormLabel>
-              <div className="flex items-center space-x-2">
+              <div className="profile-form-group">
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-background">
+                    <SelectTrigger className="profile-form-select">
                       <SelectValue placeholder="Select a country" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent
-                    className="!bg-popover border shadow-md !z-[100]"
-                    style={{
-                      backgroundColor: "var(--background)",
-                      backdropFilter: "none",
-                      boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5)",
-                    }}
-                  >
+                  <SelectContent className="profile-form-select-content">
                     {countryOptions.map((option) => (
                       <SelectItem
                         key={option}
@@ -193,7 +184,7 @@ export default function PersonList() {
                 <button
                   type="button"
                   onClick={() => setIsCountryPublic(!isCountryPublic)}
-                  className="text-muted-foreground"
+                  className="profile-form-visibility-btn"
                 >
                   {isCountryPublic ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                 </button>
@@ -202,28 +193,29 @@ export default function PersonList() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="city"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-foreground flex items-center">
-                <MapPin className="mr-2 h-4 w-4" />
+              <FormLabel className="profile-form-label">
+                <MapPin className="profile-form-icon" />
                 City
               </FormLabel>
-              <div className="flex items-center space-x-2">
+              <div className="profile-form-group">
                 <FormControl>
                   <Input
                     {...field}
                     required={false}
                     placeholder="Enter your city"
-                    className="bg-background text-foreground"
+                    className="profile-form-input"
                   />
                 </FormControl>
                 <button
                   type="button"
                   onClick={() => setIsCityPublic(!isCityPublic)}
-                  className="text-muted-foreground"
+                  className="profile-form-visibility-btn"
                 >
                   {isCityPublic ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                 </button>
