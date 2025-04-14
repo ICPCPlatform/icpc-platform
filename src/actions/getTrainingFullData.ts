@@ -8,11 +8,11 @@ import { eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import {
-  RankingEntry,
+  Ranking,
   RankingEntryWithDetails,
   Trainee,
   Training,
-  TrainingFullData,
+  TrainingFullDTO,
 } from "@/lib/types/Training";
 
 const selectKeysFromObjects = (data: typeof ___, keys: string[]) => {
@@ -29,7 +29,7 @@ export async function getTrainingFullData({
   trainingId,
 }: {
   trainingId: number;
-}): Promise<TrainingFullData> {
+}): Promise<TrainingFullDTO> {
   // Fetch training details
   const trainingResult = await db
     .select({
@@ -62,13 +62,13 @@ export async function getTrainingFullData({
 
     .execute()) as Trainee[];
   // Map standings to include trainee details
-  const standingWithDetails: TrainingFullData["standing"] = standing.map(
+  const standingWithDetails: TrainingFullDTO["standing"] = standing.map(
     (contest) => {
       
       return {
         ...contest,
         rankings: contest.rankings
-          .map((s: RankingEntry) => {
+          .map((s: Ranking) => {
             if (s.userId === undefined) {
               return undefined;
             }
@@ -88,7 +88,7 @@ export async function getTrainingFullData({
     },
   );
 
-  return { standing: standingWithDetails, material };
+  return { standing: standingWithDetails, materials: material };
 }
 
 const ___ = {

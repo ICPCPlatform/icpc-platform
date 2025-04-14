@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { Trainings } from "./Trainings";
-import { MaterialData } from "@/lib/types/Training";
+import {  MaterialsEntry } from "@/lib/types/Training";
 
 /**
  * block is the smallest unit of a training
@@ -34,7 +34,7 @@ export const Blocks = pgTable(
 
     date: timestamp().defaultNow().notNull(),
 
-    material: jsonb().default([]).$type<MaterialData>().notNull(),
+    material: jsonb().default([]).$type<MaterialsEntry>().notNull(),
 
     deleted: timestamp(),
   },

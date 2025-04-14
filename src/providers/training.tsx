@@ -1,13 +1,13 @@
 "use client";
-import { TrainingFullData } from "@/lib/types/Training";
+import { TrainingFullDTO } from "@/lib/types/Training";
 import { createContext, useContext } from "react";
-const trainingContext = createContext<TrainingFullData | null>(null);
+const trainingContext = createContext<TrainingFullDTO | null>(null);
 export default function TrainingProvider({
   children,
   trainingData,
 }: {
   children: React.ReactNode;
-  trainingData: TrainingFullData ;
+  trainingData: TrainingFullDTO ;
 }) {
   return <trainingContext.Provider value={trainingData}>{children}</trainingContext.Provider>;
 }

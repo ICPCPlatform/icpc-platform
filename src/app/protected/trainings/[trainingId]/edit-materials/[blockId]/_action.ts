@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { UserDataJWT } from "@/lib/session";
-import { MaterialData } from "@/lib/types/Training";
+import { Material } from "@/lib/types/Training";
 import { and, eq } from "drizzle-orm";
 
 export async function editMaterial({
@@ -14,7 +14,7 @@ export async function editMaterial({
 }: {
   trainingId: number;
   blockNumber: number;
-  newMaterial: MaterialData;
+  newMaterial: Material;
 }) {
   // get user id from headers
   const headers = new Headers();
