@@ -1,51 +1,51 @@
 /**
  * Training Data send to the client
  */
-export type TrainingFullData = {
+export type TrainingFullDTO = {
   standing: {
     ContestInfo: ContestInfo;
     rankings: RankingEntryWithDetails[];
     problems: string[];
   }[];
-  material: Material;
+  materials: MaterialsDTO;
+  blocks: Blocks; // to in the DAO
+
 };
 
+
+export type Blocks = {
+  id: string;
+  title: string;
+}[]
 
 /**
  * Material type from db.training.material
  * this type is used from the database
  */
-export type Material = Record<
-  string,
-  {
-    title: string;
-    link: string;
-    des: string;
-  } | null
->;
+export type MaterialsEntry = MaterialsDTO;
 
-/** 
- * Materail type `db.Blocks.material`
+/**
+ * map from blockId to array of materials
  */
-export type MaterialData = {
+export type MaterialsDTO = Record<string, Material[]>; 
+
+export type Material = {
   title: string;
   link: string;
   des: string;
-}[];
-
+};
 
 /**
  * Training Data riveted from the Database
  */
 export type Training = {
-  standing: StandingData;
+  standing: StandingEntry;
   standingView: string[]; // Dynamic configuration
-  material: Material;
+  material: MaterialsDTO;
 };
 
-
 /**
- * Contest Info 
+ * Contest Info
  */
 export type ContestInfo = {
   id: number;
@@ -56,29 +56,26 @@ export type ContestInfo = {
   problem_count: number;
 };
 
-
 /**
- * Standing type from db.training.standing 
+ * Standing type from db.training.standing
  */
-export type StandingData = {
+export type StandingEntry = {
   ContestInfo: ContestInfo;
-  rankings: RankingEntry[];
+  rankings: Ranking[];
   problems: string[];
 }[];
-
-
 
 /**
  * Ranking Entry
  */
-export type RankingEntry = {
+export type Ranking = {
   userId: string;
   penalty: number;
   solved: string[];
   attempted: string[];
 };
 
-/** 
+/**
  * Trainee Details
  * this type is used from the database
  */
@@ -96,9 +93,4 @@ export type Trainee = {
 /**
  * Standing Entry with Trainee Details
  */
-export type RankingEntryWithDetails = Omit<Trainee & RankingEntry, "userId">;
-
-
-
-
-
+export type RankingEntryWithDetails = Omit<Trainee & Ranking, "userId">;
