@@ -1,0 +1,161 @@
+.profile-wrapper {
+  @apply bg-[hsl(var(--background))]/50 rounded-xl;
+}
+
+.profile-content {
+  @apply p-4 md:p-6;
+}
+
+.profile-tabs {
+  @apply flex flex-wrap md:flex-nowrap space-x-4 mt-6 border-b border-[hsl(var(--border))];
+}
+
+.profile-tab {
+  @apply px-3 md:px-4 py-2 font-medium text-sm md:text-base;
+}
+
+.profile-tab-active {
+  @apply text-[hsl(var(--primary))] border-b-2 border-[hsl(var(--primary))];
+}
+
+.profile-tab-inactive {
+  @apply text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))];
+}
+
+.profile-tab-content {
+  @apply px-4 md:px-6 pt-4;
+}
+
+.profile-section {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8;
+}
+
+.profile-platform-card {
+  @apply h-[72px];
+}
+
+.profile-platform {
+  @apply flex items-center h-full space-x-4 px-4 md:px-5 bg-[hsl(var(--background))] 
+         rounded-xl border border-[hsl(var(--border))] hover:shadow-md transition-all duration-200;
+}
+
+.profile-platform-icon {
+  @apply flex-shrink-0 w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-lg 
+         bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))];
+}
+
+.profile-platform-content {
+  @apply flex-1 min-w-0 flex flex-col justify-center py-3;
+}
+
+.profile-platform-label {
+  @apply text-sm font-medium text-[hsl(var(--muted-foreground))];
+}
+
+.profile-platform-value {
+  @apply text-base font-semibold text-[hsl(var(--foreground))] truncate 
+         hover:text-[hsl(var(--primary))] transition-colors;
+}
+
+.profile-user-info {
+  @apply flex flex-col md:flex-row gap-6 md:gap-8;
+}
+
+.profile-photo-section {
+  @apply flex md:block items-center gap-4 md:gap-0;
+}
+
+.profile-photo {
+  @apply flex-shrink-0;
+}
+
+.profile-photo-image {
+  @apply object-cover rounded-lg w-24 h-24 md:w-[140px] md:h-[140px];
+}
+
+.profile-username {
+  @apply mt-2 text-center font-medium text-[hsl(var(--muted-foreground))] md:mt-2;
+}
+
+.profile-info-section {
+  @apply flex-1;
+}
+
+.profile-name {
+  @apply text-xl md:text-2xl font-bold text-[hsl(var(--foreground))] mb-4;
+}
+
+.profile-name-ar {
+  @apply text-base md:text-lg text-[hsl(var(--muted-foreground))] mt-1;
+  font-family: "Noto Kufi Arabic", "Noto Sans Arabic", Arial, sans-serif;
+}
+
+.profile-location {
+  @apply flex items-center text-[hsl(var(--muted-foreground))];
+}
+
+.profile-container {
+  @apply bg-[hsl(var(--background))] p-8 border border-[hsl(var(--border))] rounded-lg shadow-sm;
+}
+
+.user-info {
+  @apply grid grid-cols-[1fr,auto] gap-8 mb-8 pb-8 border-b border-[hsl(var(--border))];
+}
+
+.info-section {
+  @apply flex flex-col gap-4;
+}
+
+.info-section div {
+  @apply text-[0.95rem];
+}
+
+.info-section span {
+  @apply text-[hsl(var(--muted-foreground))] mr-2;
+}
+
+.info-section .info-value {
+  @apply text-[hsl(var(--foreground))];
+}
+
+.photo-section {
+  @apply text-center;
+}
+
+.photo-placeholder {
+  @apply w-[140px] h-[140px] bg-[hsl(var(--muted))] rounded-lg mb-4 border border-[hsl(var(--border))] 
+         overflow-hidden flex items-center justify-center;
+}
+
+.photo-placeholder img {
+  @apply w-full h-full object-cover;
+}
+
+.username {
+  @apply text-base font-medium text-[hsl(var(--foreground))];
+}
+
+.platform {
+  @apply py-3 border-b border-[hsl(var(--border))] flex items-center gap-4 text-sm last:border-b-0 last:pb-0;
+}
+
+.platform-icon {
+  @apply text-[hsl(var(--muted-foreground))] w-5 h-5 flex-shrink-0;
+}
+
+.platform-name {
+  @apply text-[hsl(var(--muted-foreground))] w-[120px] flex-shrink-0;
+}
+
+.platform-handle {
+  @apply font-medium text-[hsl(var(--foreground))] flex-1;
+}
+
+.profile-section {
+  @apply bg-[hsl(var(--background))] p-6 border border-[hsl(var(--border))] rounded-lg mb-4;
+}
+
+.chatbot-section {
+  @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] p-3 rounded-md text-center 
+         my-4 text-sm font-medium;
+} 

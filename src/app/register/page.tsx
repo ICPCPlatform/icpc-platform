@@ -1,8 +1,7 @@
 "use client";
-import expectedBody from "@/app/api/auth/register/expectedBody";
+import { userRegisterValid } from "@/lib/validation/userValidations";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,30 +17,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { XCircle, CheckCircle } from "lucide-react";
+import "@/styles/components/auth/auth.css";
 
-export default function RegisterPage() {
+export default function Page() {
+  const router = useRouter();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const router = useRouter();
-  const form = useForm<z.infer<typeof expectedBody>>({
-    resolver: zodResolver(expectedBody),
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const form = useForm<z.infer<typeof userRegisterValid>>({
+    resolver: zodResolver(userRegisterValid),
     defaultValues: {
       username: "",
+      gmail: "",
+      cfHandle: "",
+      phoneNumber: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-      <Card className="w-full max-w-md p-8 shadow-lg rounded-lg mt-10">
-        <h1 className="text-2xl font-bold mb-4 text-center">Create Account</h1>
-        <p className="text-sm text-muted-foreground mb-6 text-center">
+    <div className="auth-container">
+      <Card className="auth-card">
+        <h1 className="auth-title">Create Account</h1>
+        <p className="auth-subtitle">
           Join our competitive programming community
         </p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
             <FormField
               control={form.control}
               name="username"
@@ -49,9 +56,13 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="username123" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="username123"
+                      {...field}
+                      className="auth-input"
+                    />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="auth-form-description">
                     This is your public display name.
                   </FormDescription>
                   <FormMessage />
@@ -65,9 +76,13 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Gmail</FormLabel>
                   <FormControl>
-                    <Input placeholder="example@gmail.com" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="example@gmail.com"
+                      {...field}
+                      className="auth-input"
+                    />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="auth-form-description">
                     This is your email address. Only Gmail is allowed.
                   </FormDescription>
                   <FormMessage />
@@ -81,14 +96,19 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Codeforces Handle</FormLabel>
                   <FormControl>
-                    <Input placeholder="mohamed_reda" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="mohamed_reda"
+                      {...field}
+                      className="auth-input"
+                    />
                   </FormControl>
-                  <FormDescription>This is your Codeforces handle.</FormDescription>
+                  <FormDescription className="auth-form-description">
+                    This is your Codeforces handle.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="phoneNumber"
@@ -96,14 +116,19 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="01001001000" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      placeholder="01001001000"
+                      {...field}
+                      className="auth-input"
+                    />
                   </FormControl>
-                  <FormDescription>This is your phone number.</FormDescription>
+                  <FormDescription className="auth-form-description">
+                    This is your phone number.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -111,33 +136,97 @@ export default function RegisterPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="*****" {...field} className="mt-1 border border-gray-300 rounded-md p-2" />
+                    <Input
+                      type="password"
+                      placeholder="*****"
+                      {...field}
+                      className="auth-input"
+                    />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="auth-form-description">
                     At least 8 characters with a mix of letters, numbers, and symbols.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full bg-black text-white py-2 rounded-md">Create Account</Button>
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="*****"
+                      {...field}
+                      className="auth-input"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="termsAccepted"
+              render={({ field }) => (
+                <FormItem className="auth-checkbox-wrapper">
+                  <FormControl>
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={(e) => {
+                        setTermsAccepted(e.target.checked);
+                        field.onChange(e);
+                      }}
+                      className="auth-checkbox"
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      I agree to the{" "}
+                      <Link href="/privacy-policy" className="auth-link-text">
+                        terms of service
+                      </Link>
+                    </FormLabel>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="auth-button" disabled={loading}>
+              {loading ? "Loading..." : "Create Account"}
+            </Button>
+
+            {error && (
+              <div className="auth-error">
+                <XCircle className="mr-2" />
+                {error}
+              </div>
+            )}
+            {success && (
+              <div className="auth-success">
+                <CheckCircle className="mr-2" />
+                {success}
+              </div>
+            )}
           </form>
         </Form>
 
-        {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
-        {success && <div className="text-green-500 mt-4 text-center">{success}</div>}
-
-        <p className="text-sm text-center mt-6">
-          Already have an account? <Link href="/login" className="text-primary">Sign in</Link>
+        <p className="auth-link">
+          Already have an account?{" "}
+          <Link href="/login" className="auth-link-text">
+            Sign in
+          </Link>
         </p>
       </Card>
     </div>
   );
 
-  async function onSubmit(data: z.infer<typeof expectedBody>) {
-    setError("");
-    setSuccess("");
-
+  async function onSubmit(data: z.infer<typeof userRegisterValid>) {
+    setLoading(true);
     fetch("/api/auth/register", {
       method: "POST",
       headers: {
@@ -145,21 +234,24 @@ export default function RegisterPage() {
       },
       body: JSON.stringify(data),
     })
-      .catch((err) => {
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      })
       .then(async (response) => {
-        if (!response) return;
-
-        const result = await response.json();
-        if (!response.ok) {
-          setError(result.error || "Failed to register");
-          return;
+        const res = await response.json();
+        console.log(res);
+        setLoading(false);
+        if ("err" in res) return setError(res.err);
+        else if ("msg" in res) {
+          setSuccess(res.msg);
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
         }
-        setSuccess("Account created successfully! Redirecting to profile...");
-        setTimeout(() => {
-          router.push("/profile");
-        }, 2000);
+      })
+      .catch(async (err) => {
+        const res = await err.json();
+        console.log(res);
+        setLoading(false);
+        if ("err" in res) return setError(res.err);
+        else if ("msg" in res) return setSuccess(res.msg);
       });
   }
 }

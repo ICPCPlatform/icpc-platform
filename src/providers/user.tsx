@@ -1,16 +1,16 @@
 "use client";
-import { type userData } from "@/lib/session";
+import { type UserDataJWT } from "@/lib/session";
 import { createContext, useContext } from "react";
-const userContext = createContext<userData | null>(null);
+const userContext = createContext<UserDataJWT | null>(null);
 export default function UserProvider({
   children,
   user,
 }: {
   children: React.ReactNode;
-  user: userData|null;
+  user: UserDataJWT | null;
 }) {
   return <userContext.Provider value={user}>{children}</userContext.Provider>;
 }
-export function useUserContext(){
+export function useUserContext() {
   return useContext(userContext);
 }

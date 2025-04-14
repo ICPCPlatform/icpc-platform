@@ -1,53 +1,47 @@
 import { z } from "zod";
-
-const username = z
-  .string()
-  .trim()
-  .min(3, { message: "Username too short" })
-  .regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Username must contain only letters, numbers, and underscores",
-  });
-
-const password = z
-  .string()
-  .min(8, { message: "Password must be at least 8 characters" })
-  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])(?!.*\s).{8,}$/, {
-    message:
-      "Password must be include an uppercase letter, a lowercase letter, a number, and a special character, with no spaces.",
-  });
-
-const gmail = z
-  .string()
-  .trim()
-  .email({ message: "Invalid gmail address" })
-  .regex(/@gmail.com$/, { message: "Email must be a gmail account" });
+import { username, password, gmail, type EnforceKeys } from "./util";
+import { Users } from "@/lib/db/schema/user/Users";
+import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordMustMatch, invalidPassword } from "../const/error-messages";
 
 // TODO CF Handle
 const cfHandle = z
   .string()
   .trim()
-  .min(3, { message: "Username too short" })
+  .min(3, { message: usernameTooShort })
   .regex(/^[a-zA-Z0-9_]+$/, {
-    message: "Username must contain only letters, numbers, and underscores",
+    message: usernameInvalidFormat,
   });
 
-const phone = z
+const phoneNumber = z
   .string()
   .trim()
+  .min(13, { message: phoneNumberTooShort })
+  .max(15, { message: phoneNumberTooLong })
   .regex(
     /^\+201[0-9]{9}$/,
-    "Phone number must be a valid Egyptian number (starts with +20)"
-  )
-  .nullable();
+    phoneNumberInvalid,
+  );
+const confirmPassword = z.string().min(8, { message: invalidPassword });
+const termsAccepted = z.boolean().refine((val) => val === true, {
+  message: termsNotAccepted
+});
 
-export const user = z.object({
+export const userRegisterValid = z.object({
   username,
   password,
   gmail,
   cfHandle,
-  phone,
+  vjHandle: cfHandle.optional(),
+  phoneNumber,
+  confirmPassword,
+  termsAccepted,
+}).refine((data) => data.password === data.confirmPassword, {
+  message: passwordMustMatch,
+  path: ['confirmPassword'],
 });
 
+const _: EnforceKeys<typeof userRegisterValid, typeof Users> = {} as EnforceKeys<typeof userRegisterValid, typeof Users>; // Ensure validation matches Users schema
+
+// Type checking is handled by TypeScript compiler
 // Usage example:
-// const { success, data, error } = password.safeParse(""); // Replace with an actual 14-digit ID
-// console.log("Valid Name:", success, data, error?.message);
+// const { success, data, error } = password.safeParse("");

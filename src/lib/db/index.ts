@@ -2,7 +2,7 @@ import "server-only";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { EmailAuth } from "./schema/user/EmailAuth";
-import { lt, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { Users } from "./schema/user/Users";
 
 const pool = new Pool({
@@ -23,14 +23,15 @@ export const db = drizzle(pool, {
   casing: "snake_case",
 });
 
-// this is temporary, will be moved to a cron job
+/// TODO:
+/// this is temporary, will be moved to a cron job
 async function deleteExpiredLogs() {
-  const user = await db
+  const userArr = await db
     .delete(EmailAuth)
     .where(sql`expires_at < now()`)
     .returning();
-  if (user.length > 0) {
-    await db.delete(Users).where(lt(Users.userId, user[0].userId)).execute();
+  if (userArr.length > 0) {
+    await db.delete(Users).where(eq(Users.userId, userArr[0].userId)).execute();
   }
 }
 

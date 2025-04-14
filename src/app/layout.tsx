@@ -3,8 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/NavBar";
 import { ThemeProvider } from "next-themes";
-import { decryptSession } from "@/lib/session";
-import { cookies } from "next/headers";
+import {  getUserData } from "@/lib/session";
 import UserProvider from "@/providers/user";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,11 +18,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("session")?.value;
-  const user = await decryptSession(session);
+  const user = await getUserData();
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
         <ThemeProvider attribute="class">
           <UserProvider user={user}>

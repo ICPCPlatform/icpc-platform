@@ -1,46 +1,96 @@
-export interface Announcement {
-    date: string;
-    message: string;
-}
+/**
+ * Training Data send to the client
+ */
+export type TrainingFullDTO = {
+  standing: {
+    ContestInfo: ContestInfo;
+    rankings: RankingEntryWithDetails[];
+    problems: string[];
+  }[];
+  materials: MaterialsDTO;
+  blocks: Blocks; // to in the DAO
 
-export interface Task {
-    id: number;
-    title: string;
-    completed: boolean;
-}
+};
 
-export interface ChatMessage {
-    sender: 'Mentor' | 'You';
-    message: string;
-    timestamp: string;
-}
 
-export interface Mentor {
-    id: number;
-    name: string;
-    status: 'Online' | 'Offline';
-}
+export type Blocks = {
+  id: string;
+  title: string;
+}[]
 
-export interface Training {
-    id: string;
-    title: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-    status: 'ongoing' | 'upcoming' | 'completed';
-    enrollmentStatus: 'open' | 'closed';
-    capacity: number;
-    enrolled: number;
-    level: 'beginner' | 'intermediate' | 'advanced';
-    mentors: string[];
-    topics: string[];
-    announcements: Announcement[];
-    tasks: Task[];
-    chatMessages: ChatMessage[];
-}
+/**
+ * Material type from db.training.material
+ * this type is used from the database
+ */
+export type MaterialsEntry = MaterialsDTO;
 
-export interface UserTraining extends Training {
-    progress: number;
-    joinedAt: string;
-    lastAccessed?: string;
-} 
+/**
+ * map from blockId to array of materials
+ */
+export type MaterialsDTO = Record<string, Material[]>; 
+
+export type Material = {
+  title: string;
+  link: string;
+  des: string;
+};
+
+/**
+ * Training Data riveted from the Database
+ */
+export type Training = {
+  standing: StandingEntry;
+  standingView: string[]; // Dynamic configuration
+  material: MaterialsDTO;
+};
+
+/**
+ * Contest Info
+ */
+export type ContestInfo = {
+  id: number;
+  title: string;
+  start_time: string;
+  duration: string;
+  participant_count: number;
+  problem_count: number;
+};
+
+/**
+ * Standing type from db.training.standing
+ */
+export type StandingEntry = {
+  ContestInfo: ContestInfo;
+  rankings: Ranking[];
+  problems: string[];
+}[];
+
+/**
+ * Ranking Entry
+ */
+export type Ranking = {
+  userId: string;
+  penalty: number;
+  solved: string[];
+  attempted: string[];
+};
+
+/**
+ * Trainee Details
+ * this type is used from the database
+ */
+export type Trainee = {
+  userId?: string;
+  name?: string | null;
+  cfHandle?: string;
+  vjudge?: string | null;
+  gmail?: string;
+  level?: number;
+  university?: string;
+  faculty?: string;
+};
+
+/**
+ * Standing Entry with Trainee Details
+ */
+export type RankingEntryWithDetails = Omit<Trainee & Ranking, "userId">;

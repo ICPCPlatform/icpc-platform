@@ -1,0 +1,186 @@
+Table users {
+  user_id  uuid [pk]
+  username citext [not null, unique]
+  password varchar [not null]
+
+  gmail citext [unique, not null]
+  cf_handle citext [unique, not null]
+  vj_handle citext [unique]
+  phone_number varchar(15) [not null]
+  role varchar(40) [default: "user", not null]
+  deleted  timestamp
+}
+Table email_auth{
+  user_id  uuid [ref: -users.user_id]
+  token varchar [not null]
+  expires_at timestamp [default: "now + 7 days", not null]// 7 days after
+}
+Table reset_password{
+  user_id uuid [ref: -users.user_id]
+  token char(25) [not null]
+  endAt timestamp [default: "now + 1 day", not null]
+}
+Table users_full_data {
+  user_id uuid [pk, ref: > users.user_id]
+  
+  /* Academic */
+  institute_id integer [ref: > institutes.id]
+  faculty_id integer [ref: > faculties.id]
+  department_id integer [ref: > departments.id]
+  community_id integer [ref: > communities.id]
+  academic_year integer
+  graduation_date date
+
+  /* Handles */
+  atcoder citext  
+  codechef citext 
+  leetcode citext 
+  cses citext  
+
+  /* Personal */
+  first_name_en varchar(20)
+  last_name_en varchar(20)
+  name_ar1 varchar(20)
+  name_ar2 varchar(20)
+  name_ar3 varchar(20)
+  name_ar4 varchar(20)
+  national_id char(14) [unique]
+  country_id integer [ref: > countries.id]
+  city_id integer [ref: > cities.id]
+  is_male boolean 
+  image_url varchar(255)
+  whatsapp_phone_number varchar(15)
+
+  /* Socials */
+  facebook varchar(128)
+  linkedin varchar(30)
+  twitter varchar(16)
+  github varchar(40)
+  telegram varchar(32)
+
+  /* Server */
+  visibility_mask integer [default: 0]
+  registration_date timestamp [default: "now"]
+}
+
+Table cities{
+  id integer [pk]
+  name varchar(60) [not null,unique]
+}
+Table communities{
+  id integer [pk]
+  name varchar(60) [not null, unique]
+}
+Table faculties{
+  id integer [pk]
+  name varchar(60) [not null, unique]
+}
+Table departments{
+  id integer [pk]
+  name varchar(60) [not null, unique]
+}
+Table institutes{
+  id integer [pk]
+  name varchar(60) [not null, unique]
+}
+Table countries{
+  id integer [pk]
+  name varchar(60) [not null, unique]
+}
+
+
+Table trainings {
+  training_id integer [pk]
+  head_id  uuid [ref: > users.user_id]
+  chief_judge  uuid [ref: > users.user_id]
+  title varchar(128) [not null]
+  description varchar(512)
+  standing jsonb
+  standingview jsonb
+  start_date date [not null]
+  duration smallint [not null] // in days
+  status varchar(20) // e.g., 'planned', 'active', 'completed','RoadMap'
+  deleted timestamp
+}
+Table blocks{
+  training_id int [ref: > trainings.training_id]
+  block_number integer
+
+  title varchar(128) [not null]
+  description varchar(512) [not null]
+  material jsonb 
+  hidden timestamp [not null]
+  date date [not null]
+  deleted  timestamp
+  Indexes {
+    (training_id,block_number) [pk]
+  }
+
+}
+Table contests{
+
+  training_id int [not null]
+  block_number int [not null]
+  contest_id varchar(32) [not null]
+
+
+  group_id varchar(32) 
+  judge varchar(32) [not null]
+  title varchar(128) [not null]
+  description varchar(512) [not null]
+
+  type varchar //practice,contest
+  pointspp int [default: 20, not null]
+  first_points int [default: 1000, not null]
+  calcsystem varchar(32) [default: "90%", not null] 
+  date timestamp [default: "now", not null]
+  deleted timestamp
+  Indexes {
+    (training_id,block_number,contest_id) [pk]
+  }
+
+}
+Table staff {
+  user_id  uuid [ref: > users.user_id]
+  training_id  integer [ref: > trainings.training_id, not null]
+  
+  mentor boolean [default: false, not null]
+  problem_setter boolean [default: false, not null]
+  instructor boolean [default: false, not null]
+  co_head boolean [default: false, not null]
+  manager boolean [default: false, not null]
+  
+  deleted timestamp
+
+  indexes {
+    (user_id, training_id) [pk]
+    (mentor) [name: "mentor_idx"]
+  }
+}
+Table trainees {
+  user_id  uuid [ref: > users.user_id, not null]
+  training_id  integer [ref: > trainings.training_id, not null]
+  
+  mentor_id  uuid [not null]
+  mentor_assigned_date  timestamp [default: "now", not null]
+  deleted  timestamp
+  indexes {
+    (training_id, user_id) [pk]
+  }
+}
+Table mentor_trainee_history{
+  trainee_id  uuid  [not null]
+  mentor_id  uuid [not null]
+  training_id integer [ref: > trainings.training_id, not null]
+  start_date timestamp [ not null]
+  end_date timestamp [default: "now", not null]
+  Indexes {
+    (mentor_id,training_id,trainee_id,end_date) [pk]
+  }
+}
+
+Ref: contests.(training_id,block_number) > blocks.(training_id,block_number)
+Ref: trainees.(mentor_id, training_id) - staff.(user_id, training_id)
+Ref: mentor_trainee_history.(mentor_id, training_id) - staff.(user_id, training_id)
+Ref: mentor_trainee_history.(trainee_id, training_id) - trainees.(user_id, training_id)
+

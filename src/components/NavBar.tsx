@@ -58,7 +58,7 @@ export function Navbar() {
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
-                          href="/trainings"
+                          href="/protected/trainings"
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-medium">
@@ -73,7 +73,7 @@ export function Navbar() {
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
-                          href="/my-trainings"
+                          href="/protected/my-trainings"
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-medium">
@@ -112,10 +112,8 @@ export function Navbar() {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <a href="https://forms.gle/i22PhB5fZYF4THa46">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <a href="https://forms.gle/i22PhB5fZYF4THa46" target="_blank">
                     Report a bug
-                  </NavigationMenuLink>
                 </a>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -123,7 +121,7 @@ export function Navbar() {
         </div>
         <div className="flex flex-1 gap-4 items-center justify-end">
           {user && (
-            <Link href="/profile" className="flex items-center gap-2">
+            <Link href="/protected/profile" className="flex items-center gap-2">
               profile
             </Link>
           )}

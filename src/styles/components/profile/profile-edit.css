@@ -1,0 +1,41 @@
+.profile-edit-container {
+  @apply container mx-auto py-6;
+}
+
+.profile-edit-layout {
+  @apply flex gap-6;
+}
+
+.profile-edit-sidebar {
+  @apply flex-shrink-0 w-64 bg-[hsl(var(--card))] rounded-lg border p-4;
+}
+
+.profile-edit-nav-button {
+  @apply w-full flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap;
+}
+
+.profile-edit-nav-button-active {
+  @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))];
+}
+
+.profile-edit-nav-button-inactive {
+  @apply hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))];
+}
+
+.profile-edit-save-button {
+  @apply w-full mt-6 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] 
+         hover:bg-[hsl(var(--primary))]/90 px-4 py-2 rounded-md text-sm font-medium text-left
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.profile-edit-main {
+  @apply flex-1 bg-[hsl(var(--card))] rounded-lg border p-6;
+}
+
+.profile-edit-form {
+  @apply space-y-6;
+}
+
+.profile-edit-icon {
+  @apply w-4 h-4 inline-block mr-3 mb-1;
+} 
