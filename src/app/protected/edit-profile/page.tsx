@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Profile from "./_page";
 import { z } from "zod";
+import "@/styles/components/profile/profile-edit.css";
 
 export default async function Page() {
   const user = await getUserData();

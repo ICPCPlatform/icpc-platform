@@ -1,3 +1,18 @@
+/* Import base styles */
+@import url('../styles/base/variables.css');
+@import url('../styles/base/base.css');
+
+/* Import shared components */
+@import url('../styles/components/shared/buttons.css');
+
+/* Import auth components */
+/* @import url('../styles/components/auth/auth.css'); */
+
+/* Import profile components */
+/* @import url('../styles/components/profile/profile-view.css'); */
+/* @import url('../styles/components/profile/profile-edit.css'); */
+/* @import url('../styles/components/profile/profile-form.css'); */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,56 +20,65 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 4%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 4%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 4% 8%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 8%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 240 4% 8%;
-    --accent-foreground: 0 0% 98%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 240 5% 65%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-@layer base {
-  * {
-    @apply border-[hsl(var(--border))];
+@layer utilities {
+  .truncate {
+    @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
-  body {
-    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+
+  .font-arabic {
+    font-family: "Noto Kufi Arabic", "Noto Sans Arabic", Arial, sans-serif;
   }
 }
 
@@ -65,26 +89,6 @@
 
   .card {
     @apply rounded-lg border bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow-sm;
-  }
-
-  .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
-  }
-
-  .btn-primary {
-    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90;
-  }
-
-  .btn-secondary {
-    @apply bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] hover:bg-[hsl(var(--secondary))]/80;
-  }
-
-  .btn-destructive {
-    @apply bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] hover:bg-[hsl(var(--destructive))]/90;
-  }
-
-  .btn-outline {
-    @apply border border-[hsl(var(--input))] bg-[hsl(var(--background))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))];
   }
 
   .input {
@@ -105,10 +109,6 @@
 
   .badge-outline {
     @apply text-[hsl(var(--foreground))];
-  }
-
-  .truncate {
-    @apply overflow-hidden text-ellipsis whitespace-nowrap;
   }
 
   .user-handle {
@@ -166,72 +166,6 @@
     @apply sticky top-0 z-50 w-full border-b border-[hsl(var(--border))] 
            bg-[hsl(var(--background))]/95 backdrop-blur supports-[backdrop-filter]:bg-[hsl(var(--background))]/60
            dark:bg-[hsl(var(--background))]/95 dark:supports-[backdrop-filter]:bg-[hsl(var(--background))]/80;
-  }
-
-  .profile-container {
-    @apply bg-[hsl(var(--background))] p-8 border border-[hsl(var(--border))] rounded-lg shadow-sm;
-  }
-
-  .user-info {
-    @apply grid grid-cols-[1fr,auto] gap-8 mb-8 pb-8 border-b border-[hsl(var(--border))];
-  }
-
-  .info-section {
-    @apply flex flex-col gap-4;
-  }
-
-  .info-section div {
-    @apply text-[0.95rem];
-  }
-
-  .info-section span {
-    @apply text-[hsl(var(--muted-foreground))] mr-2;
-  }
-
-  .info-section .info-value {
-    @apply text-[hsl(var(--foreground))];
-  }
-
-  .photo-section {
-    @apply text-center;
-  }
-
-  .photo-placeholder {
-    @apply w-[140px] h-[140px] bg-[hsl(var(--muted))] rounded-lg mb-4 border border-[hsl(var(--border))] 
-           overflow-hidden flex items-center justify-center;
-  }
-
-  .photo-placeholder img {
-    @apply w-full h-full object-cover;
-  }
-
-  .username {
-    @apply text-base font-medium text-[hsl(var(--foreground))];
-  }
-
-  .platform {
-    @apply py-3 border-b border-[hsl(var(--border))] flex items-center gap-4 text-sm last:border-b-0 last:pb-0;
-  }
-
-  .platform-icon {
-    @apply text-[hsl(var(--muted-foreground))] w-5 h-5 flex-shrink-0;
-  }
-
-  .platform-name {
-    @apply text-[hsl(var(--muted-foreground))] w-[120px] flex-shrink-0;
-  }
-
-  .platform-handle {
-    @apply font-medium text-[hsl(var(--foreground))] flex-1;
-  }
-
-  .profile-section {
-    @apply bg-[hsl(var(--background))] p-6 border border-[hsl(var(--border))] rounded-lg mb-4;
-  }
-
-  .chatbot-section {
-    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] p-3 rounded-md text-center 
-           my-4 text-sm font-medium;
   }
 
   /* Friends and Mentors List */

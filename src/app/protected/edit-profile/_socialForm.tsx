@@ -12,12 +12,13 @@ import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 import { Eye, EyeOff, Facebook, Linkedin, Twitter, Github } from "lucide-react";
 import { useState } from "react";
+import "@/styles/components/profile/profile-form.css";
 
 const socialIcons = {
-  facebook: <Facebook className="mr-2 h-4 w-4" />,
-  linkedIn: <Linkedin className="mr-2 h-4 w-4" />,
-  twitter: <Twitter className="mr-2 h-4 w-4" />,
-  github: <Github className="mr-2 h-4 w-4" />,
+  facebook: <Facebook className="profile-form-icon" />,
+  linkedIn: <Linkedin className="profile-form-icon" />,
+  twitter: <Twitter className="profile-form-icon" />,
+  github: <Github className="profile-form-icon" />,
 };
 
 export default function SocialForm() {
@@ -51,7 +52,7 @@ export default function SocialForm() {
   const [isGithubPublic, setIsGithubPublic] = useState(false);
 
   return (
-    <div className="space-y-4">
+    <div className="profile-form-section">
       {socialProfiles.map((profile) => (
         <FormField
           key={profile.id}
@@ -59,16 +60,16 @@ export default function SocialForm() {
           name={profile.id}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center">
+              <FormLabel className="profile-form-label">
                 {socialIcons[profile.id]}
                 {profile.label}
               </FormLabel>
-              <div className="flex items-center space-x-2">
+              <div className="profile-form-group">
                 <FormControl>
                   <Input
                     {...field}
                     placeholder={profile.placeholder}
-                    className="w-full"
+                    className="profile-form-input"
                     type="url"
                   />
                 </FormControl>
@@ -80,7 +81,7 @@ export default function SocialForm() {
                     if (profile.id === "twitter") setIsTwitterPublic(!isTwitterPublic);
                     if (profile.id === "github") setIsGithubPublic(!isGithubPublic);
                   }}
-                  className="text-muted-foreground"
+                  className="profile-form-visibility-btn"
                 >
                   {(profile.id === "facebook" && isFacebookPublic) ||
                   (profile.id === "linkedIn" && isLinkedInPublic) ||
