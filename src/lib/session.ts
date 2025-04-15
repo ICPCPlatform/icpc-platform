@@ -1,5 +1,6 @@
 import "server-only";
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
+import { NextRequest } from "next/server";
 
 // Encrypting a payload
 //
@@ -45,5 +46,13 @@ export async function getUserData(): Promise<UserDataJWT | null> {
   const userData = headers.get("x-user");
   if (!userData) return null;
   const user = await decryptSession(userData);
+  return user;
+}
+export async function getUserDataMiddleware(
+  req: NextRequest,
+): Promise<UserDataJWT | null> {
+  const userData = req.headers.get("x-user");
+  if (!userData) return null;
+  const user = JSON.parse(userData) as UserDataJWT;
   return user;
 }

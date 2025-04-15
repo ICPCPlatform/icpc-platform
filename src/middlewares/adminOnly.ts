@@ -9,8 +9,7 @@ import { NoAction } from "./utils";
  */
 export async function middleware(
   req: NextRequest,
-): Promise< NextResponse 
-| NoAction> {
+): Promise<NextResponse | [NoAction, NextRequest]> {
   const url = req.nextUrl.pathname;
   if (url.startsWith("/admin-only")) {
     const session = req.cookies.get("session")?.value;
@@ -28,7 +27,7 @@ export async function middleware(
       }),
     );
   }
-  return NoAction;
+  return [NoAction, req];
 }
 
 /*

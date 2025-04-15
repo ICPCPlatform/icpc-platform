@@ -7,8 +7,8 @@ import { NoAction } from "./utils";
 export const middlewares = {
   // order is needed
   functions: [
-    adminOnly.middleware,
     authOnly.middleware,
+    adminOnly.middleware,
     training.middleware,
-  ] satisfies ((req: NextRequest) => Promise<NextResponse | NoAction>)[],
+  ] satisfies ((req: NextRequest) => Promise<NextResponse | [NoAction,NextRequest]>)[],
 };

@@ -9,16 +9,16 @@ import { NoAction } from "./utils";
  */
 export async function middleware(
   req: NextRequest,
-): Promise<NoAction | NextResponse> {
+): Promise<[NoAction, NextRequest] | NextResponse> {
   const url = req.nextUrl.pathname;
+  const session = req.cookies.get("session")?.value;
   if (url.startsWith("/protected")) {
-    const session = req.cookies.get("session")?.value;
     const validation = await decryptSession(session);
     if (!validation) {
       // is not logged in
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    req.headers.set(
+    req.headers.append(
       "x-user",
       JSON.stringify({
         username: validation.username,
@@ -27,5 +27,5 @@ export async function middleware(
       }),
     );
   }
-  return NoAction;
+  return [NoAction, req];
 }
