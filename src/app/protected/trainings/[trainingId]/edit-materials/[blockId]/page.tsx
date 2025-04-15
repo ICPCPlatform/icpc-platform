@@ -1,6 +1,7 @@
 "use client";
 import { redirect } from "next/navigation";
 import { editMaterial } from "./_action";
+import { Material } from "@/lib/types/Training";
 
 export default function Page() {
   // get the trainingId and blockId from the url
@@ -20,7 +21,9 @@ export default function Page() {
     <form action={editMaterial}>
       <input type="hidden" name="trainingId" value={trainingId} />
       <input type="hidden" name="blockId" value={blockId} />
-      <input type="text" name="newMaterialName" placeholder="New Material Name" required />
+      <input type="text" name="title" placeholder="New Material Name" required />
+      <textarea name="des" placeholder="New Material Description" required></textarea>
+      <input type="text" name="link" placeholder="New Material Link" required />
 
       <button type="submit">Edit Material</button>
     </form>

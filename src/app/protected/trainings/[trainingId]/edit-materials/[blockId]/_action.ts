@@ -7,15 +7,21 @@ import { UserDataJWT } from "@/lib/session";
 import { Material } from "@/lib/types/Training";
 import { and, eq } from "drizzle-orm";
 
-export async function editMaterial({
-  trainingId,
-  blockNumber,
-  newMaterial,
-}: {
-  trainingId: number;
-  blockNumber: number;
-  newMaterial: Material;
-}) {
+export async function editMaterial(formData: FormData) {
+  const trainingId = Number(formData.get("trainingId"));
+  const blockNumber = Number(formData.get("blockNumber"));
+
+  const title = formData.get("title") as string;
+  const des = formData.get("des") as string;
+  const link = formData.get("link") as string;
+
+  const newMaterial = [{
+    title,
+    des,
+    link,
+  }] as Material[];
+
+
   // get user id from headers
   const headers = new Headers();
 
@@ -32,10 +38,15 @@ export async function editMaterial({
     return;
   }
 
+  // TODO : check the implementation of the updating material
+  const newMaterialDTO = {
+    [blockNumber]: newMaterial,
+  } as Record<number, Material[]>;
+
   await db
     .update(Blocks)
     .set({
-      material: newMaterial,
+      material: newMaterialDTO
     })
     .where(
       and(
