@@ -1,18 +1,15 @@
 import { db } from "@/lib/db";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
-import { decryptSession } from "@/lib/session";
+import { getUserData } from "@/lib/session";
 import { userFullDataValid } from "@/lib/validation/userFulldataValidations";
 import { eq } from "drizzle-orm";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Profile from "./_page";
 import { z } from "zod";
 import "@/styles/components/profile/profile-edit.css";
 
 export default async function Page() {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("session")?.value;
-  const user = await decryptSession(session);
+  const user = await getUserData();
   if (!user) {
     redirect("/login");
   }

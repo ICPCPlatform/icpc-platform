@@ -10,6 +10,7 @@ export default async function Page({
 }) {
   const username = decodeURIComponent((await params).username);
   const userData = await getUserFullData({ username });
+
   if (!userData) return redirect("/404");
 
   return (

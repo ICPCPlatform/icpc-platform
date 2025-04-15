@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 
-export default function PrivacyPolicyPage() {
+export default function Page() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background text-foreground dark:bg-black dark:text-white p-4">
       <Card className="w-full max-w-3xl p-6 shadow-lg rounded-lg bg-white dark:bg-black">

@@ -10,10 +10,14 @@ import {
 import { Blocks } from "./Blocks";
 type Judge = "cf" | "vj";
 
+/**
+ * Contests is the table that holds the contests for a training
+ */
 export const Contests = pgTable(
   "contests",
   {
     trainingId: integer().notNull(),
+    // reference ./Blocks.ts -> Blocks.blockNumber
     blockNumber: integer().notNull(),
     contestId: varchar({ length: 32 }).notNull(),
 
@@ -39,5 +43,5 @@ export const Contests = pgTable(
       columns: [table.trainingId, table.blockNumber],
       foreignColumns: [Blocks.trainingId, Blocks.blockNumber],
     }),
-  ]
+  ],
 );

@@ -22,8 +22,8 @@ import { CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { useUserContext } from "@/providers/user";
 import "@/styles/components/auth/auth.css";
 
-export default function LoginPage() {
-  const user = useUserContext();
+export default function Page() {
+  const user  = useUserContext();
   if (user) return redirect("/protected/profile");
   return (
     <Suspense>

@@ -1,20 +1,19 @@
 import "@/app/globals.css";
 
-import Sidebar from "../../../components/profile/_Sidebar";
-import Profile from "../../../components/profile/_Profile";
-import { cookies } from "next/headers";
-import { decryptSession } from "@/lib/session";
+import Sidebar from "@/components/profile/_Sidebar";
+import Profile from "@/components/profile/_Profile";
+
+import { getUserData } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { getUserFullData } from "@/actions/getUserFullData";
 import { UserProfile } from "@/lib/types/userProfileType";
 
-export default async function ProfilePage() {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("session")?.value;
-  const validation = await decryptSession(session);
+export default async function Page() {
+  const validation = await getUserData();
   if (!validation) return null;
   const { userId } = validation;
   const user: UserProfile<false> | null = await getUserFullData({ userId });
+
   if (!user) redirect("/404");
 
   return (

@@ -1,17 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { middlewares } from "./middelwares/index";
+import { middlewares } from "./middlewares/index";
+import { composeMiddlewares } from "./middlewares/utils";
 
 export default async function middleware(
   req: NextRequest,
 ): Promise<NextResponse> {
-  for (let i = 0; i < middlewares.functions.length; i++) {
-    const response = await middlewares.functions[i](req);
-    if (response) {
-      return response;
-    }
+  // check if x-user header is present
+  // if present, refuse the request
+  if (req.headers.has("x-user")) {
+    // this prevent security issues stop
+    return new NextResponse(null, { status: 403 });
   }
-  return NextResponse.next({request:req});
+
+  const composedMiddleware = composeMiddlewares(middlewares.functions);
+  const response = await composedMiddleware(req);
+  if (response instanceof NextResponse) {
+    return response;
+  }
+  return NextResponse.next({ request: req });
 }
 
 export const config = {

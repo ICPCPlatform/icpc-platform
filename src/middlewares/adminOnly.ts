@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decryptSession } from "@/lib/session";
+import { NoAction } from "./utils";
 
 /**
  * middleware to check if the user is admin and logged
@@ -8,7 +9,7 @@ import { decryptSession } from "@/lib/session";
  */
 export async function middleware(
   req: NextRequest,
-): Promise<null | NextResponse> {
+): Promise<NextResponse | [NoAction, NextRequest]> {
   const url = req.nextUrl.pathname;
   if (url.startsWith("/admin-only")) {
     const session = req.cookies.get("session")?.value;
@@ -26,7 +27,7 @@ export async function middleware(
       }),
     );
   }
-  return null;
+  return [NoAction, req];
 }
 
 /*

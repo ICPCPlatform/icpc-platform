@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
+import { getUserTrainingPermissions, TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<NextResponse<TrainingPermissions[]|{error: string}>> {
   try {
     const { userId, trainingId } = (await req.json()) as {
       userId: string;

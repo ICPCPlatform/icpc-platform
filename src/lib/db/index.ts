@@ -23,7 +23,8 @@ export const db = drizzle(pool, {
   casing: "snake_case",
 });
 
-// this is temporary, will be moved to a cron job
+/// TODO:
+/// this is temporary, will be moved to a cron job
 async function deleteExpiredLogs() {
   const userArr = await db
     .delete(EmailAuth)

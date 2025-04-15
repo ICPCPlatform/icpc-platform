@@ -11,6 +11,8 @@ import {
 
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
+import { StandingEntry } from "@/lib/types/Training";
+
 type Status = "active" | "roadmap" | "private" | "over";
 
 type StandingView =
@@ -25,6 +27,9 @@ type StandingView =
   | "university"
   | "facutly";
 
+/**
+ * Trainings is the table that holds the training information
+ */
 export const Trainings = pgTable("trainings", {
   trainingId: serial().primaryKey(),
   headId: uuid()
@@ -33,16 +38,18 @@ export const Trainings = pgTable("trainings", {
       onUpdate: "cascade",
     })
     .notNull(),
+
   chiefJudge: uuid()
     .references(() => Users.userId, {
       onDelete: "restrict",
       onUpdate: "cascade",
     })
     .notNull(),
+
   title: citext({ length: 128 }).notNull().unique(),
   description: varchar({ length: 512 }).notNull(),
-  material: jsonb(),
-  standing: jsonb(),
+  material: jsonb(), // this should get Deleted
+  standing: jsonb().$type<StandingEntry>(),
   /// saves which attributes of standing are visible to trainees
   standingView: jsonb()
     .notNull()

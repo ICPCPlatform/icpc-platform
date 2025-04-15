@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
-import { type userData } from "@/lib/session";
+import { type UserDataJWT } from "@/lib/session";
 import { eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { userFullDataValid as userFulldataValidations } from "@/lib/validation/userFulldataValidations";
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     if (request.headers.get("x-user") === null) {
       return new NextResponse(null, { status: 401 });
     }
-    const user = JSON.parse(request.headers.get("x-user") ?? "") as userData;
+    const user = JSON.parse(request.headers.get("x-user") ?? "") as UserDataJWT;
     const { success, data } = userFulldataValidations.safeParse(
       await request.json(),
     );

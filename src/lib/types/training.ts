@@ -1,14 +1,52 @@
-export type TrainingFullData = {
+/**
+ * Training Data send to the client
+ */
+export type TrainingFullDTO = {
   standing: {
     ContestInfo: ContestInfo;
-    rankings: StandingEntryWithDetails[];
+    rankings: RankingEntryWithDetails[];
     problems: string[];
   }[];
+  materials: MaterialsDTO;
+  blocks: Blocks; // to in the DAO
+
 };
+
+
+export type Blocks = {
+  id: string;
+  title: string;
+}[]
+
+/**
+ * Material type from db.training.material
+ * this type is used from the database
+ */
+export type MaterialsEntry = MaterialsDTO;
+
+/**
+ * map from blockId to array of materials
+ */
+export type MaterialsDTO = Record<string, Material[]>; 
+
+export type Material = {
+  title: string;
+  link: string;
+  des: string;
+};
+
+/**
+ * Training Data riveted from the Database
+ */
 export type Training = {
-  standing: StandingData;
+  standing: StandingEntry;
   standingView: string[]; // Dynamic configuration
+  material: MaterialsDTO;
 };
+
+/**
+ * Contest Info
+ */
 export type ContestInfo = {
   id: number;
   title: string;
@@ -18,19 +56,29 @@ export type ContestInfo = {
   problem_count: number;
 };
 
-export type StandingData = {
+/**
+ * Standing type from db.training.standing
+ */
+export type StandingEntry = {
   ContestInfo: ContestInfo;
-  rankings: StandingEntry[];
+  rankings: Ranking[];
   problems: string[];
 }[];
 
-export type StandingEntry = {
+/**
+ * Ranking Entry
+ */
+export type Ranking = {
   userId: string;
   penalty: number;
   solved: string[];
   attempted: string[];
 };
 
+/**
+ * Trainee Details
+ * this type is used from the database
+ */
 export type Trainee = {
   userId?: string;
   name?: string | null;
@@ -42,4 +90,7 @@ export type Trainee = {
   faculty?: string;
 };
 
-export type StandingEntryWithDetails = Omit<Trainee & StandingEntry, "userId">;
+/**
+ * Standing Entry with Trainee Details
+ */
+export type RankingEntryWithDetails = Omit<Trainee & Ranking, "userId">;

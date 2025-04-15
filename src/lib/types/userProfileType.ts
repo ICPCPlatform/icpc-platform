@@ -1,3 +1,6 @@
+/**
+ * User Profile Type
+ */
 export type UserProfile<Filter extends boolean> = {
   username: string | null;
   imageUrl: string | null;

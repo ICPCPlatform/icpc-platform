@@ -8,12 +8,12 @@ import { eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import {
-  StandingEntry,
-  StandingEntryWithDetails,
+  Ranking,
+  RankingEntryWithDetails,
   Trainee,
   Training,
-  TrainingFullData,
-} from "@/lib/types/training";
+  TrainingFullDTO,
+} from "@/lib/types/Training";
 
 const selectKeysFromObjects = (data: typeof ___, keys: string[]) => {
   return keys.reduce((acc, key) => {
@@ -29,13 +29,13 @@ export async function getTrainingFullData({
   trainingId,
 }: {
   trainingId: number;
-}): Promise<TrainingFullData> {
-  "use server";
+}): Promise<TrainingFullDTO> {
   // Fetch training details
   const trainingResult = await db
     .select({
       standing: Trainings.standing,
       standingView: Trainings.standingView,
+      material : Trainings.material
     })
     .from(Trainings)
     .where(eq(Trainings.trainingId, trainingId))
@@ -47,7 +47,7 @@ export async function getTrainingFullData({
 
   // Fetch trainee details for each trainee in the standing
 
-  const { standingView, standing } = training;
+  const { standingView, standing, material } = training;
   standingView.push("userId");
   const traineeIds = [
     ...new Set(standing.map((s) => s.rankings.map((r) => r.userId)).flat()),
@@ -62,32 +62,33 @@ export async function getTrainingFullData({
 
     .execute()) as Trainee[];
   // Map standings to include trainee details
-  const standingWithDetails: TrainingFullData["standing"] = standing.map(
+  const standingWithDetails: TrainingFullDTO["standing"] = standing.map(
     (contest) => {
+      
       return {
         ...contest,
         rankings: contest.rankings
-          .map((s: StandingEntry) => {
+          .map((s: Ranking) => {
             if (s.userId === undefined) {
               return undefined;
             }
             const user = trainees.find((usr) => usr.userId === s.userId);
             if (user) {
-              user.userId = undefined;
               const obj = {
                 ...s,
                 ...user, // Assuming penalty is used as points
+                userId: undefined,
               };
               return obj;
             }
             return undefined;
           })
-          .filter((x) => x !== undefined) as StandingEntryWithDetails[],
+          .filter((x) => x !== undefined) as RankingEntryWithDetails[],
       };
     },
   );
 
-  return { standing: standingWithDetails };
+  return { standing: standingWithDetails, materials: material };
 }
 
 const ___ = {

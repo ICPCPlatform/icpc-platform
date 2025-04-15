@@ -1,4 +1,12 @@
 import { Resend } from "resend";
+
+
+/**
+ * Send an email using the Resend API.
+ * @param to - The email address to send the email to
+ * @param subject - The subject of the email 
+ * @param html - The HTML content of the email
+ */
 export default async function send({
   to,
   subject,

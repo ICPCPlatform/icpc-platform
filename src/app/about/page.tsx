@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export default function AboutPage() {
+export default function Page() {
   return (
     <div className="container py-8 space-y-12">
       {/* Hero Section */}

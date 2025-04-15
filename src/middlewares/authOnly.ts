@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { decryptSession } from "@/lib/session";
+import { NoAction } from "./utils";
 
 /**
  * middleware to check if the user logged
@@ -8,16 +9,16 @@ import { decryptSession } from "@/lib/session";
  */
 export async function middleware(
   req: NextRequest,
-): Promise<null | NextResponse> {
+): Promise<[NoAction, NextRequest] | NextResponse> {
   const url = req.nextUrl.pathname;
+  const session = req.cookies.get("session")?.value;
   if (url.startsWith("/protected")) {
-    const session = req.cookies.get("session")?.value;
     const validation = await decryptSession(session);
     if (!validation) {
       // is not logged in
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    req.headers.set(
+    req.headers.append(
       "x-user",
       JSON.stringify({
         username: validation.username,
@@ -26,5 +27,5 @@ export async function middleware(
       }),
     );
   }
-  return null;
+  return [NoAction, req];
 }
