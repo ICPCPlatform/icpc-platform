@@ -3,26 +3,24 @@ import "server-only";
 import { db } from "@/lib/db";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
-import { UserDataJWT } from "@/lib/session";
-import { Material } from "@/lib/types/Training";
+import { getUserData } from "@/lib/session";
+import { Material} from "@/lib/types/Training";
 import { and, eq } from "drizzle-orm";
 
 export async function editMaterial({
   trainingId,
   blockNumber,
-  newMaterial,
+  newMaterials,
 }: {
   trainingId: number;
   blockNumber: number;
-  newMaterial: Material;
+  newMaterials: Material[];
 }) {
-  // get user id from headers
-  const headers = new Headers();
-
-  const { userId } = JSON.parse(
-    headers.get("x-user") ?? "{'userId':''}",
-  ) as UserDataJWT;
-
+  const userData = await getUserData();
+  if (!userData) {
+    return;
+  }
+  const userId = userData.userId;
   if (isNaN(trainingId)) {
     return;
   }
@@ -31,11 +29,13 @@ export async function editMaterial({
   if (!userPermissions.includes("Edit:material")) {
     return;
   }
+  
 
   await db
     .update(Blocks)
     .set({
-      material: newMaterial,
+      material: newMaterials,
+      // material: newMaterial,
     })
     .where(
       and(
