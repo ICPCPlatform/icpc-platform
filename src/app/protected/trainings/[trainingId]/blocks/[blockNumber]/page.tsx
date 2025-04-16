@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import {getContests} from "@/app/protected/trainings/[trainingId]/blocks/actions";
+import {getContests} from "@/app/protected/trainings/[trainingId]/blocks/[blockNumber]/contests/actions";
 import {
     PlusIcon,
     ChevronRightIcon,
