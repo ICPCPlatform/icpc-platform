@@ -8,7 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { Blocks } from "./Blocks";
-type Judge = "cf" | "vj";
+export type Judge = "cf" | "vj";
 
 /**
  * Contests is the table that holds the contests for a training
