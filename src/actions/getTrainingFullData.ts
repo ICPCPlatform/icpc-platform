@@ -14,6 +14,7 @@ import {
   Training,
   TrainingFullDTO,
 } from "@/lib/types/Training";
+import { Blocks } from "@/lib/db/schema/training/Blocks";
 
 const selectKeysFromObjects = (data: typeof ___, keys: string[]) => {
   return keys.reduce((acc, key) => {
@@ -88,7 +89,18 @@ export async function getTrainingFullData({
     },
   );
 
-  return { standing: standingWithDetails, materials: material };
+  const processedBlocks = await db
+    .select()
+    .from(Blocks)
+    .where(eq(Blocks.trainingId, trainingId)); 
+
+
+    const additionalBlockData = processedBlocks.map(block => ({
+      id: block.blockNumber.toString(), 
+      ...block
+    }));
+
+    return { standing: standingWithDetails, materials: material, blocks: additionalBlockData };
 }
 
 const ___ = {
