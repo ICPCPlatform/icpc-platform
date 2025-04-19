@@ -1,3 +1,4 @@
+"use server";
 import {cache} from "react";
 import {db} from "@/lib/db";
 import {and, eq} from "drizzle-orm";
@@ -6,7 +7,7 @@ import {UserDataJWT} from "@/lib/session";
 import {getUserTrainingPermissions} from "@/lib/permissions/getUserTrainingPermissions";
 import {blockValidations} from "@/lib/validation/blockValidations";
 import { z } from "zod";
-
+import {redirect} from "next/navigation";
 
 export const getBlocks = cache(async (trainingIdNumber: number) => {
     return db
@@ -22,24 +23,30 @@ export const getBlock = cache(async (blockNumber: number) => {
         .where(eq(Blocks.blockNumber, blockNumber));
 });
 type FormData = z.infer<typeof blockValidations>;
-export default async function updateBlock( {trainingId, blockNumber, ...data}: FormData & {trainingId: string;blockNumber: string }) {
-    const { title, description } = data;    
+export default async function updateBlock( {trainingId, blockNumber, ...data}: FormData & {trainingId: number;blockNumber: number }) {
+    const { title, description } = data;
+
+
+    // check user login and permissions
     const headers = new Headers();
-    const { userId } = JSON.parse(
-        headers.get("x-user") ?? "{'userId':''}",
-    ) as UserDataJWT ;
+    try {
+        const { userId } = JSON.parse(
+            headers.get("x-user") ?? "{'userId':''}",
+        ) as UserDataJWT ;
 
-    if (isNaN(Number(trainingId))) {
-        return;
+        if (!userId) {
+            console.log("User ID not found in headers");
+            redirect("/login");
+        }
+        const userPermissions = await getUserTrainingPermissions(userId, Number(trainingId));
+        if (!userPermissions.includes("Edit:block")) {
+            return;
+        }
     }
-    const userPermissions = await getUserTrainingPermissions(userId, Number(trainingId));
-    if (!userPermissions.includes("Edit:block")) {
-        return;
+    catch (error) {
+        console.log("Failed to parse user ID:", error);
+        redirect("/login");
     }
-    if (isNaN(Number(blockNumber))) {
-        return;
-    }
-
     try {
         await db
             .update(Blocks)
@@ -49,12 +56,12 @@ export default async function updateBlock( {trainingId, blockNumber, ...data}: F
             })
             .where(
                 and(
-                    eq(Blocks.trainingId,Number( trainingId)),
-                    eq(Blocks.blockNumber, Number(blockNumber)),
+                    eq(Blocks.trainingId,trainingId),
+                    eq(Blocks.blockNumber,blockNumber),
                 ),
             );
     } catch (error) {
-        console.error("Failed to update block:", error);
+        console.log("Failed to update block:", error);
     }
 
 }
