@@ -5,6 +5,5 @@ export type Block = {
     blockNumber: number;
     title: string;
     description: string;
-    hidden: boolean;
     material: Material;
-}
+}[];

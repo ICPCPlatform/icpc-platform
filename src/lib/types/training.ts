@@ -1,3 +1,5 @@
+import { Block } from "@/lib/types/Blocks";
+
 /**
  * Training Data send to the client
  */
@@ -8,16 +10,9 @@ export type TrainingFullDTO = {
     problems: string[];
   }[];
   materials: MaterialsDTO;
-  blocks: Blocks; // to in the DAO
+  blocks: Block; // to in the DAO
 
 };
-
-
-export type Blocks = {
-  id: string;
-  title: string;
-}[]
-
 /**
  * Material type from db.training.material
  * this type is used from the database
