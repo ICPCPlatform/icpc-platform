@@ -50,8 +50,16 @@ export default function TrainingNavigation({
                   material
                 </Link>
               </li>
-              <li>
+            
 
+              <li
+                className={cn(itemStyle,
+                   "bg-zinc-500"
+                )}
+              >
+                <Link href={`/protected/trainings/${trainingId}/blocks`} className={cn("w-full block box-border px-4 py-2")}>
+                  Blocks
+                </Link>
               </li>
             </ul>
           </nav>
