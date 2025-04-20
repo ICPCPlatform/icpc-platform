@@ -17,14 +17,14 @@ export default async function Layout({
 
   return (
     <div className="mx-auto p-2 md:py-6">
-      <div className="flex flex-col lg:flex-row gap-4 md:gap-6 w-max max-w-full ">
+
         <TrainingProvider trainingData={trainingData}>
-          <NoSSR>
-            <TrainingNavigation trainingId={trainingId} />
+         <NoSSR>
+        {/*    <TrainingNavigation trainingId={trainingId} />*/}
             {children}
-          </NoSSR>
+         </NoSSR>
         </TrainingProvider>
-      </div>
+  
     </div>
   );
 }
