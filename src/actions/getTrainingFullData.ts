@@ -15,6 +15,7 @@ import {
   TrainingFullDTO,
 } from "@/lib/types/Training";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
+import { Block } from "@/lib/types/Blocks";
 
 const selectKeysFromObjects = (data: typeof ___, keys: string[]) => {
   return keys.reduce((acc, key) => {
@@ -95,12 +96,19 @@ export async function getTrainingFullData({
     .where(eq(Blocks.trainingId, trainingId)); 
 
 
-    const additionalBlockData = processedBlocks.map(block => ({
-      id: block.blockNumber.toString(), 
-      ...block
-    }));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+     const blocksWithDetails: Block[] = processedBlocks.map((block) => {
+      return {
+        trainingId: block.trainingId,
+        blockNumber: block.blockNumber,
+        title: block.title,
+        description: block.description,
+      };
+    });
+    
 
-    return { standing: standingWithDetails, materials: material, blocks: additionalBlockData };
+  return { standing: standingWithDetails, materials: material, blocks: blocksWithDetails };
 }
 
 const ___ = {
