@@ -22,7 +22,7 @@ export type Blocks = {
  * Material type from db.training.material
  * this type is used from the database
  */
-export type MaterialsEntry = MaterialsDTO;
+export type MaterialsEntry = Material[];
 
 /**
  * map from blockId to array of materials
