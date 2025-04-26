@@ -20,7 +20,7 @@ export default function Page() {
     return;
   }
 
-  const materialData = training.blocks.find(({ id }) => id == blockId)?.materials ?? [];
+  const materialData = training.blocks.find(({ id }) => id === blockId)?.materials ?? [];
 
   return (
     <div>
