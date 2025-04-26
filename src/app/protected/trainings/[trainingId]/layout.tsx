@@ -1,4 +1,4 @@
-import { getTrainingFullData } from "@/actions/getTrainingFullData";
+import { getTrainingFullData } from "@/dao/getTrainingFullData";
 import TrainingProvider from "@/providers/training";
 import NoSSR from "@/components/util/NoSSR";
 import TrainingNavigation from "./__trainingNavigation";
