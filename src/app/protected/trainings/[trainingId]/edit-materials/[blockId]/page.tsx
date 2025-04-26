@@ -21,7 +21,6 @@ export default function Page() {
   }
 
   const materialData = training.blocks.find(({ id }) => id === blockId)?.materials ?? [];
-
   return (
     <div>
       <DynamicForm
@@ -51,6 +50,7 @@ function DynamicForm({
   const updateEntry = (
     index: number,
     field: "link" | "title" | "des",
+
     value: string
   ) => {
     const newEntries = [...entries];
