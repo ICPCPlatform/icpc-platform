@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { UserDataJWT } from "@/lib/session";
-import { Material } from "@/lib/types/Training";
+import { Material } from "@/lib/types/training";
 import { and, eq } from "drizzle-orm";
 
 export async function editMaterial({

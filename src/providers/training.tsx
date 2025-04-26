@@ -1,5 +1,5 @@
 "use client";
-import { TrainingFullDTO } from "@/lib/types/Training";
+import { TrainingFullDTO } from "@/lib/types/training";
 import { createContext, useContext } from "react";
 const trainingContext = createContext<TrainingFullDTO | null>(null);
 export default function TrainingProvider({
