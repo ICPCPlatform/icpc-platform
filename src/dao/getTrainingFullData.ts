@@ -4,7 +4,7 @@ import { Faculties } from "@/lib/db/schema/user/Faculties";
 import { Institutes } from "@/lib/db/schema/user/Institutes";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import { Users } from "@/lib/db/schema/user/Users";
-import { eq, inArray } from "drizzle-orm";
+import { and,eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
@@ -44,7 +44,7 @@ export async function getTrainingFullData({
   const blocksResult = await db
     .select({id: Blocks.blockNumber, title: Blocks.title, materials: Blocks.material})
     .from(Blocks)
-    .where(eq(Blocks.trainingId, trainingId))
+    .where(and(eq(Blocks.trainingId, trainingId),eq(Blocks.hidden, false),isNull(Blocks.deleted)))
     .execute();
   
   const blocks = blocksResult satisfies TrainingFullDTO["blocks"];
