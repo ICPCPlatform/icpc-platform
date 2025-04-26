@@ -14,7 +14,7 @@ import {
   Trainee,
   Training,
   TrainingFullDTO,
-} from "@/lib/types/training";
+} from "@/lib/types/Training";
 const selectKeysFromObjects = (data: typeof userSelectFields , keys: string[]) => {
   return keys.reduce((acc, key) => {
     if (key in data) {

@@ -81,6 +81,7 @@ async function insertOrGetLookupTable<T extends AnyPgTable>(
   if (name === undefined) return null;
   const res = await db
     .select()
+    // @ts-expect-error - unknown key
     .from(table)
     // @ts-expect-error - unknown key
     .where(eq(table.name, name))
