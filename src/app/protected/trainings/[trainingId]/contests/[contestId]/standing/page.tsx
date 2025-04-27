@@ -33,7 +33,6 @@ export default function Page() {
         offset += col.getBoundingClientRect().width; // Add current column width for the next one
       });
     };
-
     setStickyColumnOffsets();
   }, []);
   // Check if data and standing exist
