@@ -125,7 +125,7 @@ Table contests{
 
 
   group_id varchar(32) 
-  judge varchar(32) [not null]
+      judge varchar(32) [not null]
   title varchar(128) [not null]
   description varchar(512) [not null]
 
