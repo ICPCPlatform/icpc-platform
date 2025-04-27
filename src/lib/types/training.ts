@@ -9,10 +9,19 @@ export type TrainingFullDTO = {
     rankings: RankingEntryWithDetails[];
     problems: string[];
   }[];
+
   materials: MaterialsDTO;
-  blocks: Block; // to in the DAO
+  blocks: Block[]; // to in the DAO
 
 };
+
+export type Block = {
+  trainingId: number;
+  blockNumber: number;
+  title: string;
+  description: string;
+}[];
+
 /**
  * Material type from db.training.material
  * this type is used from the database
