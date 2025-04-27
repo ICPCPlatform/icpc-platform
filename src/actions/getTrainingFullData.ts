@@ -15,7 +15,7 @@ import {
   TrainingFullDTO,
 } from "@/lib/types/Training";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
-import { Block } from "@/lib/types/Blocks";
+import { Block } from "@/lib/types/training";
 
 const selectKeysFromObjects = (data: typeof ___, keys: string[]) => {
   return keys.reduce((acc, key) => {
