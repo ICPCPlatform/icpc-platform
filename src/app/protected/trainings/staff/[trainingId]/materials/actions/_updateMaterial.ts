@@ -7,7 +7,7 @@ import { UserDataJWT } from "@/lib/session";
 import { Material } from "@/lib/types/training";
 import { and, eq } from "drizzle-orm";
 
-export async function editMaterial({
+export async function updateMaterial({
   trainingId,
   blockNumber,
   newMaterials,
@@ -16,6 +16,7 @@ export async function editMaterial({
   blockNumber: number;
   newMaterials: Material[];
 }) {
+  try{
   const userData = await getUserData();
   if (!userData) {
     return;
@@ -31,16 +32,19 @@ export async function editMaterial({
   }
   
 
-  await db
+  await (db
     .update(Blocks)
     .set({
       material: newMaterials,
-      // material: newMaterial,
     })
     .where(
       and(
         eq(Blocks.blockNumber, blockNumber),
         eq(Blocks.trainingId, trainingId),
       ),
-    );
+    ).execute());
+  } catch (error) {
+    console.error("Error editing material:", error);
+    throw new Error("Failed to edit material");
+  }
 }
