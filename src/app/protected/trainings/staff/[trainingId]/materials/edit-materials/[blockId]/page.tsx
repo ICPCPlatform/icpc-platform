@@ -1,6 +1,6 @@
 "use client";
-import { redirect } from "next/navigation";
-import { editMaterial } from "./_action";
+import { redirect, useParams } from "next/navigation";
+import { updateMaterial } from "../../actions/_updateMaterial";
 import { useState } from "react";
 import { Material } from "@/lib/types/Training";
 import { useTrainingContext } from "@/providers/training";
@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 
 export default function Page() {
   // get the trainingId and blockId from the url
-  const url = window.location.href;
-  const urlParts = url.split("/");
-  const trainingId = Number(urlParts[urlParts.length - 3]);
-  const blockId = Number(urlParts[urlParts.length - 1]);
+  const urlparams = useParams();
+  const trainingId = Number(urlparams.trainingId);
+  const blockId = Number(urlparams.blockId);
+
   if (isNaN(trainingId) || isNaN(blockId)) {
     redirect("not-found");
   }
@@ -20,7 +20,8 @@ export default function Page() {
     return;
   }
 
-  const materialData = training.blocks.find(({ id }) => id == blockId)?.materials ?? [];
+  const materialData =
+    training.blocks.find(({ id }) => id == blockId)?.materials ?? [];
 
   return (
     <div>
@@ -51,7 +52,7 @@ function DynamicForm({
   const updateEntry = (
     index: number,
     field: "link" | "title" | "des",
-    value: string
+    value: string,
   ) => {
     const newEntries = [...entries];
     newEntries[index][field] = value;
@@ -111,7 +112,7 @@ function DynamicForm({
       <Button
         onClick={() => {
           const newMaterials = entries;
-          editMaterial({ blockNumber, trainingId, newMaterials });
+          updateMaterial({ blockNumber, trainingId, newMaterials });
         }}
       >
         apply changes
