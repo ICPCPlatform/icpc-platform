@@ -126,9 +126,12 @@ function DynamicForm({
 
             return;
           }
+<<<<<<<< HEAD:src/app/protected/trainings/staff/[trainingId]/materials/edit-materials/[blockId]/page.tsx
 ========
           const newMaterials = entries;
 >>>>>>>> c384991 (refactor : move edit-material to staff following RFC3):src/app/protected/trainings/staff/[trainingId]/materials/edit-materials/[blockId]/page.tsx
+========
+>>>>>>>> c184496 (impl: RFC3 training structure):src/app/protected/trainings/[trainingId]/staff/materials/edit-materials/[blockId]/page.tsx
           updateMaterial({ blockNumber, trainingId, newMaterials });
         }}
       >
