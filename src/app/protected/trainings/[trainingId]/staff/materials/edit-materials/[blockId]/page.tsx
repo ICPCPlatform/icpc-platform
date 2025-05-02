@@ -1,10 +1,11 @@
 "use client";
 import { redirect, useParams } from "next/navigation";
 import { updateMaterial } from "../../actions/_updateMaterial";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { Material } from "@/lib/types/Training";
 import { useTrainingContext } from "@/providers/training";
 import { Button } from "@/components/ui/button";
+import { updateMaterialSchema } from "@/lib/validation/training/update_material";
 
 export default function Page() {
   // get the trainingId and blockId from the url
@@ -44,7 +45,6 @@ function DynamicForm({
   blockNumber: number;
 }) {
   const [entries, setEntries] = useState<Material[]>(materialData ?? []);
-
   const addEntry = () => {
     setEntries([...entries, { title: "", link: "", des: "" }]);
   };
@@ -111,7 +111,15 @@ function DynamicForm({
 
       <Button
         onClick={() => {
-          const newMaterials = entries;
+          const { data: newMaterials, success, error: err } =
+            updateMaterialSchema.safeParse(entries);
+          if (!success) {
+            // ui should show error
+            // show err 
+            console.error(err);
+
+            return;
+          }
           updateMaterial({ blockNumber, trainingId, newMaterials });
         }}
       >
