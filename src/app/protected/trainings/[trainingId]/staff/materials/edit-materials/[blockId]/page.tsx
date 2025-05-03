@@ -1,16 +1,9 @@
 "use client";
 import { redirect, useParams } from "next/navigation";
-import { updateMaterial } from "../../actions/_updateMaterial";
-<<<<<<<< HEAD:src/app/protected/trainings/[trainingId]/staff/materials/edit-materials/[blockId]/page.tsx
-import { useActionState, useState } from "react";
 import { Material } from "@/lib/types/Training";
-========
 import { useState } from "react";
-import { Material  } from "@/lib/types/Training";
->>>>>>>> c384991 (refactor : move edit-material to staff following RFC3):src/app/protected/trainings/staff/[trainingId]/materials/edit-materials/[blockId]/page.tsx
 import { useTrainingContext } from "@/providers/training";
 import { Button } from "@/components/ui/button";
-import { updateMaterialSchema } from "@/lib/validation/training/update_material";
 
 export default function Page() {
   // get the trainingId and blockId from the url
