@@ -2,9 +2,10 @@ import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { cache } from "react";
 import { db } from "@/lib/db";
-import { eq } from "drizzle-orm";
+import {and, eq} from "drizzle-orm";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { staffViewBlock } from "@/lib/types/staff/StaffTrainingTypes";
+import {BlockFormData} from "@/lib/validation/training/blockValidations";
 
 
 export const getAllBlocks = cache(async (trainingId: number) => {
@@ -79,3 +80,34 @@ export const getUserEditBlockPermissions = cache(async (trainingId: number) => {
         return null;
     }
 });
+
+
+export default async function updateBlock ({trainingId, blockNumber, ...data} : BlockFormData &{trainingId : number,blockNumber:number}) {
+    const { title, description } = data;
+    try {
+        const userPermissions = await getUserEditBlockPermissions(trainingId);
+        if (!userPermissions) {
+            console.error("User does not have permission to edit blocks");
+            return null;
+        }
+        // Update block in the database
+        await db
+            .update(Blocks)
+            .set({
+                title,
+                description,
+            })
+            .where(
+              and(
+                  eq(Blocks.trainingId, trainingId),
+                  eq(Blocks.blockNumber, blockNumber),
+              )
+            )
+            .returning()
+            .execute();
+    }
+    catch (error) {
+        console.error("Error updating block:", error);
+        return null;
+    }
+}
