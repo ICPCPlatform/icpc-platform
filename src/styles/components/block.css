@@ -1,0 +1,213 @@
+/* blocks.css - Enhanced with motion, interaction, and elegance */
+
+.blocks-wrapper {
+    @apply bg-[hsl(var(--background))]/50 rounded-2xl shadow-lg;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.blocks-content {
+    @apply p-4 md:p-6 ;
+}
+
+.blocks-list {
+    @apply space-y-6;
+}
+
+.block-card {
+    @apply p-5 md:p-6 bg-[hsl(var(--background))] rounded-2xl border border-[hsl(var(--border))]
+    hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-in-out relative;
+    overflow: hidden;
+}
+
+.block-card::before {
+    content: "";
+    @apply absolute top-0 left-0 w-full h-[4px] bg-[hsl(var(--primary))];
+    animation: slideIn 0.4s ease-out forwards;
+}
+
+.block-header {
+    @apply flex justify-between items-start gap-4;
+}
+
+.block-title {
+    @apply text-xl md:text-2xl font-bold text-[hsl(var(--foreground))] tracking-tight;
+}
+
+.block-description {
+    @apply mt-2 text-[hsl(var(--muted-foreground))] leading-relaxed;
+}
+
+.materials-section {
+    @apply mt-6 pt-4 border-t border-[hsl(var(--border))];
+}
+
+.material-item {
+    @apply flex justify-between items-center gap-3 py-3 px-2 bg-[hsl(var(--muted)/0.1)] rounded-lg hover:bg-[hsl(var(--muted)/0.2)] transition;
+}
+
+.material-icon {
+    @apply w-6 h-6 text-[hsl(var(--muted-foreground))];
+}
+
+.material-link {
+    @apply text-[hsl(var(--primary))] font-medium hover:underline hover:text-[hsl(var(--primary)/0.9)] transition;
+}
+
+.view-material-button {
+    @apply inline-flex items-center gap-2 px-4 py-1.5 text-sm font-semibold rounded-md
+    text-[hsl(var(--primary))] border border-[hsl(var(--primary))]
+    hover:bg-[hsl(var(--primary)/0.1)] hover:text-[hsl(var(--primary-foreground))]
+    transition-colors duration-200;
+}
+
+.actions-section {
+    @apply mt-6 pt-4 border-t border-[hsl(var(--border))] flex gap-4;
+}
+
+.action-button {
+    @apply px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200;
+}
+
+.edit-button {
+    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
+    hover:bg-[hsl(var(--primary)/0.85)] shadow hover:shadow-md;
+}
+
+
+.delete-button {
+    @apply action-button bg-red-600 text-white hover:bg-red-700
+    px-4 py-2 rounded-lg flex items-center gap-2
+    transition-all duration-200 ease-in-out;
+}
+
+
+.contest-button {
+    @apply bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))]
+    hover:bg-[hsl(var(--secondary)/0.9)] border border-[hsl(var(--border))] shadow-sm;
+}
+
+.add-block-button {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl
+    bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
+    hover:bg-[hsl(var(--primary)/0.9)] hover:shadow-lg transition-all;
+}
+
+.empty-icon {
+    @apply mx-auto w-12 h-12 text-[hsl(var(--muted-foreground))];
+}
+
+.empty-text {
+    @apply mt-4 text-[hsl(var(--muted-foreground))] text-base;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+
+.form-layout {
+    @apply bg-white dark:bg-[hsl(var(--background))]
+    rounded-[2rem] p-10 md:p-12 shadow-2xl
+    max-w-3xl w-full mx-auto space-y-10
+    transition-all duration-500 ease-out
+    backdrop-blur-sm bg-opacity-90
+
+}
+
+.form-field {
+    @apply flex flex-col gap-2;
+}
+
+.form-label {
+    @apply text-sm font-semibold text-[hsl(var(--muted-foreground))] tracking-wide;
+}
+
+.form-input {
+    @apply w-full rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--accent))]
+    px-5 py-3 text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))]
+    focus:outline-none focus:ring-4 focus:ring-[hsl(var(--primary)/0.4)] focus:border-[hsl(var(--primary))]
+    transition-all duration-300 ease-in-out shadow-sm hover:shadow-md
+    backdrop-blur-sm bg-opacity-70;
+}
+
+/* Optional: Add animations for focus or input filled */
+.form-input:focus {
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2);
+}
+
+/* Example animation on hover */
+.form-input:hover {
+    @apply border-[hsl(var(--primary))];
+}
+
+/* Define popup styles */
+.popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    visibility: hidden; /* Hidden by default */
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease-in-out; /* Fade-in effect */
+}
+
+.popup-container.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup-content {
+    background-color: white;
+    border-radius: 2rem;
+    padding: 2.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 50%;
+    width: 100%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9); /* Slight transparency */
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    transition: transform 0.5s ease-out;
+    transform: translateY(-20px); /* Start with a small offset */
+}
+
+.popup-container.show .popup-content {
+    transform: translateY(0); /* Slide into place */
+}
+
+.popup-icon {
+    color: #48bb78; /* Success green */
+    font-size: 3rem;
+}
+
+.popup-message {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2d3748; /* Dark gray text */
+    margin-top: 1rem;
+}
+
+.popup-close-btn {
+    background-color: #48bb78; /* Success green */
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 1rem;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.popup-close-btn:hover {
+    background-color: #38a169; /* Darker green on hover */
+}
