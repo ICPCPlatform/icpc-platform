@@ -1,9 +1,10 @@
 "use client";
 import { redirect, useParams } from "next/navigation";
 import { Material } from "@/lib/types/Training";
-import { useState } from "react";
-import { useTrainingContext } from "@/providers/training";
+import { startTransition, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { updateMaterial } from "../../actions/_updateMaterial";
+import { updateMaterialVal } from "@/lib/validation/training/updateMaterial";
 
 export default function Page() {
   // get the trainingId and blockId from the url
@@ -14,13 +15,13 @@ export default function Page() {
   if (isNaN(trainingId) || isNaN(blockId)) {
     redirect("not-found");
   }
-  const training = useTrainingContext();
-  if (training === null) {
+
+  if (window === undefined) {
     return;
   }
-
-  const materialData =
-    training.blocks.find(({ id }) => id == blockId)?.materials ?? [];
+  const materialData = JSON.parse(
+    localStorage.getItem(blockId.toString()) ?? "[]",
+  ) as Material[];
 
   return (
     <div>
@@ -109,23 +110,32 @@ function DynamicForm({
 
       <Button
         onClick={() => {
-<<<<<<<< HEAD:src/app/protected/trainings/[trainingId]/staff/materials/edit-materials/[blockId]/page.tsx
-          const { data: newMaterials, success, error: err } =
-            updateMaterialSchema.safeParse(entries);
+          const {
+            data: newMaterials,
+            success,
+            error: err,
+          } = updateMaterialVal.safeParse(entries);
           if (!success) {
             // ui should show error
-            // show err 
-            console.error(err);
-
+            // show err
+            alert("Error: " + err.errors[0].message);
             return;
           }
-<<<<<<<< HEAD:src/app/protected/trainings/staff/[trainingId]/materials/edit-materials/[blockId]/page.tsx
-========
-          const newMaterials = entries;
->>>>>>>> c384991 (refactor : move edit-material to staff following RFC3):src/app/protected/trainings/staff/[trainingId]/materials/edit-materials/[blockId]/page.tsx
-========
->>>>>>>> c184496 (impl: RFC3 training structure):src/app/protected/trainings/[trainingId]/staff/materials/edit-materials/[blockId]/page.tsx
-          updateMaterial({ blockNumber, trainingId, newMaterials });
+          startTransition(async () => {
+            const res = await updateMaterial({
+              blockNumber,
+              trainingId,
+              newMaterials,
+            });
+            if (res.success)
+              localStorage.setItem(
+                blockNumber.toString(),
+                JSON.stringify(newMaterials),
+              );
+            else {
+              alert("Error: " + res.error);
+            }
+          });
         }}
       >
         apply changes
