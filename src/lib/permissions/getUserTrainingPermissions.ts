@@ -11,6 +11,7 @@ export type TrainingPermissions =
   | "Edit:material"
   | "Edit:contest"
   | "Edit:block"
+  | "View:block"
   | "View:practice"
   | "Edit:practice"
   | "View:attendance"
