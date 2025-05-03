@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { getAllBlocks, getUserEditBlockPermissions } from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
+import {
+    deleteBlock,
+    getAllBlocks,
+    getUserEditBlockPermissions
+} from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
 import { PencilIcon, TrophyIcon, DocumentTextIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { staffViewBlock } from "@/lib/types/staff/StaffTrainingTypes";
 
@@ -49,20 +53,31 @@ export default async function BlocksPage({ params }: { params: { trainingId: str
                                     </div>
 
                                     <div className="actions-section">
-                                        <Link
-                                            href={`/protected/trainings/${encodeURIComponent(params.trainingId)}/staff/edit-blocks/_updateBlock`}
+                                        <button
+                                          onClick={() => {
+                                                // Handle edit action here
+                                                window.location.href = `/protected/trainings/${params.trainingId}/staff/edit-blocks/${block.blockNumber}`;
+                                                // Example: editBlock(block.blockNumber);
+                                          }}
                                             className="action-button edit-button"
                                         >
                                             <PencilIcon className="w-5 h-5" />
                                             Edit Block
-                                        </Link>
-                                        <Link
-                                            href={`/protected/trainings/${encodeURIComponent(params.trainingId)}/blocks/${encodeURIComponent(block.blockNumber)}/delete`}
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                // Handle delete action here
+                                                deleteBlock({
+                                                    trainingId: block.trainingId,
+                                                    blockNumber: block.blockNumber
+                                                });
+                                                // Example: deleteBlock(block.blockNumber);
+                                            }}
                                             className="action-button delete-button"
                                         >
                                             <span className="w-5 h-5">🗑️</span>
                                             Delete Block
-                                        </Link>
+                                        </button>
                                     </div>
                                 </div>
                             ))
