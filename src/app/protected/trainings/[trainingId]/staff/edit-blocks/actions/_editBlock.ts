@@ -132,6 +132,14 @@ export async function updateBlock ({trainingId, blockNumber, ...data} : BlockFor
     }
 }
 
+
+/**
+ * Deletes a block in the database.
+ * @param trainingId
+ * @param blockNumber
+ *
+ * @Returns {Promise<void | null>} - Returns null if an error occurs.
+ */
 export async function deleteBlock ({trainingId, blockNumber} : {trainingId : number,blockNumber:number}) {
     try {
         const userPermissions = await getUserEditBlockPermissions(trainingId);
