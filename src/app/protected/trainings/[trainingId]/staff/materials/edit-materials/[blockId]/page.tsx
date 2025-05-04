@@ -3,7 +3,9 @@ import { redirect, useParams } from "next/navigation";
 import { Material } from "@/lib/types/Training";
 import { useState } from "react";
 import { useTrainingContext } from "@/providers/training";
+import { updateMaterial } from "../../actions/_updateMaterial";
 import { Button } from "@/components/ui/button";
+import { updateMaterialSchema } from "@/lib/validation/training/updateMaterial";
 
 export default function Page() {
   // get the trainingId and blockId from the url
@@ -109,7 +111,6 @@ function DynamicForm({
 
       <Button
         onClick={() => {
-<<<<<<<< HEAD:src/app/protected/trainings/[trainingId]/staff/materials/edit-materials/[blockId]/page.tsx
           const { data: newMaterials, success, error: err } =
             updateMaterialSchema.safeParse(entries);
           if (!success) {
@@ -119,12 +120,6 @@ function DynamicForm({
 
             return;
           }
-<<<<<<<< HEAD:src/app/protected/trainings/staff/[trainingId]/materials/edit-materials/[blockId]/page.tsx
-========
-          const newMaterials = entries;
->>>>>>>> c384991 (refactor : move edit-material to staff following RFC3):src/app/protected/trainings/staff/[trainingId]/materials/edit-materials/[blockId]/page.tsx
-========
->>>>>>>> c184496 (impl: RFC3 training structure):src/app/protected/trainings/[trainingId]/staff/materials/edit-materials/[blockId]/page.tsx
           updateMaterial({ blockNumber, trainingId, newMaterials });
         }}
       >
