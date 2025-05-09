@@ -6,13 +6,13 @@ import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPer
 import { getUserData } from "@/lib/session";
 import { Material } from "@/lib/types/Training";
 import { and, eq, isNotNull } from "drizzle-orm";
-import { updateMaterialVal } from "@/lib/validation/training/updateMaterial";
+import { updateMaterialSchema } from "@/lib/validation/training/updateMaterial";
 import { z } from "zod";
 
 const inputSchema = z.object({
   trainingId: z.number().int(),
   blockNumber: z.number().int(),
-  newMaterials: updateMaterialVal,
+  newMaterials: updateMaterialSchema,
 });
 export async function updateMaterial(input: {
   trainingId: number;
