@@ -5,7 +5,7 @@ import Profile from "@/components/profile/_Profile";
 
 import { getUserData } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { getUserFullData } from "@/actions/getUserFullData";
+import { getUserFullData } from "@/dao/getUserFullData";
 import { UserProfile } from "@/lib/types/userProfileType";
 
 export default async function Page() {

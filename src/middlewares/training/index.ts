@@ -1,4 +1,4 @@
-import { getUserData, getUserDataMiddleware } from "@/lib/session";
+import { getUserDataMiddleware } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 import { extractTrainingId, userTrainingPermissions } from "./utils";
 import { TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";

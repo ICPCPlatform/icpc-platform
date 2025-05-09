@@ -22,6 +22,13 @@
       "when": 1743460100374,
       "tag": "0002_lush_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1745691100075,
+      "tag": "0003_fearless_sunset_bain",
+      "breakpoints": true
     }
   ]
 }

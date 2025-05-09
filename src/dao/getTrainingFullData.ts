@@ -4,9 +4,10 @@ import { Faculties } from "@/lib/db/schema/user/Faculties";
 import { Institutes } from "@/lib/db/schema/user/Institutes";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import { Users } from "@/lib/db/schema/user/Users";
-import { eq, inArray } from "drizzle-orm";
+import { and,eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
+import { Blocks } from "@/lib/db/schema/training/Blocks";
 import {
   Ranking,
   RankingEntryWithDetails,
@@ -14,8 +15,7 @@ import {
   Training,
   TrainingFullDTO,
 } from "@/lib/types/Training";
-
-const selectKeysFromObjects = (data: typeof ___, keys: string[]) => {
+const selectKeysFromObjects = (data: typeof userSelectFields , keys: string[]) => {
   return keys.reduce((acc, key) => {
     if (key in data) {
       // @ts-expect-error - This is a hack to get around the type system
@@ -35,34 +35,45 @@ export async function getTrainingFullData({
     .select({
       standing: Trainings.standing,
       standingView: Trainings.standingView,
-      material : Trainings.material
     })
     .from(Trainings)
     .where(eq(Trainings.trainingId, trainingId))
     .execute();
-
-  const training: Training = trainingResult[0] as Training;
+  const training: Training = trainingResult[0] satisfies Training;
+  
+  const blocksResult = await db
+    .select({id: Blocks.blockNumber, title: Blocks.title, materials: Blocks.material})
+    .from(Blocks)
+    .where(and(eq(Blocks.trainingId, trainingId),eq(Blocks.hidden, false),isNull(Blocks.deleted)))
+    .execute();
+  
+  const blocks = blocksResult satisfies TrainingFullDTO["blocks"];
+  blocks.sort((a, b) => a.id - b.id);
 
   // Find the standing for the current contest
 
   // Fetch trainee details for each trainee in the standing
-
-  const { standingView, standing, material } = training;
-  standingView.push("userId");
+    
+  const { standingView, standing } = training;
+   
+  // Add userId to the standing view to fetch trainee details
   const traineeIds = [
-    ...new Set(standing.map((s) => s.rankings.map((r) => r.userId)).flat()),
+    ...new Set(standing?.map((s) => s.rankings.map((r) => r.userId)).flat()),
   ].filter((id) => id !== undefined);
+
   const trainees: Trainee[] = (await db
-    .select(selectKeysFromObjects(___, standingView))
+    .select({...selectKeysFromObjects(userSelectFields , standingView),  userId: Users.userId,
+    })
     .from(Users)
     .leftJoin(UsersFullData, eq(UsersFullData.userId, Users.userId))
     .leftJoin(Institutes, eq(Institutes.id, UsersFullData.instituteId))
     .leftJoin(Faculties, eq(Faculties.id, UsersFullData.facultyId))
     .where(inArray(Users.userId, traineeIds))
-
-    .execute()) as Trainee[];
-  // Map standings to include trainee details
-  const standingWithDetails: TrainingFullDTO["standing"] = standing.map(
+    .execute()) satisfies Trainee[];
+    
+  // Map standings to include trainee detailst
+  
+  const standingWithDetails: TrainingFullDTO["standing"] = standing?.map(
     (contest) => {
       
       return {
@@ -88,11 +99,10 @@ export async function getTrainingFullData({
     },
   );
 
-  return { standing: standingWithDetails, materials: material };
+  return { standing: standingWithDetails, blocks: blocks };
 }
 
-const ___ = {
-  userId: Users.userId,
+const userSelectFields  = {
   name: UsersFullData.firstNameEn,
   cfHandle: Users.cfHandle,
   vjudge: Users.vjHandle,

@@ -1,7 +1,7 @@
 import Profile from "@/components/profile/_Profile";
 import Sidebar from "@/components/profile/_Sidebar";
 import { redirect } from "next/navigation";
-import { getUserFullData } from "@/actions/getUserFullData";
+import { getUserFullData } from "@/dao/getUserFullData";
 
 export default async function Page({
   params,

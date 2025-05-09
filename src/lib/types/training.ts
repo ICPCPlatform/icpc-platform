@@ -2,32 +2,32 @@
  * Training Data send to the client
  */
 export type TrainingFullDTO = {
-  standing: {
-    ContestInfo: ContestInfo;
-    rankings: RankingEntryWithDetails[];
-    problems: string[];
-  }[];
-  materials: MaterialsDTO;
+  standing:
+    | {
+        ContestInfo: ContestInfo;
+        rankings: RankingEntryWithDetails[];
+        problems: string[];
+      }[]
+    | undefined;
   blocks: Blocks; // to in the DAO
-
 };
 
-
 export type Blocks = {
-  id: string;
+  id: number;
   title: string;
-}[]
+  materials: Material[];
+}[];
 
 /**
  * Material type from db.training.material
  * this type is used from the database
  */
-export type MaterialsEntry = MaterialsDTO;
+export type MaterialsEntry = Material[];
 
 /**
  * map from blockId to array of materials
  */
-export type MaterialsDTO = Record<string, Material[]>; 
+export type MaterialsDTO = Record<string, Material[]>;
 
 export type Material = {
   title: string;
@@ -39,9 +39,8 @@ export type Material = {
  * Training Data riveted from the Database
  */
 export type Training = {
-  standing: StandingEntry;
+  standing: StandingEntry | null;
   standingView: string[]; // Dynamic configuration
-  material: MaterialsDTO;
 };
 
 /**

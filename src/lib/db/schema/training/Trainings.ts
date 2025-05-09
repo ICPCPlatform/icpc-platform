@@ -8,10 +8,9 @@ import {
   timestamp,
   jsonb,
 } from "drizzle-orm/pg-core";
-
+import { StandingEntry } from "@/lib/types/Training";
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
-import { StandingEntry } from "@/lib/types/Training";
 
 type Status = "active" | "roadmap" | "private" | "over";
 
@@ -48,7 +47,6 @@ export const Trainings = pgTable("trainings", {
 
   title: citext({ length: 128 }).notNull().unique(),
   description: varchar({ length: 512 }).notNull(),
-  material: jsonb(), // this should get Deleted
   standing: jsonb().$type<StandingEntry>(),
   /// saves which attributes of standing are visible to trainees
   standingView: jsonb()

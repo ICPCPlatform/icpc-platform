@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { editMaterial } from "./_action";
 import { useState } from "react";
-import { Material  } from "@/lib/types/Training";
+import { Material } from "@/lib/types/Training";
 import { useTrainingContext } from "@/providers/training";
 import { Button } from "@/components/ui/button";
 
@@ -19,9 +19,8 @@ export default function Page() {
   if (training === null) {
     return;
   }
-  
-  const materialData = training.materials[blockId.toString()];
 
+  const materialData = training.blocks.find(({ id }) => id === blockId)?.materials ?? [];
   return (
     <div>
       <DynamicForm
@@ -51,7 +50,8 @@ function DynamicForm({
   const updateEntry = (
     index: number,
     field: "link" | "title" | "des",
-    value: string,
+
+    value: string
   ) => {
     const newEntries = [...entries];
     newEntries[index][field] = value;
@@ -110,7 +110,7 @@ function DynamicForm({
 
       <Button
         onClick={() => {
-          const newMaterials =  entries ;
+          const newMaterials = entries;
           editMaterial({ blockNumber, trainingId, newMaterials });
         }}
       >
