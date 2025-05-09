@@ -50,8 +50,8 @@ export default function TrainingNavigation({
                    "bg-zinc-500"
                 )}
               >
-                <Link href={`/protected/trainings/${trainingId}/material`} className={cn("w-full block box-border px-4 py-2")}>
-                  material
+                <Link href={`/protected/trainings/${trainingId}/materials`} className={cn("w-full block box-border px-4 py-2")}>
+                  materials
                 </Link>
               </li>
               <li>
