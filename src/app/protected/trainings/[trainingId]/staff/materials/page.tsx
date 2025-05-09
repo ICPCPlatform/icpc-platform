@@ -6,6 +6,22 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import "server-only";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function Page({
   params,
@@ -30,52 +46,69 @@ export default async function Page({
     .where(eq(Blocks.trainingId, trainingId))
     .orderBy(Blocks.blockNumber);
 
-  // display all the block and show if
-  // also material[number].material are an array
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full table-auto border-collapse">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 text-left border-b">Material Title</th>
-            <th className="px-4 py-2 text-left border-b">Block Number</th>
-            <th className="px-4 py-2 text-left border-b">Deleted</th>
-            <th className="px-4 py-2 text-left border-b">Material Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {materials.map(({ blockNumber, deleted, title, material }) => (
-            <tr key={blockNumber} className="border-b">
-              <AddToLocalStorage
-                key_={blockNumber.toString()}
-                value={JSON.stringify(material)}
-              />
-              <td className="px-4 py-2">{title}</td>
-              <td className="px-4 py-2">Block {blockNumber}</td>
-              <td className="px-4 py-2">{deleted ? "Yes" : "No"}</td>
-              <td className="px-4 py-2">
-                <table className="min-w-full table-auto">
-                  <tbody>
-                    {material.map(({ title, link, des }, index) => (
-                      <tr key={index} className="border-b">
-                        <td className="px-4 py-2">{`Material ${index + 1}`}</td>
-                        <td className="px-4 py-2">{title}</td>
-                        <td className="px-4 py-2">{link}</td>
-                        <td className="px-4 py-2">{des}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </td>
-              <td className="px-4 py-2 text-center">
-                <Link href={`./materials/edit-materials/${blockNumber}`}>
-                  Update Block
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="container mx-auto py-6 space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Training Materials</CardTitle>
+          <CardDescription>Manage and view all training materials</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Material Title</TableHead>
+                <TableHead>Block Number</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Material Details</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {materials.map(({ blockNumber, deleted, title, material }) => (
+                <TableRow key={blockNumber}>
+                  <AddToLocalStorage
+                    key_={blockNumber.toString()}
+                    value={JSON.stringify(material)}
+                  />
+                  <TableCell className="font-medium">{title}</TableCell>
+                  <TableCell>Block {blockNumber}</TableCell>
+                  <TableCell>
+                    <Badge variant={deleted ? "destructive" : "default"}>
+                      {deleted ? "Deleted" : "Active"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-2">
+                      {material.map(({ title, link, des }, index) => (
+                        <Card key={index} className="p-2">
+                          <CardContent className="p-2">
+                            <div className="grid gap-1">
+                              <p className="text-sm font-medium">Material {index + 1}</p>
+                              <p className="text-sm">{title}</p>
+                              <a href={link} className="text-sm text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                                {link}
+                              </a>
+                              <p className="text-sm text-muted-foreground">{des}</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button asChild variant="outline">
+                      <Link href={`./materials/edit-materials/${blockNumber}`}>
+                        Update Block
+                      </Link>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

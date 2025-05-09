@@ -21,22 +21,22 @@ const permissionNeedToPath: {
   permissions: TrainingPermissions[];
 }[] = [
   // Match paths like /protected/trainings/123/materials
-  {
-    pathRegex: /^\/protected\/trainings\/(?<trainingId>\d+)\/.*?$/,
-    permissions: ["View:trainee"],
-  },
-  // Match paths like /protected/trainings/123/staff/materials
-  {
-    pathRegex:
-      /^\/protected\/trainings\/(?<trainingId>\d+)\/staff\/materials\/.*?$/,
-    permissions: ["View:material"],
-  },
-  // Match paths like /protected/trainings/123/staff/materials/edit-materials/456
-  {
-    pathRegex:
-      /^\/protected\/trainings\/(?<trainingId>\d+)\/staff\/materials\/edit-materials\/(?<blockId>\d+)$/,
-    permissions: ["Edit:material", "View:material"],
-  },
+  // {
+  //   pathRegex: /^\/protected\/trainings\/(?<trainingId>\d+)\/.*?$/,
+  //   permissions: ["View:trainee"],
+  // },
+  // // Match paths like /protected/trainings/123/staff/materials
+  // {
+  //   pathRegex:
+  //     /^\/protected\/trainings\/(?<trainingId>\d+)\/staff\/materials\/.*?$/,
+  //   permissions: ["View:material"],
+  // },
+  // // Match paths like /protected/trainings/123/staff/materials/edit-materials/456
+  // {
+  //   pathRegex:
+  //     /^\/protected\/trainings\/(?<trainingId>\d+)\/staff\/materials\/edit-materials\/(?<blockId>\d+)$/,
+  //   permissions: ["Edit:material", "View:material"],
+  // },
 ];
 
 /**

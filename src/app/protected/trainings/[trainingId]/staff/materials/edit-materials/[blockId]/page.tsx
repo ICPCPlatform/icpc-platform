@@ -4,10 +4,20 @@ import { Material } from "@/lib/types/Training";
 import { startTransition, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { updateMaterial } from "../../actions/_updateMaterial";
-import { updateMaterialVal } from "@/lib/validation/training/updateMaterial";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { PlusCircle, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { updateMaterialSchema } from "@/lib/validation/training/updateMaterial";
 
 export default function Page() {
-  // get the trainingId and blockId from the url
   const urlparams = useParams();
   const trainingId = Number(urlparams.trainingId);
   const blockId = Number(urlparams.blockId);
@@ -24,7 +34,7 @@ export default function Page() {
   ) as Material[];
 
   return (
-    <div>
+    <div className="container mx-auto py-6">
       <DynamicForm
         materialData={materialData}
         trainingId={trainingId}
@@ -43,6 +53,7 @@ function DynamicForm({
   trainingId: number;
   blockNumber: number;
 }) {
+  const { toast } = useToast();
   const [entries, setEntries] = useState<Material[]>(materialData ?? []);
   const addEntry = () => {
     setEntries([...entries, { title: "", link: "", des: "" }]);
@@ -65,81 +76,112 @@ function DynamicForm({
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Dynamic Form</h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Edit Training Materials</CardTitle>
+        <CardDescription>Add or modify materials for this training block</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {entries.map((entry, index) => (
+          <Card key={index} className="p-4">
+            <CardContent className="p-0 space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Material {index + 1}</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => deleteEntry(index)}
+                  className="text-destructive hover:text-destructive/90"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Title</label>
+                  <Input
+                    placeholder="Enter material title"
+                    value={entry.title}
+                    onChange={(e) => updateEntry(index, "title", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Link</label>
+                  <Input
+                    placeholder="Enter material link"
+                    value={entry.link}
+                    onChange={(e) => updateEntry(index, "link", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Description</label>
+                  <Textarea
+                    placeholder="Enter material description"
+                    value={entry.des}
+                    onChange={(e) => updateEntry(index, "des", e.target.value)}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
 
-      {entries.map((entry, index) => (
-        <div key={index} className="border p-4 rounded-xl mb-4 shadow">
-          <input
-            type="text"
-            placeholder="Title"
-            value={entry.title}
-            onChange={(e) => updateEntry(index, "title", e.target.value)}
-            className="w-full mb-2 p-2 border rounded"
-          />
-          <input
-            type="text"
-            placeholder="Link"
-            value={entry.link}
-            onChange={(e) => updateEntry(index, "link", e.target.value)}
-            className="w-full mb-2 p-2 border rounded"
-          />
-          <textarea
-            placeholder="Description"
-            value={entry.des}
-            onChange={(e) => updateEntry(index, "des", e.target.value)}
-            className="w-full mb-2 p-2 border rounded"
-          ></textarea>
-          <button
-            onClick={() => deleteEntry(index)}
-            className="text-red-500 hover:text-red-700 text-sm"
+        <div className="flex gap-4">
+          <Button
+            onClick={addEntry}
+            variant="outline"
+            className="w-full"
           >
-            Delete
-          </button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Material
+          </Button>
         </div>
-      ))}
 
-      <div className="flex gap-4">
-        <button
-          onClick={addEntry}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add
-        </button>
-      </div>
-
-      <Button
-        onClick={() => {
-          const {
-            data: newMaterials,
-            success,
-            error: err,
-          } = updateMaterialVal.safeParse(entries);
-          if (!success) {
-            // ui should show error
-            // show err
-            alert("Error: " + err.errors[0].message);
-            return;
-          }
-          startTransition(async () => {
-            const res = await updateMaterial({
-              blockNumber,
-              trainingId,
-              newMaterials,
-            });
-            if (res.success)
-              localStorage.setItem(
-                blockNumber.toString(),
-                JSON.stringify(newMaterials),
-              );
-            else {
-              alert("Error: " + res.error);
+        <Button
+          onClick={() => {
+            const {
+              data: newMaterials,
+              success,
+              error: err,
+            } = updateMaterialSchema.safeParse(entries);
+            if (!success) {
+              toast({
+                variant: "destructive",
+                title: "Validation Error",
+                description: err.errors[0].message,
+              });
+              return;
             }
-          });
-        }}
-      >
-        apply changes
-      </Button>
-    </div>
+            startTransition(async () => {
+              const res = await updateMaterial({
+                blockNumber,
+                trainingId,
+                newMaterials,
+              });
+              console.log(res);
+              if (res.success) {
+                localStorage.setItem(
+                  blockNumber.toString(),
+                  JSON.stringify(newMaterials),
+                );
+                toast({
+                  title: "Success",
+                  description: "Materials updated successfully",
+                });
+              } else {
+                toast({
+                  variant: "destructive",
+                  title: "Error",
+                  description: res.error,
+                });
+              }
+            });
+          }}
+          className="w-full"
+        >
+          Save Changes
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
