@@ -5,7 +5,7 @@ import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { getUserData } from "@/lib/session";
 import { Material } from "@/lib/types/Training";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { updateMaterialSchema } from "@/lib/validation/training/updateMaterial";
 import { z } from "zod";
 
@@ -45,7 +45,7 @@ export async function updateMaterial(input: {
       .where(
         and(
           eq(Blocks.blockNumber, blockNumber),
-          isNotNull(Blocks.deleted),
+          isNull(Blocks.deleted),
           eq(Blocks.trainingId, trainingId),
         ),
       )
@@ -63,7 +63,7 @@ export async function updateMaterial(input: {
         and(
           eq(Blocks.blockNumber, blockNumber),
           eq(Blocks.trainingId, trainingId),
-          isNotNull(Blocks.deleted),
+          isNull(Blocks.deleted),
         ),
       )
       .execute();
