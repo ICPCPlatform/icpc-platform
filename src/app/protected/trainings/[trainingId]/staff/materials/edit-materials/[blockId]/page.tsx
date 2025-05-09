@@ -1,17 +1,18 @@
 "use client";
-import { redirect } from "next/navigation";
-import { editMaterial } from "./_action";
-import { useState } from "react";
+import { redirect, useParams } from "next/navigation";
 import { Material } from "@/lib/types/Training";
+import { useState } from "react";
 import { useTrainingContext } from "@/providers/training";
+import { updateMaterial } from "../../actions/_updateMaterial";
 import { Button } from "@/components/ui/button";
+import { updateMaterialSchema } from "@/lib/validation/training/updateMaterial";
 
 export default function Page() {
   // get the trainingId and blockId from the url
-  const url = window.location.href;
-  const urlParts = url.split("/");
-  const trainingId = Number(urlParts[urlParts.length - 3]);
-  const blockId = Number(urlParts[urlParts.length - 1]);
+  const urlparams = useParams();
+  const trainingId = Number(urlparams.trainingId);
+  const blockId = Number(urlparams.blockId);
+
   if (isNaN(trainingId) || isNaN(blockId)) {
     redirect("not-found");
   }
@@ -42,7 +43,6 @@ function DynamicForm({
   blockNumber: number;
 }) {
   const [entries, setEntries] = useState<Material[]>(materialData ?? []);
-
   const addEntry = () => {
     setEntries([...entries, { title: "", link: "", des: "" }]);
   };
@@ -50,8 +50,7 @@ function DynamicForm({
   const updateEntry = (
     index: number,
     field: "link" | "title" | "des",
-
-    value: string
+    value: string,
   ) => {
     const newEntries = [...entries];
     newEntries[index][field] = value;
@@ -110,8 +109,16 @@ function DynamicForm({
 
       <Button
         onClick={() => {
-          const newMaterials = entries;
-          editMaterial({ blockNumber, trainingId, newMaterials });
+          const { data: newMaterials, success, error: err } =
+            updateMaterialSchema.safeParse(entries);
+          if (!success) {
+            // ui should show error
+            // show err 
+            console.error(err);
+
+            return;
+          }
+          updateMaterial({ blockNumber, trainingId, newMaterials });
         }}
       >
         apply changes

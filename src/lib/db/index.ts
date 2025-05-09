@@ -9,7 +9,6 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-// Test the connection
 pool
   .connect()
   .then(() => {
@@ -23,7 +22,6 @@ export const db = drizzle(pool, {
   casing: "snake_case",
 });
 
-/// TODO:
 /// this is temporary, will be moved to a cron job
 async function deleteExpiredLogs() {
   const userArr = await db
