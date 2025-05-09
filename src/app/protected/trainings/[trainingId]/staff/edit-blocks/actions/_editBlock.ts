@@ -22,11 +22,9 @@ export async function updateBlock(input: z.infer<typeof inputSchema>) {
     if (!user) {
       return { success: false, error: "User not found" };
     }
-    const userPermissions = new Set(
-      ...(await getUserTrainingPermissions(user.userId, trainingId)),
-    );
+    const userPermissions = await getUserTrainingPermissions(user.userId, trainingId)
 
-    if (!userPermissions.has("Edit:blocks")) {
+    if (!userPermissions.includes("Edit:block")) {
       return {
         success: false,
         error: "You do not have permission to edit blocks",

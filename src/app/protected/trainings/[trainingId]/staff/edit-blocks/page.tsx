@@ -2,13 +2,17 @@ import { UpdateBlock } from "./_updateBlock";
 import { db } from "@/lib/db";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { and, eq, isNull, sql } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 export default async function EditBlocksPage({
   params,
 }: {
-  params: { trainingId: string };
+  params: Promise<{ trainingId: string }>;
 }) {
-  const trainingId = parseInt(params.trainingId);
+  const trainingId = parseInt((await params).trainingId);
+  if (isNaN(trainingId)) {
+    redirect("404");
+  }
 
   const blocks = await db
     .select({

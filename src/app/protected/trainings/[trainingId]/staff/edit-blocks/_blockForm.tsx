@@ -39,6 +39,7 @@ export function BlockForm({ trainingId, blockNumber, initialData }: BlockFormPro
       newBlockData: values,
     });
 
+    console.log("Update result:", result);
     if (result.success) {
       toast({
         title: "Success",
