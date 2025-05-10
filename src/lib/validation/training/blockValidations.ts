@@ -5,7 +5,6 @@ export const blockValidations = zod.object({
     description: zod.string().min(1, BLOCK_ERROR_MESSAGES.DESCRIPTION_REQUIRED).max(512, BLOCK_ERROR_MESSAGES.DESCRIPTION_TOO_LONG),
     date: zod.date().min(new Date(), BLOCK_ERROR_MESSAGES.DATE_INVALID),
     hidden: zod.boolean(),
-// TODO: add more validations hidden
 })
 
 export type BlockFormData = zod.infer<typeof blockValidations>
