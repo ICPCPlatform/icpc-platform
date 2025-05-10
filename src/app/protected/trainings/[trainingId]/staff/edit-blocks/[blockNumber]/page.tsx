@@ -1,31 +1,39 @@
 import BlockForm from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/[blockNumber]/_blockForm";
 import {getBlockByNumber} from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
-import {staffViewBlock} from "@/lib/types/staff/StaffTrainingTypes";
-import  "@/styles/components/block.css"
+import "@/styles/components/block.css"
 
 
+/**
+ * Page component for editing a block.
+ * @param params - The parameters containing the block number and training ID.
+ */
 export default async function page({params}: { params: Promise<{ blockNumber: string, trainingId: string }> }) {
-    console.log('===============================================================')
-    // Parse block data from params
 
-    const { blockNumber: blockNumberStr,trainingId: trainingIdStr } = await params;
+    // Parse block data from params
+    const {blockNumber: blockNumberStr, trainingId: trainingIdStr} = await params;
 
     // Validate numeric parameters first
     const blockNumber = Number(blockNumberStr);
     const trainingId = Number(trainingIdStr);
+
+    // Check if the parameters are valid numbers
     if (isNaN(blockNumber)) throw new Error("Invalid block number");
     if (isNaN(trainingId)) throw new Error("Invalid training ID");
-    const block  = await getBlockByNumber(trainingId, blockNumber);
+
+    // Fetch the block data
+    const block = await getBlockByNumber(trainingId, blockNumber);
+
+    // Check if the block data is null
     if (block === null) {
         console.error("Block not found");
         return null;
     }
-    const resultBlock : staffViewBlock = block[0];
 
     return (
         <div className="update-block-page">
             <BlockForm
-                initialData={resultBlock}
+                initialData={block[0]}
+                // if the user is not allowed to edit the block, redirect to the blocks page
                 isEdit={true}
             />
         </div>
