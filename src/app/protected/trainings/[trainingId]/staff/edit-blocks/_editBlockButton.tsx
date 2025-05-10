@@ -5,6 +5,11 @@ import {PencilIcon} from "lucide-react";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 
+/**
+ * EditBlockButton component for navigating to the edit block page.
+ * @param params - The parameters containing the training ID and block number.
+ * @constructor
+ */
 export default function EditBlockButton(params: Readonly<{
     trainingId: number;
     blockNumber: number;
@@ -21,8 +26,7 @@ export default function EditBlockButton(params: Readonly<{
 
     return (
         <Button
-            variant="outline"
-            className="edit-block-button"
+            className="edit-button"
             onClick={handleEditBlock}
             disabled={isSubmitting}
         >

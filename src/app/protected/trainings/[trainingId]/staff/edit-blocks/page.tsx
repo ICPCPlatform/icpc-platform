@@ -1,32 +1,32 @@
-import Link from "next/link";
 import {
-    deleteBlock,
     getAllBlocks,
     getUserEditBlockPermissions
 } from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
-import { PencilIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
-import { staffViewBlock } from "@/lib/types/staff/StaffTrainingTypes";
-import {Button}  from "@/components/ui/button";
+import {DocumentTextIcon, EyeIcon} from "@heroicons/react/24/outline";
 import "@/styles/components/block.css";
 import EditBlockButton from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/_editBlockButton";
+
 export const revalidate = 60;
 
-export default async function BlocksPage({ params }: Readonly<{ params: Promise<{ trainingId: string }> }>) {
+
+/**
+ * Page component for displaying and editing training blocks.
+ * @param params - The parameters containing the training ID.
+ */
+export default async function BlocksPage({params}: Readonly<{ params: Promise<{ trainingId: string }> }>) {
     try {
-        const { trainingId } = await params;
+        // Parse trainingId from params
+        const {trainingId} = await params;
+        // Validate numeric parameters first
         const trainingIdNumber = Number(trainingId);
+        // Check if the parameters are valid numbers
         if (isNaN(trainingIdNumber)) {
             console.error("Invalid trainingId:", trainingId);
             return null;
         }
 
-        // const blocks = async (trainingId: number) => {
-        //     const res = await fetch(`/api/trainings/${trainingId}/blocks`);
-        //     if (!res.ok) throw new Error('Failed to fetch blocks');
-        //     return res.json();
-        // };
-        // Validate numeric parameters first
-        const blocks: staffViewBlock[] | null = await getAllBlocks(trainingIdNumber);
+        // Fetch blocks and user permissions
+        const blocks = await getAllBlocks(trainingIdNumber);
         const userEditBlockPermissions = await getUserEditBlockPermissions(trainingIdNumber);
         return (
             <div className="blocks-wrapper animate-fadeIn">
@@ -43,8 +43,17 @@ export default async function BlocksPage({ params }: Readonly<{ params: Promise<
                                 <div key={block.blockNumber} className="block-card">
                                     <div className="block-header">
                                         <div>
-                                            <h3 className="block-title">{block.title}</h3>
+                                            <h3 className="block-title">
+                                                {block.title}
+
+                                            </h3>
+                                            <div
+                                                className={`visibility-badge ${block.hidden ? 'hidden' : 'visible'}`}>
+                                                <EyeIcon className="w-4 h-4"/>
+                                                <span>{block.hidden ? 'Hidden' : 'Visible'}</span>
+                                            </div>
                                             <p className="block-description">{block.description}</p>
+
                                         </div>
                                     </div>
 
@@ -60,7 +69,7 @@ export default async function BlocksPage({ params }: Readonly<{ params: Promise<
                             ))
                         ) : (
                             <div className="empty-state">
-                                <DocumentTextIcon className="empty-icon" />
+                                <DocumentTextIcon className="empty-icon"/>
                                 <h3 className="empty-text">No blocks created yet</h3>
                             </div>
                         )}
