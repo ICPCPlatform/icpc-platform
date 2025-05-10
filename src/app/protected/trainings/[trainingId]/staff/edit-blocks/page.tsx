@@ -4,22 +4,30 @@ import {
     getAllBlocks,
     getUserEditBlockPermissions
 } from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
-import { PencilIcon, TrophyIcon, DocumentTextIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import { staffViewBlock } from "@/lib/types/staff/StaffTrainingTypes";
-
+import {Button}  from "@/components/ui/button";
+import "@/styles/components/block.css";
+import EditBlockButton from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/_editBlockButton";
 export const revalidate = 60;
 
-export default async function BlocksPage({ params }: { params: { trainingId: string } }) {
+export default async function BlocksPage({ params }: Readonly<{ params: Promise<{ trainingId: string }> }>) {
     try {
-        const trainingIdNumber = Number(params.trainingId);
+        const { trainingId } = await params;
+        const trainingIdNumber = Number(trainingId);
         if (isNaN(trainingIdNumber)) {
-            console.error("Invalid trainingId:", params.trainingId);
+            console.error("Invalid trainingId:", trainingId);
             return null;
         }
 
+        // const blocks = async (trainingId: number) => {
+        //     const res = await fetch(`/api/trainings/${trainingId}/blocks`);
+        //     if (!res.ok) throw new Error('Failed to fetch blocks');
+        //     return res.json();
+        // };
+        // Validate numeric parameters first
         const blocks: staffViewBlock[] | null = await getAllBlocks(trainingIdNumber);
         const userEditBlockPermissions = await getUserEditBlockPermissions(trainingIdNumber);
-
         return (
             <div className="blocks-wrapper animate-fadeIn">
                 <div className="blocks-content">
@@ -27,24 +35,12 @@ export default async function BlocksPage({ params }: { params: { trainingId: str
                         <h1 className="text-3xl font-bold text-foreground tracking-tight">
                             Training Blocks
                         </h1>
-                        {userEditBlockPermissions && (
-                            <Link
-                                href={`/protected/trainings/${params.trainingId}/staff/edit-blocks/_createBlock`}
-                                className="add-block-button"
-                            >
-                                <PlusIcon className="w-5 h-5" />
-                                Create Block
-                            </Link>
-                        )}
                     </div>
 
                     <div className="blocks-list">
                         {blocks?.length ? (
                             blocks.map((block) => (
-                                <div
-                                    key={block.blockNumber}
-                                    className="block-card"
-                                >
+                                <div key={block.blockNumber} className="block-card">
                                     <div className="block-header">
                                         <div>
                                             <h3 className="block-title">{block.title}</h3>
@@ -52,60 +48,21 @@ export default async function BlocksPage({ params }: { params: { trainingId: str
                                         </div>
                                     </div>
 
-                                    <div className="actions-section">
-                                        <button
-                                          onClick={() => {
-                                                // Handle edit action here
-                                                window.location.href = `/protected/trainings/${params.trainingId}/staff/edit-blocks/${block.blockNumber}`;
-                                                // Example: editBlock(block.blockNumber);
-                                          }}
-                                            className="action-button edit-button"
-                                        >
-                                            <PencilIcon className="w-5 h-5" />
-                                            Edit Block
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                // Handle delete action here
-                                                deleteBlock({
-                                                    trainingId: block.trainingId,
-                                                    blockNumber: block.blockNumber
-                                                });
-                                                // Example: deleteBlock(block.blockNumber);
-                                            }}
-                                            className="action-button delete-button"
-                                        >
-                                            <span className="w-5 h-5">🗑️</span>
-                                            Delete Block
-                                        </button>
-                                    </div>
+                                    {userEditBlockPermissions && (
+                                        <div className="actions-section">
+                                            <EditBlockButton
+                                                trainingId={block.trainingId}
+                                                blockNumber={block.blockNumber}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             ))
                         ) : (
-                            userEditBlockPermissions ? (
-                                <div className="empty-state">
-                                    <DocumentTextIcon className="empty-icon" />
-                                    <h3 className="empty-text">No blocks created yet</h3>
-                                    <p className="text-muted-foreground">
-                                        Start by creating your first training block
-                                    </p>
-                                    <Link
-                                        href={`/protected/trainings/${encodeURIComponent(params.trainingId)}/blocks/create`}
-                                        className="add-block-button"
-                                    >
-                                        <PlusIcon className="w-5 h-5" />
-                                        Create Block
-                                    </Link>
-                                </div>
-                            ) : (
-                                <div className="empty-state">
-                                    <TrophyIcon className="empty-icon" />
-                                    <h3 className="empty-text">No blocks available</h3>
-                                    <p className="text-muted-foreground">
-                                        You don't have permission to create blocks
-                                    </p>
-                                </div>
-                            )
+                            <div className="empty-state">
+                                <DocumentTextIcon className="empty-icon" />
+                                <h3 className="empty-text">No blocks created yet</h3>
+                            </div>
                         )}
                     </div>
                 </div>
