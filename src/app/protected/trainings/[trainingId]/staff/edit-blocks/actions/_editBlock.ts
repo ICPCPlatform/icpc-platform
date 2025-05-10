@@ -1,10 +1,11 @@
-import { getUserData } from "@/lib/session";
-import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
-import { cache } from "react";
-import { db } from "@/lib/db";
+"use server"
+import {getUserData} from "@/lib/session";
+import {getUserTrainingPermissions} from "@/lib/permissions/getUserTrainingPermissions";
+import {cache} from "react";
+import {db} from "@/lib/db";
 import {and, eq} from "drizzle-orm";
-import { Blocks } from "@/lib/db/schema/training/Blocks";
-import { staffViewBlock } from "@/lib/types/staff/StaffTrainingTypes";
+import {Blocks} from "@/lib/db/schema/training/Blocks";
+import {staffViewBlock} from "@/lib/types/staff/StaffTrainingTypes";
 import {BlockFormData} from "@/lib/validation/training/blockValidations";
 
 /**
@@ -58,6 +59,61 @@ export const getAllBlocks = cache(async (trainingId: number) => {
 });
 
 
+
+/**
+ * Fetches all blocks for a given training ID.
+ * @param trainingId - The ID of the training.
+ * @Returns {Promise<staffViewBlock[] | null>} - Returns an array of blocks or null if an error occurs.
+ */
+export const getBlockByNumber = cache(async (trainingId: number, blockNumber : number) => {
+    try {
+        // Fetch user data
+        const user = await getUserData();
+        if (!user) {
+            console.error("User not authenticated");
+            return null;
+        }
+
+        const { userId } = user;
+
+        // Fetch user permissions
+        const permissions = await getUserTrainingPermissions(userId, trainingId);
+        if (!permissions) {
+            console.error("Failed to fetch user permissions");
+            return null;
+        }
+
+        if (!permissions.includes("View:block")) {
+            console.error("User does not have permission to view blocks");
+            return null;
+        }
+
+        // Fetch all blocks from the database
+        return await db
+            .select(
+                {
+                    blockNumber: Blocks.blockNumber,
+                    title: Blocks.title,
+                    description: Blocks.description,
+                    trainingId: Blocks.trainingId,
+                }
+            )
+            .from(Blocks)
+            .where(
+                and(
+                    eq(Blocks.blockNumber, blockNumber),
+                    eq(Blocks.trainingId, trainingId)
+                )
+            )
+            .execute();
+    } catch (error) {
+        console.error("Error fetching blocks:", error);
+        return null;
+    }
+});
+
+
+
 /**
  * Fetches user permissions for editing blocks in a training.
  * @param trainingId - The ID of the training.
@@ -66,6 +122,7 @@ export const getAllBlocks = cache(async (trainingId: number) => {
 export const getUserEditBlockPermissions = cache(async (trainingId: number) => {
     try {
 
+        console.log("Fetching user permissions for editing blocks...");
         const user = await getUserData();
         if (!user) {
             console.error("User not authenticated");
@@ -79,8 +136,8 @@ export const getUserEditBlockPermissions = cache(async (trainingId: number) => {
             return null;
         }
 
-        const canEditBlock = "Edit:block";
-        if (!permissions.includes(canEditBlock)) {
+        // Check if the user has permission to edit blocks
+        if (!permissions.includes("Edit:block")) {
             console.error("User does not have permission to edit blocks");
             return null;
         }
@@ -157,9 +214,7 @@ export async function deleteBlock ({trainingId, blockNumber} : {trainingId : num
               and(
                   eq(Blocks.trainingId, trainingId),
                   eq(Blocks.blockNumber, blockNumber),
-              )
-            )
-            .returning()
+              ))
             .execute();
         // got to the edit-blocks page
         window.location.href = `/protected/trainings/${trainingId}/staff/edit-blocks`;
