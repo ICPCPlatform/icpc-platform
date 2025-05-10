@@ -1,5 +1,4 @@
 "use client"
-
 import { staffViewBlock } from "@/lib/types/staff/StaffTrainingTypes";
 import { useRouter } from "next/navigation";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
@@ -35,6 +34,7 @@ export default function BlockForm({ initialData, isEdit = true}: BlockFormProps)
             if (isEdit && (!initialData?.blockNumber || !initialData?.trainingId)) {
                  Error("Missing required block identification data");
             }
+
 
             await updateBlock({
                 blockNumber: initialData!.blockNumber, // Non-null assertion after validation
