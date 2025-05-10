@@ -211,3 +211,69 @@
 .popup-close-btn:hover {
     background-color: #38a169; /* Darker green on hover */
 }
+
+
+/* Toggle Switch Styles */
+.toggle-field {
+    @apply flex items-center gap-4;
+}
+
+.toggle-label {
+    @apply text-sm font-semibold text-[hsl(var(--muted-foreground))] cursor-pointer;
+}
+
+.toggle-container {
+    @apply relative inline-block w-12 h-6;
+}
+
+.toggle-input {
+    @apply opacity-0 w-0 h-0;
+}
+
+.toggle-slider {
+    @apply absolute cursor-pointer inset-0 bg-[hsl(var(--muted))] rounded-full
+    transition-all duration-300 before:content-[''] before:absolute before:h-5 before:w-5
+    before:left-0.5 before:bottom-0.5 before:bg-white before:rounded-full
+    before:transition-all before:duration-300 before:shadow-md;
+}
+
+.toggle-input:checked + .toggle-slider {
+    @apply bg-[hsl(var(--primary))];
+}
+
+.toggle-input:checked + .toggle-slider:before {
+    @apply translate-x-6;
+}
+
+/* Date Picker Styles */
+.date-field {
+    @apply relative;
+}
+
+.date-input {
+    @apply form-input pr-10 cursor-pointer;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6
+    text-[hsl(var(--muted-foreground))] cursor-pointer;
+}
+
+/* Visibility Badge */
+.visibility-badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm
+    transition-colors duration-200;
+}
+
+.visibility-badge.hidden {
+    @apply bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-500 !important;
+}
+
+.visibility-badge.visible {
+    @apply bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-500;
+}
+
+/* Enhanced Form Field Layout */
+.form-field-group {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
