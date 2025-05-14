@@ -1,5 +1,4 @@
 "use server";
-
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { createTrainingSchema } from "@/lib/validation/training/createTraining";
@@ -7,6 +6,8 @@ import { getUserData } from "@/lib/session";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
+import { Users } from "@/lib/db/schema/user/Users";
+import { eq } from "drizzle-orm";
 
 export async function createTrainingAction(
   formData: z.infer<typeof createTrainingSchema>,
@@ -57,7 +58,6 @@ export async function createTrainingAction(
 
     // Return success with training ID
     return { success: true };
-
   } catch (error) {
     console.error("Error creating training:", error);
 
@@ -74,5 +74,28 @@ export async function createTrainingAction(
       error:
         error instanceof Error ? error.message : "Failed to create training",
     };
+  }
+}
+
+export async function searchByUsername({
+  username,
+}: {
+  username: string;
+}): Promise<string | null> {
+  try {
+    const user = await db
+      .select({ userId: Users.userId })
+      .from(Users)
+      .where(eq(Users.username, username))
+      .execute();
+
+    if (user.length === 0) {
+      return "User not found";
+    }
+
+    return user[0].userId;
+  } catch (error) {
+    console.error("Error searching by username:", error);
+    throw Error("Error occurred while searching for user");
   }
 }

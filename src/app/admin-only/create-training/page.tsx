@@ -27,18 +27,9 @@ import {
 import { CheckCircle, XCircle } from "lucide-react";
 import { createTrainingAction } from "./actions";
 import { useRouter } from "next/navigation";
+import { createTrainingSchema } from "@/lib/validation/training/createTraining";
 
 // Create a client-side version of the schema
-const createTrainingFormSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters").max(128, "Title must be less than 128 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters").max(512, "Description must be less than 512 characters"),
-  headId: z.string().uuid("Invalid head ID"),
-  chiefJudge: z.string().uuid("Invalid chief judge ID"),
-  startDate: z.date({ required_error: "Start date is required" }),
-  duration: z.coerce.number().int().min(1, "Duration must be at least 1 week").default(1),
-  status: z.enum(["active", "roadmap", "private", "over"]).default("private"),
-  standingView: z.array(z.string()).default(["name", "handle", "numberofsolved", "mentor", "level"]),
-});
 
 export default function CreateTrainingPage() {
   const [loading, setLoading] = useState(false);
@@ -47,8 +38,8 @@ export default function CreateTrainingPage() {
   const router = useRouter();
 
   // Setup form
-  const form = useForm<z.infer<typeof createTrainingFormSchema>>({
-    resolver: zodResolver(createTrainingFormSchema),
+  const form = useForm<z.infer<typeof createTrainingSchema>>({
+    resolver: zodResolver(createTrainingSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -56,11 +47,10 @@ export default function CreateTrainingPage() {
       chiefJudge: "00000000-0000-0000-0000-000000000000", // Placeholder - would be replaced with actual IDs in practice
       duration: 1,
       status: "private",
-      standingView: ["name", "handle", "numberofsolved", "mentor", "level"],
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof createTrainingFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof createTrainingSchema>) => {
     setLoading(true);
     setError("");
     setSuccess("");
