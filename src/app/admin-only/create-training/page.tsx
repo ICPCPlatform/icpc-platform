@@ -4,7 +4,13 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,7 +32,6 @@ import {
 } from "@/components/ui/select";
 import { CheckCircle, XCircle } from "lucide-react";
 import { createTrainingAction } from "./actions";
-import { useRouter } from "next/navigation";
 import { createTrainingSchema } from "@/lib/validation/training/createTraining";
 
 // Create a client-side version of the schema
@@ -35,7 +40,6 @@ export default function CreateTrainingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const router = useRouter();
 
   // Setup form
   const form = useForm<z.infer<typeof createTrainingSchema>>({
@@ -43,8 +47,6 @@ export default function CreateTrainingPage() {
     defaultValues: {
       title: "",
       description: "",
-      headId: "00000000-0000-0000-0000-000000000000", // Placeholder - would be replaced with actual IDs in practice
-      chiefJudge: "00000000-0000-0000-0000-000000000000", // Placeholder - would be replaced with actual IDs in practice
       duration: 1,
       status: "private",
     },
@@ -60,13 +62,8 @@ export default function CreateTrainingPage() {
 
       if (result.success) {
         setSuccess("Training created successfully!");
-        
+
         // Redirect to the training page if we have a training ID
-        if (result.trainingId) {
-          setTimeout(() => {
-            router.push(`/protected/trainings/${result.trainingId}`);
-          }, 1500);
-        }
       } else {
         setError(result.error || "Failed to create training");
       }
@@ -97,7 +94,10 @@ export default function CreateTrainingPage() {
                   <FormItem>
                     <FormLabel>Training Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., ICPC Training 2023" {...field} />
+                      <Input
+                        placeholder="e.g., ICPC Training 2023"
+                        {...field}
+                      />
                     </FormControl>
                     <FormDescription>
                       A unique name for the training program
@@ -127,41 +127,40 @@ export default function CreateTrainingPage() {
                 )}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="headId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Training Head ID</FormLabel>
-                      <FormControl>
-                        <Input placeholder="UUID of the training head" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        UUID of the person in charge of this training
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="headUsername"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Training Head</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="UUID of the training head"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>The username of the Head</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="chiefJudge"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Chief Judge ID</FormLabel>
-                      <FormControl>
-                        <Input placeholder="UUID of the chief judge" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        UUID of the person responsible for judging
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="chiefJudgeUsername"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Chief Judge ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="UUID of the chief judge" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      The username of the Cheif Judge
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -171,12 +170,20 @@ export default function CreateTrainingPage() {
                     <FormItem>
                       <FormLabel>Start Date</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="date" 
+                        <Input
+                          type="date"
                           {...field}
-                          value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
+                          value={
+                            field.value instanceof Date
+                              ? field.value.toISOString().split("T")[0]
+                              : ""
+                          }
                           onChange={(e) => {
-                            field.onChange(e.target.value ? new Date(e.target.value) : undefined);
+                            field.onChange(
+                              e.target.value
+                                ? new Date(e.target.value)
+                                : undefined,
+                            );
                           }}
                         />
                       </FormControl>
@@ -195,11 +202,7 @@ export default function CreateTrainingPage() {
                     <FormItem>
                       <FormLabel>Duration (weeks)</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          min={1}
-                          {...field}
-                        />
+                        <Input type="number" min={1} {...field} />
                       </FormControl>
                       <FormDescription>
                         How many weeks the training will last
@@ -226,10 +229,13 @@ export default function CreateTrainingPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="private">Private</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="roadmap">Roadmap</SelectItem>
-                        <SelectItem value="over">Over</SelectItem>
+                        {createTrainingSchema.shape.status._def.innerType._def.values.map(
+                          (option) => (
+                            <SelectItem key={option} value={option}>
+                              {option.charAt(0).toUpperCase() + option.slice(1)}
+                            </SelectItem>
+                          ),
+                        )}
                       </SelectContent>
                     </Select>
                     <FormDescription>
@@ -239,7 +245,7 @@ export default function CreateTrainingPage() {
                   </FormItem>
                 )}
               />
-              
+
               <div className="flex justify-end">
                 <Button type="submit" disabled={loading}>
                   {loading ? "Creating..." : "Create Training"}
@@ -252,7 +258,7 @@ export default function CreateTrainingPage() {
                   {error}
                 </div>
               )}
-              
+
               {success && (
                 <div className="p-3 rounded-md bg-green-50 text-green-500 flex items-center">
                   <CheckCircle className="mr-2 h-5 w-5" />

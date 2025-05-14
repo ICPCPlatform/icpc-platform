@@ -1,4 +1,5 @@
 import { z } from "zod";
+import {username} from '../util';
 
 export const createTrainingSchema = z.object({
   title: z
@@ -9,8 +10,8 @@ export const createTrainingSchema = z.object({
     .string()
     .min(10, "Description must be at least 10 characters")
     .max(512, "Description must be less than 512 characters"),
-  headId: z.string().uuid("Invalid head ID"),
-  chiefJudge: z.string().uuid("Invalid chief judge ID"),
+  headUsername: username,
+  chiefJudgeUsername: username,
   startDate: z.date({ required_error: "Start date is required" }),
   duration: z
     .number()

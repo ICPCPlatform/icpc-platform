@@ -7,7 +7,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { Users } from "@/lib/db/schema/user/Users";
-import { eq } from "drizzle-orm";
+import { like, eq } from "drizzle-orm";
 
 export async function createTrainingAction(
   formData: z.infer<typeof createTrainingSchema>,
@@ -26,19 +26,44 @@ export async function createTrainingAction(
     if (userData.role !== "admin") {
       return { success: false, error: "Unauthorized: Admin access required" };
     }
+    const { headUsername, chiefJudgeUsername, ...mainData } = validatedData;
+    // find headId
+    const headSearch = await db
+      .select({ userId: Users.userId })
+      .from(Users)
+      .where(eq(Users.username, headUsername))
+      .execute();
+    if (headSearch.length === 0) {
+      return { success: false, error: "Head judge not found" };
+    }
+    const headId = headSearch[0].userId;
 
+    // find chiefJudgeId
+    const chiefJudgeSearch = await db
+      .select({ userId: Users.userId })
+      .from(Users)
+      .where(eq(Users.username, chiefJudgeUsername))
+      .execute();
+    if (chiefJudgeSearch.length === 0) {
+      return { success: false, error: "Chief judge not found" };
+    }
+    const chiefJudgeId = chiefJudgeSearch[0].userId;
+    const insertData = {
+      ...mainData,
+      headId: headId,
+      chiefJudge: chiefJudgeId,
+      startDate: validatedData.startDate.toDateString(),
+    } satisfies typeof Trainings.$inferInsert;
     // Insert training into database
     await db.transaction(async (tx) => {
       const { trainingId } = (
         await tx
           .insert(Trainings)
-          .values({
-            ...validatedData,
-            startDate: validatedData.startDate.toDateString(),
-          })
+          .values(insertData)
           .returning({ trainingId: Trainings.trainingId })
           .execute()
       )[0];
+
       for (let i = 0; i <= validatedData.duration; i++) {
         tx.insert(Blocks)
           .values({
@@ -81,19 +106,20 @@ export async function searchByUsername({
   username,
 }: {
   username: string;
-}): Promise<string | null> {
+}): Promise<{ username: string }[] | null> {
   try {
-    const user = await db
-      .select({ userId: Users.userId })
+    const userData = await getUserData();
+
+    if (userData == null || userData.role !== "admin") {
+      throw Error("Unautherized access");
+    }
+    const users = await db
+      .select({ username: Users.username })
       .from(Users)
-      .where(eq(Users.username, username))
+      .where(like(Users.username, `${username}%`))
       .execute();
 
-    if (user.length === 0) {
-      return "User not found";
-    }
-
-    return user[0].userId;
+    return users;
   } catch (error) {
     console.error("Error searching by username:", error);
     throw Error("Error occurred while searching for user");
