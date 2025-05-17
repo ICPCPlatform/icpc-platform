@@ -8,6 +8,7 @@ import { Contests } from "@/lib/db/schema/training/Contests";
 import UrlPattern from "url-pattern";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
+import { revalidatePath } from "next/cache";
 export async function addContestAction(
   input: z.infer<typeof addContestSchema>,
 ) {
@@ -64,6 +65,7 @@ export async function addContestAction(
         date,
       })
       .execute();
+      revalidatePath(`/protected/trainings/${trainingId}`);
   } catch (error) {
     console.error("Error adding contest:", error);
     throw new Error("Failed to add contest");

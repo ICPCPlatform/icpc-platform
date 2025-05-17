@@ -8,6 +8,7 @@ import { deleteContestSchema } from "@/lib/validation/training/deleteContest";
 import { and, eq, isNull } from "drizzle-orm";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
+import { revalidatePath } from "next/cache";
 
 export async function deleteContestAction(
   input: z.infer<typeof deleteContestSchema>,
@@ -40,6 +41,7 @@ export async function deleteContestAction(
       )
       .returning()
       .execute();
+      revalidatePath(`/protected/trainings/${trainingId}`);
     if (res.length === 0) {
       throw new Error("Contest not found or already deleted");
     }

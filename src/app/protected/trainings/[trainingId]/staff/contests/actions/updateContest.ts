@@ -18,7 +18,6 @@ export async function addContestAction(
       parsedData;
 
 
-    revalidatePath(`/protected/trainings/${trainingId}/staff/contests`);
 
     const user = await getUserData();
     if (!user) {
@@ -57,6 +56,7 @@ export async function addContestAction(
         ),
       )
       .execute();
+      revalidatePath(`/protected/trainings/${trainingId}`);
   } catch (error) {
     console.error("Error adding contest:", error);
     throw new Error("Failed to add contest");
