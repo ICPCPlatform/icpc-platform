@@ -5,8 +5,9 @@ import { db } from "@/lib/db";
 import { z } from "zod";
 import { updateContestSchema } from "@/lib/validation/training/updateContest";
 import { Contests } from "@/lib/db/schema/training/Contests";
-import UrlPattern from "url-pattern";
 import { and, eq, isNull } from "drizzle-orm";
+import { getUserData } from "@/lib/session";
+import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 export async function addContestAction(
   input: z.infer<typeof updateContestSchema>,
 ) {
@@ -15,6 +16,15 @@ export async function addContestAction(
     const { trainingId, blockNumber, type, title, description, date } =
       parsedData;
 
+    const user = await getUserData();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+    const { userId } = user;
+    const permissions = await getUserTrainingPermissions(userId, trainingId);
+    if (!permissions.includes("Edit:contest")) {
+      throw new Error("User does not have permissions for this training");
+    }
     const toSet = {
       type,
       title,

@@ -6,6 +6,8 @@ import { z } from "zod";
 import { addContestSchema } from "@/lib/validation/training/addContest";
 import { Contests } from "@/lib/db/schema/training/Contests";
 import UrlPattern from "url-pattern";
+import { getUserData } from "@/lib/session";
+import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 export async function addContestAction(
   input: z.infer<typeof addContestSchema>,
 ) {
@@ -20,6 +22,16 @@ export async function addContestAction(
       description,
       date,
     } = parsedData;
+
+    const user = await getUserData();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+    const { userId  } = user;
+    const permissions = await getUserTrainingPermissions(userId, trainingId);
+    if (!permissions.includes("Edit:contest")) {
+      throw new Error("User does not have permissions for this training");
+    }
 
     const pattern = new UrlPattern(
       "(http(s)\\://)(:subdomain.):domain.:tld(\\::port)(/group/:groupId)/contest/:contestId",
