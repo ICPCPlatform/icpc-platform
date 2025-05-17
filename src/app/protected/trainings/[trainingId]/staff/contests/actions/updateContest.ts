@@ -8,13 +8,17 @@ import { Contests } from "@/lib/db/schema/training/Contests";
 import { and, eq, isNull } from "drizzle-orm";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
+import { revalidatePath } from "next/cache";
 export async function addContestAction(
   input: z.infer<typeof updateContestSchema>,
 ) {
   try {
     const parsedData = updateContestSchema.parse(input);
-    const { trainingId, blockNumber, type, title, description, date } =
+    const { trainingId, blockNumber, type, title, description, date, contestId} =
       parsedData;
+
+
+    revalidatePath(`/protected/trainings/${trainingId}/staff/contests`);
 
     const user = await getUserData();
     if (!user) {
@@ -48,6 +52,7 @@ export async function addContestAction(
         and(
           eq(Contests.trainingId, trainingId),
           eq(Contests.blockNumber, blockNumber),
+          eq(Contests.contestId, contestId),
           isNull(Contests.deleted), // Ensure the contest is not already deleted
         ),
       )
