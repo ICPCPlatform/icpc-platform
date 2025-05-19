@@ -50,8 +50,11 @@ export default function TrainingForm({initialData, isEdit}: Readonly<TrainingFor
 
     // Handle form submission
     const onSubmit: SubmitHandler<TrainingFormData> = async (data) => {
+        console.log("Form data:", data);
         setIsSubmitting(true);
         setError(null);
+
+        console.log("Form submitted with data:", data);
 
         try {
             // Validate the training ID
@@ -64,7 +67,8 @@ export default function TrainingForm({initialData, isEdit}: Readonly<TrainingFor
                 ...data
             });
             // Redirect to the trainings page
-            router.push(`/protected/trainings/${initialData?.trainingId}/staff`);
+            console.log("Training updated successfully");
+            router.push(`/protected/profile`);
 
         } catch (err) {
             console.error("Submission failed:", err);
@@ -185,8 +189,7 @@ export default function TrainingForm({initialData, isEdit}: Readonly<TrainingFor
                                 <option value="active">Active</option>
                                 <option value="roadmap">Roadmap</option>
                                 <option value="private">Private</option>
-                                <option value="completed">Completed</option>
-                                <option value="planned">Planned</option>
+                                <option value="over">Over</option>
                             </select>
 
                         </FormControl>
