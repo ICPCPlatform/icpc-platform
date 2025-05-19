@@ -19,8 +19,6 @@ export const trainingValidations = zod.object({
 
     status: zod.enum(["active" , "roadmap" , "private" , "over"]),
 
-    headId : zod.string(),
-    chiefJudge: zod.string(),
     deleted: zod.date().nullable().optional(),
 });
 
