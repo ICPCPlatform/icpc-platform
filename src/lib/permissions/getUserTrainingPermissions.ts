@@ -12,6 +12,7 @@ type PermissionTarget =
   | "standing"
   | "material"
   | "block"
+  | "training"
   | "practice"
   | "attendance"
   | "contest";
@@ -78,6 +79,8 @@ async function getUserTrainingPermissionsNotCache(
           "Edit:contest",
           "View:block",
           "Edit:block",
+          "Edit:training",
+            "View:training",
           "View:trainee",
         ] as const
       ).forEach((perm) => permissions.add(perm));
