@@ -1,6 +1,7 @@
 import zod from 'zod';
 import { TRAINING_ERROR_MESSAGES } from '@/lib/const/training-error-messages';
 
+
 export const trainingValidations = zod.object({
     title: zod.string()
         .min(5, TRAINING_ERROR_MESSAGES.TITLE_REQUIRED)
@@ -16,8 +17,11 @@ export const trainingValidations = zod.object({
     duration: zod.number()
         .positive(TRAINING_ERROR_MESSAGES.DURATION_INVALID),
 
-    status: zod.enum(['active', 'roadmap', 'planned', 'completed', 'private'])
-        .nullable(),
+    status: zod.enum(["active" , "roadmap" , "private" , "over"]),
+
+    headId : zod.string(),
+    chiefJudge: zod.string(),
+    deleted: zod.date().nullable().optional(),
 });
 
 export type TrainingFormData = zod.infer<typeof trainingValidations>;
