@@ -48,7 +48,7 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
         try {
             // Validate the block number and training ID
             if (isEdit && (!initialData?.blockNumber || !initialData?.trainingId)) {
-                Error("Missing required block identification data");
+                throw new Error("Missing required block identification data");
             }
             // Update the block in the database
             await updateBlock({
