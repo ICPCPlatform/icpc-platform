@@ -13,7 +13,7 @@ export default function Page({ params }:  { params: { trainingId: string } }) {
         <div className="container mx-auto p-4 md:py-6">
             <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
                 <div className="w-full lg:flex-[3]">
-                    <Suspense fallback={TrainingBlocksLoading}>
+                    <Suspense fallback={<TrainingBlocksLoading />}>
                         <BlocksDetailsPage params={{ trainingId: params.trainingId }} />
                     </Suspense>
                 </div>
