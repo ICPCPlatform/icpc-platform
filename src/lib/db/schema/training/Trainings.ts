@@ -8,11 +8,11 @@ import {
   timestamp,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { StandingEntry } from "@/lib/types/Training";
+import { StandingEntry } from "@/lib/types/training";
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
 
-type Status = "active" | "roadmap" | "private" | "over";
+export type Status = "active" | "roadmap" | "private" | "over";
 
 type StandingView =
   | "name"

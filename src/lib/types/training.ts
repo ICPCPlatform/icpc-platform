@@ -93,3 +93,5 @@ export type Trainee = {
  * Standing Entry with Trainee Details
  */
 export type RankingEntryWithDetails = Omit<Trainee & Ranking, "userId">;
+
+export {type TrainingPermissions} from "@/lib/permissions/getUserTrainingPermissions";
