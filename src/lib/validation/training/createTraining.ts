@@ -14,10 +14,7 @@ export const createTrainingSchema = z.object({
   chiefJudgeUsername: username,
   startDate: z.date({ required_error: "Start date is required" }),
   duration: z
-    .string()
-    .or(z.number())
-    .transform((value) => Number(value))
-    // @ts-expect-error - number validation 
+    .coerce
     .number()
     .int()
     .min(1, "Duration must be at least 1 week")
