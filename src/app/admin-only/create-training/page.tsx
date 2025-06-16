@@ -135,7 +135,7 @@ export default function CreateTrainingPage() {
                     <FormLabel>Training Head</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="UUID of the training head"
+                        placeholder="Username of the training head"
                         {...field}
                       />
                     </FormControl>
@@ -152,7 +152,7 @@ export default function CreateTrainingPage() {
                   <FormItem>
                     <FormLabel>Chief Judge ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="UUID of the chief judge" {...field} />
+                      <Input placeholder="Username of the chief judge" {...field} />
                     </FormControl>
                     <FormDescription>
                       The username of the Cheif Judge
