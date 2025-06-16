@@ -33,6 +33,7 @@ export default function Page() {
     localStorage.getItem(blockId.toString()) ?? "[]",
   ) as Material[];
 
+
   return (
     <div className="container mx-auto py-6">
       <DynamicForm
