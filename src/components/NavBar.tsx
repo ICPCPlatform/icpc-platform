@@ -105,7 +105,7 @@ export function Navbar() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/about" legacyBehavior passHref>
+                <Link href="/about" passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     About Us
                   </NavigationMenuLink>
