@@ -7,13 +7,13 @@ import { db } from '@/lib/db';
 
 interface PageProps {
     params: {
-        id: string;
-        blockId: string;
+        contestId: string;
+        blockNumber: string;
     };
 }
 export default async function EditContestPage ( { params }: PageProps )
 {
-    const { blockId } = params;
+    const { blockNumber } = params;
 
     return (
         <div className="container mx-auto p-4 md:py-6">
