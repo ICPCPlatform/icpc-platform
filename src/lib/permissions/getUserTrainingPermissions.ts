@@ -5,18 +5,22 @@ import { Trainees } from "../db/schema/training/Trainees";
 import { eq, and, isNull } from "drizzle-orm";
 import { Trainings } from "../db/schema/training/Trainings";
 
+
+
+
+type PermissionAction = "View" | "Edit";
+type PermissionTarget =
+  | "standing"
+  | "material"
+  | "block"
+  | "training"
+  | "practice"
+  | "attendance"
+  | "contest"
+  | "staff";
+
 export type TrainingPermissions =
-  | "View:standing"
-  | "Edit:standing"
-  | "View:material"
-  | "Edit:material"
-  | "Edit:contest"
-  | "Edit:block"
-  | "View:practice"
-  | "Edit:practice"
-  | "View:attendance"
-  | "Edit:attendance"
-  | "Edit:staff";
+  | `${PermissionAction}:${PermissionTarget}` | "View:trainee";
 
 async function getUserTrainingPermissionsNotCache(
   userId: string,
@@ -68,39 +72,57 @@ async function getUserTrainingPermissionsNotCache(
 
   if (staffRes.length === 1) {
     const staff = staffRes[0];
-    const permissions: TrainingPermissions[] = [];
+    const permissions: Set<TrainingPermissions> = new Set();
 
     // Base permissions for all staff
-    permissions.push(
-      "View:standing",
-      "View:material",
-      "View:practice",
-      "View:attendance",
-      "Edit:attendance",
-    );
+    (
+      [
+        "View:standing",
+        "View:material",
+        "View:practice",
+        "View:attendance",
+        "Edit:attendance",
+        "View:trainee"
+      ] as const
+    ).forEach((perm) => permissions.add(perm));
 
     // Manager permissions
     if (staff.manager) {
-      permissions.push(
-        "Edit:standing",
-        "Edit:material",
-        "Edit:contest",
-        "Edit:block",
-        "Edit:practice",
-      );
+      // all permissions
+      (
+        [
+          "View:standing",
+          "Edit:standing",
+          "View:material",
+          "Edit:material",
+          "View:practice",
+          "Edit:practice",
+          "View:attendance",
+          "Edit:attendance",
+          "View:contest",
+          "Edit:contest",
+          "View:block",
+          "Edit:block",
+          "Edit:training",
+            "View:training",
+          "View:trainee",
+        ] as const
+      ).forEach((perm) => permissions.add(perm));
     }
 
     // Instructor permissions
     if (staff.instructor) {
-      permissions.push("Edit:material");
+      permissions.add("Edit:material");
+      permissions.add("View:material");
     }
 
     // Mentor permissions
     if (staff.mentor) {
-      permissions.push("Edit:practice");
+      permissions.add("Edit:practice");
+      permissions.add("View:practice");
     }
 
-    return [...new Set(permissions)]; // Remove duplicates
+    return [...permissions];
   }
 
   // Check if user is a trainee
@@ -117,7 +139,7 @@ async function getUserTrainingPermissionsNotCache(
     .execute();
 
   if (studentRes.length === 1) {
-    return ["View:standing", "View:material", "View:practice"];
+    return ["View:trainee"]; //
   }
 
   return [];
