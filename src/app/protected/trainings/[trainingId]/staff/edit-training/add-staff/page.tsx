@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { addStaffAction } from "./actions";
-import {searchByUsername} from "@/app/admin-only/create-training/actions"; // Import the add staff action
+import {searchByUsername} from "@/app/protected/trainings/[trainingId]/staff/edit-training/add-staff/actions"; // Import the add staff action
 
 export default function AddStaffPage({ trainingId }: { trainingId: string }) {
     const [staffList, setStaffList] = useState([]);
@@ -28,8 +28,13 @@ export default function AddStaffPage({ trainingId }: { trainingId: string }) {
     }, [trainingId]);
 
     const handleSearch = async () => {
-        const results = await searchByUsername({ username: searchQuery });
-        setSearchResults(results || []);
+        const results = await searchByUsername(searchQuery );
+        if (!results) {
+            alert("No users found or an error occurred.");
+            return;
+        }
+        // @ts-ignore
+        setSearchResults(results);
     };
 
     const handleRoleChange = (role: string) => {
