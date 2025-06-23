@@ -2,8 +2,13 @@
 
 import React, { useState } from 'react';
 import { addStaffAction } from '@/app/protected/trainings/[trainingId]/staff/edit-training/add-staff/actions';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
-export default function AddStaffForm(trainingId : string) {
+export default function AddStaffForm({ trainingId }: { trainingId: number }) {
     const [username, setUsername] = useState('');
     const [roles, setRoles] = useState({
         instructor: false,
@@ -13,32 +18,15 @@ export default function AddStaffForm(trainingId : string) {
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    async function handleSubmit(e) {
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setIsLoading(true);
         setMessage('');
 
         try {
-            // First search for user by username
-            const searchRes = await fetch(`/api/users/search?username=${username}`);
-            if (!searchRes.ok) {
-                const errorData = await searchRes.json();
-                setMessage(errorData.error || 'User not found or unauthorized');
-                return;
-            }
-
-            const userData = await searchRes.json();
-            const userId = userData[0]?.Users?.userId;
-
-            if (!userId) {
-                setMessage('User not found');
-                return;
-            }
-
-            // Add staff using server action
             const result = await addStaffAction({
                 trainingId,
-                userId,
+                username,
                 roles
             });
 
@@ -50,93 +38,87 @@ export default function AddStaffForm(trainingId : string) {
                 setMessage(result.error || 'Failed to add staff');
             }
         } catch (error) {
-            setMessage('Error occurred: ' + error.message);
+            if (error instanceof Error) {
+                setMessage('Error occurred: ' + error.message);
+            } else {
+                setMessage('An unknown error occurred');
+            }
         } finally {
             setIsLoading(false);
         }
     }
 
-    function handleRoleChange(e) {
-        const { name, checked } = e.target;
-        setRoles(prev => ({ ...prev, [name]: checked }));
+    function handleRoleChangeByName(role: keyof typeof roles, checked: boolean) {
+        setRoles(prev => ({ ...prev, [role]: checked }));
     }
 
     return (
-        <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Add Staff to Training</h2>
-
+        <Card className="max-w-md mx-auto">
+            <CardHeader>
+                <CardTitle>Add Staff to Training</CardTitle>
+            </CardHeader>
+            <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Username:
-                    </label>
-                    <input
+                        <Label htmlFor="username">Username</Label>
+                        <Input
+                            id="username"
                         type="text"
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter username"
                     />
                 </div>
-
-                <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Roles:</label>
-
                     <div className="space-y-2">
-                        <label className="flex items-center">
-                            <input
-                                type="checkbox"
+                        <Label>Roles</Label>
+                        <div className="flex flex-col gap-2">
+                            <label className="flex items-center gap-2">
+                                <Checkbox
                                 name="instructor"
                                 checked={roles.instructor}
-                                onChange={handleRoleChange}
-                                className="mr-2"
+                                    onCheckedChange={checked => handleRoleChangeByName('instructor', Boolean(checked))}
                             />
                             <span className="text-sm">Instructor</span>
                         </label>
-
-                        <label className="flex items-center">
-                            <input
-                                type="checkbox"
+                            <label className="flex items-center gap-2">
+                                <Checkbox
                                 name="problem_setter"
                                 checked={roles.problem_setter}
-                                onChange={handleRoleChange}
-                                className="mr-2"
+                                    onCheckedChange={checked => handleRoleChangeByName('problem_setter', Boolean(checked))}
                             />
                             <span className="text-sm">Problem Setter</span>
                         </label>
-
-                        <label className="flex items-center">
-                            <input
-                                type="checkbox"
+                            <label className="flex items-center gap-2">
+                                <Checkbox
                                 name="mentor"
                                 checked={roles.mentor}
-                                onChange={handleRoleChange}
-                                className="mr-2"
+                                    onCheckedChange={checked => handleRoleChangeByName('mentor', Boolean(checked))}
                             />
                             <span className="text-sm">Mentor</span>
                         </label>
                     </div>
                 </div>
-
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50"
-                >
+                    <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? 'Adding...' : 'Add Staff'}
-                </button>
+                    </Button>
             </form>
-
             {message && (
-                <div className={`mt-4 p-3 rounded-md ${
+                    <div
+                        className={`mt-4 p-3 rounded-md text-sm ${
                     message.includes('successfully')
                         ? 'bg-green-100 text-green-700'
                         : 'bg-red-100 text-red-700'
-                }`}>
+                        }`}
+                        style={{
+                            backgroundColor: message.includes('successfully') ? 'var(--green-100)' : 'var(--red-100)',
+                            color: message.includes('successfully') ? 'var(--green-700)' : 'var(--red-700)'
+                        }}
+                    >
                     {message}
                 </div>
             )}
-        </div>
+            </CardContent>
+        </Card>
     );
 }
