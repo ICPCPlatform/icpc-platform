@@ -12,11 +12,11 @@ export async function addStaffAction({
                                      }: {
     trainingId: string;
     userId: string;
-    roles: { instructor: boolean; problem_setter: boolean; mentor: boolean; chief_judge: boolean };
+    roles: { instructor: boolean; problem_setter: boolean; mentor: boolean};
 }) {
     try {
         const insertData = {
-            trainingId: parseInt(trainingId),
+            trainingId: Number(trainingId),
             userId,
             instructor: roles.instructor,
             problemSetter: roles.problem_setter,
@@ -39,15 +39,33 @@ export async function searchByUsername(username: string) {
         if (userData == null || userData.role !== "admin") {
             throw Error("Unautherized access");
         }
-        const user = await db
+        const staff = await db
             .select()
             .from(Users)
-            .where(eq(Users.username, username))
+            .where(eq(Users.username, username)).leftJoin(Staff, eq(Staff.userId, Users.userId))
             .execute();
 
-        return user;
+        return staff;
     } catch (error) {
         console.error("Error searching by username:", error);
         throw Error("Error occurred while searching for user");
+    }
+}
+
+
+export async function getAllTrainingStaff(trainingId: string) {
+    if (!trainingId || isNaN(Number(trainingId))) {
+        throw Error("Invalid training ID");
+    }
+    try {
+        const staff = await db
+            .select()
+            .from(Staff)
+            .where(eq(Staff.trainingId, Number(trainingId)))
+            .execute();
+        return staff;
+    } catch (error) {
+        console.error("Error fetching training staff:", error);
+        throw Error("Failed to fetch training staff");
     }
 }
