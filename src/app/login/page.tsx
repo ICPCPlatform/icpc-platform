@@ -21,6 +21,7 @@ import { z } from "zod";
 import { CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { useUserContext } from "@/providers/user";
 import "@/styles/components/auth/auth.css";
+import { DevToolsSidebar, DevToolsSidebarToggle } from '@/components/devtools/DevToolsSidebar';
 
 export default function Page() {
   const user  = useUserContext();
@@ -40,6 +41,7 @@ function Login() {
   const username = searchParams.get("username") ?? "";
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [showDevSidebar, setShowDevSidebar] = useState(false);
   const form = useForm<z.infer<typeof userLoginValid>>({
     resolver: zodResolver(userLoginValid),
     defaultValues: {
@@ -50,6 +52,8 @@ function Login() {
 
   return (
     <div className="auth-container">
+      <DevToolsSidebarToggle onClick={() => setShowDevSidebar((v) => !v)} />
+      <DevToolsSidebar open={showDevSidebar} />
       <Card className="auth-card">
         <h1 className="auth-title">Welcome Back</h1>
         <p className="auth-subtitle">
