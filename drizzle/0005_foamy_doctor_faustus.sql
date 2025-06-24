@@ -1,1 +1,0 @@
-ALTER TABLE "trainings" RENAME COLUMN "standing" TO "leader_board";
