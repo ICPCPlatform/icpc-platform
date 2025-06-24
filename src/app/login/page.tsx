@@ -53,7 +53,10 @@ function Login() {
   return (
     <div className="auth-container">
       <DevToolsSidebarToggle onClick={() => setShowDevSidebar((v) => !v)} />
-      <DevToolsSidebar open={showDevSidebar} />
+      <DevToolsSidebar open={showDevSidebar} onDevLogin={({ usernameOrGmail, password }) => {
+        form.setValue("usernameOrGmail", usernameOrGmail);
+        form.setValue("password", password);
+      }} />
       <Card className="auth-card">
         <h1 className="auth-title">Welcome Back</h1>
         <p className="auth-subtitle">
