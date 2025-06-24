@@ -5,9 +5,11 @@ import {
   pgTable,
   varchar,
   foreignKey,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 import { Blocks } from "./Blocks";
+import { StandingEntry } from "@/lib/types/training";
 type Judge = "cf" | "vj";
 
 /**
@@ -28,6 +30,7 @@ export const Contests = pgTable(
     title: varchar({ length: 128 }).notNull(),
     description: varchar({ length: 512 }).default("").notNull(),
 
+    standing: jsonb().$type<StandingEntry>(),
     pointPerProblem: integer().default(20).notNull(),
     firstPoints: integer().default(1000).notNull(),
     calcSys: varchar({ length: 32 }).default("90%").notNull(),
