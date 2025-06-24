@@ -8,7 +8,7 @@ import {
   timestamp,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { StandingEntry } from "@/lib/types/training";
+import { LeaderBoard, StandingEntry } from "@/lib/types/training";
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
 
@@ -47,7 +47,7 @@ export const Trainings = pgTable("trainings", {
 
   title: citext({ length: 128 }).notNull().unique(),
   description: varchar({ length: 512 }).notNull(),
-  standing: jsonb().$type<StandingEntry>(),
+  leaderBoard: jsonb().$type<LeaderBoard>(),
   /// saves which attributes of standing are visible to trainees
   standingView: jsonb()
     .notNull()
