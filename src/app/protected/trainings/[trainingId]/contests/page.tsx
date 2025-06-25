@@ -7,10 +7,11 @@ import { ContestsList } from "../staff/contests/_contestsList";
 export default async function ContestsPage({
   params,
 }: {
-  params: { trainingId: string };
+  params: Promise<{ trainingId: string }>;
 }) {
-  const trainingId = Number(params.trainingId);
-  if (isNaN(trainingId)) {
+  const { trainingId } = await params;
+  const trainingIdNumber = Number(trainingId);
+  if (isNaN(trainingIdNumber)) {
     return <div>Invalid training ID</div>;
   }
 
@@ -27,14 +28,14 @@ export default async function ContestsPage({
       blockTitle: Blocks.title,
     })
     .from(Contests)
-    .where(and(eq(Contests.trainingId, trainingId), isNull(Contests.deleted)))
+    .where(and(eq(Contests.trainingId, trainingIdNumber), isNull(Contests.deleted)))
     .innerJoin(Blocks, eq(Blocks.trainingId, Contests.trainingId))
     .execute();
 
   return (
     <div className="container py-8 px-4 md:px-6 space-y-6">
       <h1 className="text-3xl font-bold mb-4">Contests</h1>
-      <ContestsList contests={contests} trainingId={trainingId} />
+      <ContestsList contests={contests} trainingId={trainingIdNumber} />
     </div>
   );
 } 
