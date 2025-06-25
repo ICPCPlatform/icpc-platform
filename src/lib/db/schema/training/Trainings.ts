@@ -8,23 +8,20 @@ import {
   timestamp,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { LeaderBoard, StandingEntry } from "@/lib/types/training";
+import { LeaderBoard } from "@/lib/types/training";
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
 
 export type Status = "active" | "roadmap" | "private" | "over";
 
-type StandingView =
+export type StandingView =
   | "name"
-  | "cfhandle"
+  | "cfHandle"
   | "vjudge"
   | "gmail"
-  | "numberofsolved"
-  | "points"
-  | "mentor"
   | "level"
   | "university"
-  | "facutly";
+  | "faculty";
 
 /**
  * Trainings is the table that holds the training information

@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useTrainingContext } from "@/providers/training";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 
 
@@ -12,8 +12,12 @@ export default function TrainingNavigation({
 }: {
   trainingId: number;
 }) {
-  const training = useTrainingContext();
-  console.log(training);
+  // const training = useTrainingContext(); // Remove unused variable
+  const pathname = usePathname();
+  // If on leaderboard page, do not render the sidebar at all
+  if (pathname.includes("/leaderboard")) {
+    return null;
+  }
   return (
     <div className="flex gap-6">
       <aside>
@@ -25,37 +29,13 @@ export default function TrainingNavigation({
               "h-auto",
               "self-center",
             )}
-            // style={{ backgroundColor: "rgb(41, 41, 41)" }}
           >
-            <ul className={cn("flex", "flex-col")}>
-            {(training?.standing) &&
-            <>
-              {training?.standing.map((context, i) => (
-                <li
-                key={i}
-                className={cn(itemStyle,"bg-slate-400")}
-                >
-                  <Link
-                    href={`/protected/trainings/${trainingId}/contests/${context.ContestInfo.id}/standing`}
-                    className={cn("w-full block box-border px-4 py-2")}
-                    >
-                    contest: {context.ContestInfo.title}
-                  </Link>
-                </li>
-              ))}
-              </>
-            }
-              <li
-                className={cn(itemStyle,
-                   "bg-zinc-500"
-                )}
+            <ul className={cn("flex", "flex-col")}> 
+              <li className={cn(itemStyle, "bg-zinc-500")}
               >
                 <Link href={`/protected/trainings/${trainingId}/materials`} className={cn("w-full block box-border px-4 py-2")}>
                   materials
                 </Link>
-              </li>
-              <li>
-
               </li>
             </ul>
           </nav>
