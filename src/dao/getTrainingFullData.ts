@@ -77,7 +77,7 @@ export async function getTrainingFullData({
 
   // Fetch blocks as before
   const blocksResult = await db
-    .select({ id: Blocks.blockNumber, title: Blocks.title, materials: Blocks.material })
+    .select({ id: Blocks.blockNumber, title: Blocks.title, materials: Blocks.material, description: Blocks.description })
     .from(Blocks)
     .where(and(eq(Blocks.trainingId, trainingId), eq(Blocks.hidden, false), isNull(Blocks.deleted)))
     .execute();

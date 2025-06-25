@@ -11,16 +11,14 @@ import "@/styles/components/block.css"
  */
 export default async function EditTrainingPage({params}: { params: Promise<{ trainingId: string }> }) {
     // Parse training data from params
-    const {trainingId: trainingIdStr} = await params;
-
-    // Validate numeric parameters
-    const trainingId = Number(trainingIdStr);
+    const { trainingId } = await params;
+    const trainingIdNumber = Number(trainingId);
 
     // Check if the parameter is a valid number
-    if (isNaN(trainingId)) throw new Error("Invalid training ID");
+    if (isNaN(trainingIdNumber)) throw new Error("Invalid training ID");
 
     // Fetch the training data
-    const training = await getTraining(trainingId);
+    const training = await getTraining(trainingIdNumber);
 
     // Check if the training data is null
     if (training === null) {
@@ -29,7 +27,7 @@ export default async function EditTrainingPage({params}: { params: Promise<{ tra
     }
 
     // check if the user has permission to edit the training
-    const hasEditPermission = await getUserEditTrainingPermissions(trainingId);
+    const hasEditPermission = await getUserEditTrainingPermissions(trainingIdNumber);
     if (!hasEditPermission) {
         console.error("User does not have permission to edit training");
         return null;

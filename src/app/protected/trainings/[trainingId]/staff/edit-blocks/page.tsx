@@ -9,8 +9,9 @@ export default async function EditBlocksPage({
 }: {
   params: Promise<{ trainingId: string }>;
 }) {
-  const trainingId = parseInt((await params).trainingId);
-  if (isNaN(trainingId)) {
+  const { trainingId } = await params;
+  const trainingIdNumber = parseInt(trainingId);
+  if (isNaN(trainingIdNumber)) {
     redirect("404");
   }
 
@@ -23,14 +24,14 @@ export default async function EditBlocksPage({
       hidden: Blocks.hidden,
     })
     .from(Blocks)
-    .where(and(eq(Blocks.trainingId, trainingId), isNull(Blocks.deleted)))
+    .where(and(eq(Blocks.trainingId, trainingIdNumber), isNull(Blocks.deleted)))
     .orderBy(Blocks.blockNumber);
 
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Edit Training Blocks</h1>
       <div className="grid gap-6">
-        <UpdateBlock trainingId={trainingId} initialBlocks={blocks} />
+        <UpdateBlock trainingId={trainingIdNumber} initialBlocks={blocks} />
       </div>
     </div>
   );

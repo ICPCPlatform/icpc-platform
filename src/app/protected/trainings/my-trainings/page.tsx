@@ -120,8 +120,8 @@ export default async function MyTrainingsPage() {
                   </Link>
                 </Button>
                 <Button asChild>
-                  <Link href={`/protected/trainings/${training.trainingId}/leaderboard`}>
-                    Go to Training
+                  <Link href={`/protected/trainings/${training.trainingId}`}>
+                    Open Training
                   </Link>
                 </Button>
               </CardFooter>
