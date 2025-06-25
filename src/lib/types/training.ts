@@ -89,6 +89,11 @@ export type Trainee = {
   faculty?: string;
 };
 
+export interface LeaderBoardEntry{
+  userId: string;
+  points: number;
+}
+export type LeaderBoard = LeaderBoardEntry[];
 /**
  * Standing Entry with Trainee Details
  */
