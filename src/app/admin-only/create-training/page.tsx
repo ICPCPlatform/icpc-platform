@@ -155,7 +155,7 @@ export default function CreateTrainingPage() {
                       <Input placeholder="Username of the chief judge" {...field} />
                     </FormControl>
                     <FormDescription>
-                      The username of the Cheif Judge
+                      The username of the Chief Judge
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
