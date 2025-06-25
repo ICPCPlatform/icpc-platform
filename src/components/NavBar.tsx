@@ -73,7 +73,7 @@ export function Navbar() {
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
-                          href="/protected/my-trainings"
+                          href="/protected/trainings/my-trainings"
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-medium">
@@ -105,11 +105,11 @@ export function Navbar() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/about" passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild>
+                  <Link href="/about" className={navigationMenuTriggerStyle()}>
                     About Us
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <a href="https://forms.gle/i22PhB5fZYF4THa46" target="_blank">

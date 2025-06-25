@@ -58,3 +58,4 @@ export const Trainings = pgTable("trainings", {
   status: varchar({ length: 20 }).$type<Status>().default("private").notNull(),
   deleted: timestamp(),
 });
+

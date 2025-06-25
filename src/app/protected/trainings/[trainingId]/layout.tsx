@@ -1,0 +1,50 @@
+import { getTrainingFullData } from "@/dao/getTrainingFullData";
+import { getUserData } from "@/lib/session";
+import Link from "next/link";
+import React from "react";
+import { TrainingNavigation } from "@/components/training/TrainingNavigation";
+
+function Breadcrumb({ trainingName, section }: { trainingName: string; section?: string }) {
+  return (
+    <nav className="text-sm mb-4 text-muted-foreground">
+      <Link href="/protected/trainings">Dashboard</Link> &gt; {" "}
+      <Link href="/protected/trainings/my-trainings">My Trainings</Link> &gt; {" "}
+      <span>{trainingName}</span>
+      {section && <span> &gt; {section}</span>}
+    </nav>
+  );
+}
+
+export default async function TrainingLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ trainingId: string }>;
+}) {
+  const { trainingId } = await params;
+  const trainingIdNumber = Number(trainingId);
+  const user = await getUserData();
+  const userId = user?.userId;
+  // Fetch training data with userId to get userRoles
+  const trainingData = await getTrainingFullData({ trainingId: trainingIdNumber, userId });
+  const trainingName = trainingData?.blocks?.[0]?.title ? `Training #${trainingIdNumber}` : `Training #${trainingIdNumber}`;
+  // Use userRoles from trainingData
+  const userRoles = trainingData.userRoles || [];
+
+  return (
+    <div className="container mx-auto py-6">
+      <Breadcrumb trainingName={trainingName} />
+      <header className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <h1 className="text-3xl font-bold">
+          Training: {trainingName}
+          <span className="ml-4 text-base font-normal text-muted-foreground">
+            — Roles: {userRoles.length > 0 ? userRoles.join(", ") : "trainee"}
+          </span>
+        </h1>
+      </header>
+      <TrainingNavigation trainingId={trainingIdNumber} userId={userId} />
+      <main>{children}</main>
+    </div>
+  );
+} 
