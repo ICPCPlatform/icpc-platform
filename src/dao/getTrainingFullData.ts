@@ -25,7 +25,7 @@ const selectKeysFromObjects = (data: typeof userSelectFields , keys: string[]) =
 };
 
 export type TrainingFlatLeaderboardDTO = {
-  standing: (Trainee & LeaderBoardEntry)[];
+  leaderboard: (Trainee & LeaderBoardEntry)[];
   blocks: TrainingFullDTO["blocks"];
 };
 
@@ -114,7 +114,7 @@ export async function getTrainingFullData({
   }
 
   // Return as a flat array of user standings (not contest standings)
-  return { standing: standingWithDetails, blocks, ...(userRoles ? { userRoles } : {}) };
+  return { leaderboard: standingWithDetails, blocks, ...(userRoles ? { userRoles } : {}) };
 }
 
 const userSelectFields  = {
