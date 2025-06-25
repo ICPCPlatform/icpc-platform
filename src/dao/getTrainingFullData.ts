@@ -9,12 +9,10 @@ import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import {
-  Ranking,
-  RankingEntryWithDetails,
   Trainee,
-  Training,
   TrainingFullDTO,
-} from "@/lib/types/Training";
+  LeaderBoardEntry,
+} from "@/lib/types/training";
 const selectKeysFromObjects = (data: typeof userSelectFields , keys: string[]) => {
   return keys.reduce((acc, key) => {
     if (key in data) {
@@ -25,81 +23,70 @@ const selectKeysFromObjects = (data: typeof userSelectFields , keys: string[]) =
   }, {});
 };
 
+export type TrainingFlatLeaderboardDTO = {
+  standing: (Trainee & LeaderBoardEntry)[];
+  blocks: TrainingFullDTO["blocks"];
+};
+
 export async function getTrainingFullData({
   trainingId,
 }: {
   trainingId: number;
-}): Promise<TrainingFullDTO> {
+}): Promise<TrainingFlatLeaderboardDTO> {
   // Fetch training details
   const trainingResult = await db
     .select({
-      standing: Trainings.standing,
+      leaderBoard: Trainings.leaderBoard,
       standingView: Trainings.standingView,
     })
     .from(Trainings)
     .where(eq(Trainings.trainingId, trainingId))
     .execute();
-  const training: Training = trainingResult[0] satisfies Training;
-  
-  const blocksResult = await db
-    .select({id: Blocks.blockNumber, title: Blocks.title, materials: Blocks.material})
-    .from(Blocks)
-    .where(and(eq(Blocks.trainingId, trainingId),eq(Blocks.hidden, false),isNull(Blocks.deleted)))
-    .execute();
-  
-  const blocks = blocksResult satisfies TrainingFullDTO["blocks"];
-  blocks.sort((a, b) => a.id - b.id);
 
-  // Find the standing for the current contest
+  const training = trainingResult[0];
+  if (!training) {
+    throw new Error("Training not found");
+  }
 
-  // Fetch trainee details for each trainee in the standing
-    
-  const { standingView, standing } = training;
-   
-  // Add userId to the standing view to fetch trainee details
-  const traineeIds = [
-    ...new Set(standing?.map((s) => s.rankings.map((r) => r.userId)).flat()),
-  ].filter((id) => id !== undefined);
+  const { standingView, leaderBoard } = training;
+  // leaderBoard is expected to be an array of { userId, points }
+  const standing: LeaderBoardEntry[] = Array.isArray(leaderBoard) ? leaderBoard : [];
 
+  // Get all userIds in the leaderboard
+  const traineeIds = standing.map((entry) => entry.userId).filter((id) => id !== undefined);
+
+  // Fetch user details for each userId
   const trainees: Trainee[] = (await db
-    .select({...selectKeysFromObjects(userSelectFields , standingView),  userId: Users.userId,
-    })
+    .select({ ...selectKeysFromObjects(userSelectFields, standingView), userId: Users.userId })
     .from(Users)
     .leftJoin(UsersFullData, eq(UsersFullData.userId, Users.userId))
     .leftJoin(Institutes, eq(Institutes.id, UsersFullData.instituteId))
     .leftJoin(Faculties, eq(Faculties.id, UsersFullData.facultyId))
     .where(inArray(Users.userId, traineeIds))
     .execute()) satisfies Trainee[];
-    
-  // Map standings to include trainee detailst
-  
-  const standingWithDetails: TrainingFullDTO["standing"] = standing?.map(
-    (contest) => {
-      
-      return {
-        ...contest,
-        rankings: contest.rankings
-          .map((s: Ranking) => {
-            if (s.userId === undefined) {
-              return undefined;
-            }
-            const user = trainees.find((usr) => usr.userId === s.userId);
-            if (user) {
-              const obj = {
-                ...s,
-                ...user, // Assuming penalty is used as points
-                userId: undefined,
-              };
-              return obj;
-            }
-            return undefined;
-          })
-          .filter((x) => x !== undefined) as RankingEntryWithDetails[],
-      };
-    },
-  );
 
-  return { standing: standingWithDetails, blocks: blocks };
+  // Merge leaderboard points with user details
+  const standingWithDetails = standing.map((entry) => {
+    const user = trainees.find((usr) => usr.userId === entry.userId);
+    return {
+      ...user,
+      points: entry.points,
+      userId: entry.userId,
+    };
+  });
+
+  // Fetch blocks as before
+  const blocksResult = await db
+    .select({ id: Blocks.blockNumber, title: Blocks.title, materials: Blocks.material })
+    .from(Blocks)
+    .where(and(eq(Blocks.trainingId, trainingId), eq(Blocks.hidden, false), isNull(Blocks.deleted)))
+    .execute();
+
+  const blocks = blocksResult satisfies TrainingFullDTO["blocks"];
+  blocks.sort((a, b) => a.id - b.id);
+
+  // Return as a flat array of user standings (not contest standings)
+  return { standing: standingWithDetails, blocks };
 }
 
 const userSelectFields  = {
