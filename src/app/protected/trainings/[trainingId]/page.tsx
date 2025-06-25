@@ -15,7 +15,7 @@ export default async function TrainingOverviewPage({ params }: { params: Promise
         <div className="font-semibold">Summary</div>
         <ul className="list-disc ml-6 mt-2">
           <li>{trainingData.blocks.length} blocks in this training</li>
-          <li>{trainingData.standing.length} participants</li>
+          <li>{trainingData.leaderboard.length} participants</li>
           {/* Example: "2 new contests this week" - can be enhanced later */}
         </ul>
       </div>
