@@ -50,7 +50,8 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
       });
       if (res.success) {
         setMessage("Standing view updated.");
-        redirect(`/protected/trainings/${trainingId}/leaderboard`);
+        const router = useRouter();
+        router.push(`/protected/trainings/${trainingId}/leaderboard`);
       } else {
         setMessage(res.error || "Failed to update.");
       }
