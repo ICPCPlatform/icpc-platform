@@ -23,14 +23,6 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   );
 }
 
-function getRoleFromPermissions(perms: TrainingPermissions[]): string {
-  if (perms.includes("Edit:staff") || perms.includes("Edit:training") || perms.includes("Edit:block") || perms.includes("Edit:contest")) return "manager";
-  if (perms.includes("Edit:material")) return "instructor";
-  if (perms.includes("Edit:practice")) return "mentor";
-  if (perms.includes("View:trainee")) return "trainee";
-  return "user";
-}
-
 export default async function TrainingLayout({
   children,
   params,
@@ -40,11 +32,14 @@ export default async function TrainingLayout({
 }) {
   const { trainingId } = await params;
   const trainingIdNumber = Number(trainingId);
-  const trainingData = await getTrainingFullData({ trainingId: trainingIdNumber });
   const user = await getUserData();
+  const userId = user?.userId;
+  // Fetch training data with userId to get userRoles
+  const trainingData = await getTrainingFullData({ trainingId: trainingIdNumber, userId });
   const permissions: TrainingPermissions[] = user ? await getUserTrainingPermissions(user.userId, trainingIdNumber) : [];
   const trainingName = trainingData?.blocks?.[0]?.title ? `Training #${trainingIdNumber}` : `Training #${trainingIdNumber}`;
-  const role = getRoleFromPermissions(permissions);
+  // Use userRoles from trainingData
+  const userRoles = trainingData.userRoles || [];
 
   // Navigation links based on permissions
   const links: { perm: TrainingPermissions; href: string; label: string }[] = [
@@ -64,7 +59,9 @@ export default async function TrainingLayout({
       <header className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
         <h1 className="text-3xl font-bold">
           Training: {trainingName}
-          <span className="ml-4 text-base font-normal text-muted-foreground">— Role: {role}</span>
+          <span className="ml-4 text-base font-normal text-muted-foreground">
+            — Roles: {userRoles.length > 0 ? userRoles.join(", ") : "trainee"}
+          </span>
         </h1>
       </header>
       <nav className="mb-8 flex gap-2 border-b pb-2">
