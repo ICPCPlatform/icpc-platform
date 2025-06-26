@@ -1,11 +1,30 @@
 "use server";
 
-export async function getVirtualMentorReply(messages: { role: string; content: string }[]) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error("Gemini API key not set");
+export async function getVirtualMentorReply(_prevState: { reply: string | null; error: string | null }, form: FormData) {
+  try {
+    const messagesRaw = form.get('messages');
+    const message = form.get('message');
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("Gemini API key not set");
 
-  // System prompt (same as before)
-  const systemPrompt = `### 🧠 Virtual Mentor Behavior Rules
+    // Parse previous messages
+    let messages: { role: string; content: string }[] = [];
+    if (typeof messagesRaw === 'string') {
+      try {
+        messages = JSON.parse(messagesRaw);
+      } catch (__unused) {
+        // ignore, fallback to empty
+        console.log(__unused)
+      }
+    }
+
+    // Add the new user message
+    if (typeof message === 'string' && message.trim()) {
+      messages.push({ role: 'user', content: message });
+    }
+
+    // System prompt (same as before)
+    const systemPrompt = `### 🧠 Virtual Mentor Behavior Rules
 
 These are the core behavior rules you must follow when helping users:
 
@@ -75,35 +94,38 @@ These are the core behavior rules you must follow when helping users:
 - Do not overwhelm the user with too much information at once.
 `;
 
-  // Prepare the message list for Gemini (as parts only, no role)
-  const allMessages = [
-    { role: "system", content: systemPrompt },
-    ...messages.filter(m => m.role !== "system"),
-  ];
+    // Prepare the message list for Gemini (as parts only, no role)
+    const allMessages = [
+      { role: "system", content: systemPrompt },
+      ...messages.filter(m => m.role !== "system"),
+    ];
 
-  const payload = {
-    contents: [
+    const payload = {
+      contents: [
+        {
+          parts: allMessages.map(m => ({ text: m.content })),
+        },
+      ],
+    };
+
+    // Call Gemini API (using Google Generative Language API v1beta, gemini-2.0-flash)
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
-        parts: allMessages.map(m => ({ text: m.content })),
-      },
-    ],
-  };
-
-  // Call Gemini API (using Google Generative Language API v1beta, gemini-2.0-flash)
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      const error = await res.text();
+      return { reply: null, error: `Gemini API error: ${error}` };
     }
-  );
-  if (!res.ok) {
-    const error = await res.text();
-    throw new Error(`Gemini API error: ${error}`);
+    const data = await res.json();
+    // Extract the response text
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+    return { reply: text, error: null };
+  } catch (err: unknown) {
+    return { reply: null, error: err instanceof Error ? err.message : "Unknown error" };
   }
-  const data = await res.json();
-  // Extract the response text
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
-  return text;
 } 

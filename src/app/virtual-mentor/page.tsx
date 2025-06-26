@@ -1,13 +1,11 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useActionState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Bot, User, Copy, Check } from "lucide-react";
+import { Sparkles, Bot, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,36 +19,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { useTransition, useCallback, useState as useReactState } from "react";
-
-// Utility to detect Arabic text
-function isArabic(text: string) {
-  return /[\u0600-\u06FF]/.test(text);
-}
-
-// CopyButton for code blocks
-function CopyButton({ code }: { code: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      type="button"
-      aria-label="Copy code"
-      className="absolute top-2 right-2 z-10 p-1 rounded transition
-        text-muted-foreground hover:text-primary
-        bg-transparent hover:bg-muted/70 dark:hover:bg-accent/70
-        shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-      onClick={async e => {
-        e.preventDefault();
-        await navigator.clipboard.writeText(code);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1200);
-      }}
-      tabIndex={0}
-    >
-      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-    </button>
-  );
-}
 
 // Zod schema for message validation
 const messageSchema = z.object({
@@ -58,41 +26,14 @@ const messageSchema = z.object({
 });
 
 // Inline useAction hook for async server action with pending and error state
-function useAction(action) {
-  const [error, setError] = useReactState(null);
-  const [isPending, startTransition] = useTransition();
-  const run = useCallback(
-    async (...args) => {
-      setError(null);
-      let result;
-      await new Promise(resolve => {
-        startTransition(async () => {
-          try {
-            result = await action(...args);
-          } catch (err) {
-            setError(err instanceof Error ? err.message : String(err));
-          }
-          resolve();
-        });
-      });
-      return result;
-    },
-    [action],
-  );
-  return [run, { isPending, error }];
-}
-
+const initialState = { reply: null, error: null };
 export default function VirtualMentorPage() {
-  const [messages, setMessages] = useState([
-    {
-      role: "system",
-      content:
-        "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
-    },
+  const [allMessages, setAllMessages] = useState<Array<{ message: string } | { response: string }>>([
+    { response: "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!" },
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [loading, setLoading] = useState(false);
-  const [sendMessage, { isPending, error: actionError }] = useAction(getVirtualMentorReply);
+  const [actionState, sendMessage, isPending] = useActionState(getVirtualMentorReply, initialState);
+  const [userResponse, setUserResponse] = useState("");
 
   const form = useForm({
     resolver: zodResolver(messageSchema),
@@ -101,7 +42,20 @@ export default function VirtualMentorPage() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [allMessages]);
+
+  // When actionState.reply changes, add the assistant message
+  useEffect(() => {
+    if (actionState.reply) {
+      setAllMessages((prev) => [
+        ...prev,
+        { message: userResponse },
+        { response: actionState.reply },
+      ]);
+      setUserResponse("")
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionState.reply]);
 
   return (
     <div className="container min-h-screen py-8 flex flex-col">
@@ -115,7 +69,9 @@ export default function VirtualMentorPage() {
         </div>
         <div className="mt-3 flex justify-center">
           <div className="text-sm text-yellow-700 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 rounded-md px-4 py-2 max-w-xl mx-auto shadow-sm">
-            <b>Disclaimer:</b> The Virtual Mentor will only give hints and feedback, not direct answers or code corrections. If you send code, it will point out issues but not fix them for you.
+            <b>Disclaimer:</b> The Virtual Mentor will only give hints and
+            feedback, not direct answers or code corrections. If you send code,
+            it will point out issues but not fix them for you.
           </div>
         </div>
       </section>
@@ -127,12 +83,8 @@ export default function VirtualMentorPage() {
             size="sm"
             className="shadow"
             onClick={() => {
-              setMessages([
-                {
-                  role: "system",
-                  content:
-                    "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
-                },
+              setAllMessages([
+                { response: "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!" },
               ]);
               form.reset();
             }}
@@ -143,151 +95,63 @@ export default function VirtualMentorPage() {
         <div
           className={`flex-1 overflow-y-auto px-0 py-4 md:px-8 md:py-6 space-y-2 transition-opacity duration-300 ${isPending ? "opacity-60" : "opacity-100"}`}
         >
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`flex items-end gap-2 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
-              >
-                {msg.role === "user" ? (
-                  <User className="w-5 h-5 text-primary" />
-                ) : (
-                  <Bot className="w-5 h-5 text-green-500" />
-                )}
-                <div
-                  className={`rounded-xl px-4 py-2 text-sm max-w-2xl shadow-sm transition-all duration-150 markdown-chat-bubble
-                    ${msg.role === "user"
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "bg-muted text-foreground border border-border"}
-                  `}
-                  dir={msg.role !== "user" && isArabic(msg.content) ? "rtl" : "ltr"}
-                  style={{
-                    fontFamily: msg.role === "user" ? undefined : 'inherit',
-                    textAlign: msg.role !== "user" && isArabic(msg.content) ? "right" : "left",
-                  }}
-                >
-                  {msg.role === "assistant" || msg.role === "system" ? (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      rehypePlugins={[rehypeSanitize]}
-                      components={{
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        code(props: any) {
-                          const { inline, className, children, ...rest } = props;
-                          const codeString = String(children);
-                          const match = /language-(\w+)/.exec(className || "");
-                          // Heuristic: treat as inline code if inline, or if not inline but code is short and has no newlines
-                          const isInlineLike = inline || (!inline && !codeString.includes('\n') && codeString.length < 30);
-                          if (isInlineLike) {
-                            return (
-                              <code
-                                className="bg-muted px-1 py-0.5 rounded text-[0.97em] font-mono text-primary border border-border whitespace-normal"
-                                style={{
-                                  fontFamily: 'Fira Mono, Menlo, Monaco, Consolas, monospace',
-                                  fontSize: 13,
-                                  wordBreak: 'break-word',
-                                  display: 'inline',
-                                }}
-                                {...rest}
-                              >
-                                {children}
-                              </code>
-                            );
-                          }
-                          // Otherwise, treat as code block
-                          return (
-                            <div className="relative overflow-x-auto rounded-md bg-[#23272e] my-4" style={{ maxWidth: '100%' }}>
-                              <CopyButton code={codeString.replace(/\n$/, "")} />
-                              <SyntaxHighlighter
-                                style={oneDark}
-                                language={match ? match[1] : ""}
-                                PreTag="div"
-                                customStyle={{
-                                  borderRadius: 8,
-                                  margin: 0,
-                                  padding: '0.5em 0.75em',
-                                  fontSize: 13,
-                                  background: 'transparent',
-                                  fontFamily: 'Fira Mono, Menlo, Monaco, Consolas, monospace',
-                                  lineHeight: 1.5,
-                                  maxWidth: '100%',
-                                }}
-                              >
-                                {codeString.replace(/\n$/, "")}
-                              </SyntaxHighlighter>
-                            </div>
-                          );
-                        },
-                        strong({ children }) {
-                          return <strong className="font-semibold text-primary">{children}</strong>;
-                        },
-                        em({ children }) {
-                          return <em className="italic text-muted-foreground">{children}</em>;
-                        },
-                        u({ children }) {
-                          return <u className="underline decoration-primary/60">{children}</u>;
-                        },
-                        li({ children }) {
-                          return <li className="ml-6 pl-1 list-disc leading-snug text-[0.98em]">{children}</li>;
-                        },
-                        ul({ children }) {
-                          return <ul className="mb-1 pb-0 bg-muted/40 rounded-md px-3 py-1">{children}</ul>;
-                        },
-                        ol({ children }) {
-                          return <ol className="mb-1 pb-0 bg-muted/40 rounded-md px-3 py-1 list-decimal">{children}</ol>;
-                        },
-                        p({ children }) {
-                          return <p className="mb-1 last:mb-0 leading-relaxed text-[0.99em]">{children}</p>;
-                        },
-                      }}
-                    >
-                      {msg.content}
-                    </ReactMarkdown>
-                  ) : (
-                    msg.content
-                  )}
+          {allMessages.map((msg, idx) => {
+            if ('message' in msg) {
+              // User message
+              return (
+                <div key={idx} className="flex justify-end">
+                  <div className="flex items-end gap-2 flex-row-reverse">
+                    <User className="w-5 h-5 text-primary" />
+                    <div className="rounded-xl px-4 py-2 text-sm max-w-2xl shadow-sm bg-primary text-primary-foreground hover:bg-primary/90">
+                      {msg.message}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            } else {
+              // Assistant/system message
+              return (
+                <div key={idx} className="flex justify-start">
+                  <div className="flex items-end gap-2">
+                    <Bot className="w-5 h-5 text-green-500" />
+                    <div className="rounded-xl px-4 py-2 text-sm max-w-2xl shadow-sm bg-muted text-foreground border border-border">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeSanitize]}
+                      >
+                        {msg.response}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          })}
           <div ref={messagesEndRef} />
         </div>
         <Form {...form}>
           <form
             className="flex gap-2 border-t border-border bg-background px-4 py-3"
-            onSubmit={form.handleSubmit(async ({ message }) => {
-              if (!message.trim() || isPending) return;
-              setMessages(prev => [...prev, { role: "user", content: message }]);
-              form.reset();
-              setLoading(true);
-              const reply = await sendMessage([
-                ...messages,
-                { role: "user", content: message },
-              ]);
-              if (reply) {
-                setMessages(prev => [...prev, { role: "assistant", content: reply }]);
-              }
-              setLoading(false);
-            })}
+            action={sendMessage}
           >
+            {/* Serialize allMessages as a hidden input for the server action */}
             <FormField
               name="message"
-              render={({ field }) => (
+              render={() => (
                 <FormItem className="flex-1">
                   <FormControl>
                     <Textarea
-                      {...field}
+                      value={userResponse}
+                      onChange={e => setUserResponse(e.target.value)}
                       className="flex-1 resize-none min-h-[44px] max-h-40"
                       placeholder="Type your question or paste your code..."
                       autoFocus
                       autoComplete="off"
-                      disabled={loading || isPending}
-                      onKeyDown={e => {
+                      disabled={isPending}
+                      onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
-                          if (!loading && (e.target as HTMLTextAreaElement).value.trim()) {
+                          if (!isPending && userResponse.trim()) {
                             (e.target as HTMLTextAreaElement).form?.requestSubmit();
                           }
                         }
@@ -298,17 +162,22 @@ export default function VirtualMentorPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" variant="default" disabled={loading || isPending}>
-              {(loading || isPending) ? "..." : "Send"}
+            <Button
+              type="submit"
+              variant="default"
+              disabled={isPending}
+            >
+              {isPending ? "..." : "Send"}
             </Button>
           </form>
         </Form>
-        {actionError && (
-          <div className="text-red-600 text-sm px-4 pb-2">{actionError}</div>
+        {actionState.error && (
+          <div className="text-red-600 text-sm px-4 pb-2">{actionState.error}</div>
         )}
       </Card>
       <style jsx global>{`
-        .markdown-chat-bubble ul, .markdown-chat-bubble ol {
+        .markdown-chat-bubble ul,
+        .markdown-chat-bubble ol {
           margin-top: 0.25em;
           margin-bottom: 0.25em;
         }
@@ -318,4 +187,4 @@ export default function VirtualMentorPage() {
       `}</style>
     </div>
   );
-} 
+}
