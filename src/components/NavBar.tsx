@@ -62,25 +62,10 @@ export function Navbar() {
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-medium">
-                            All Trainings
+                            Trainings
                           </div>
                           <p className="line-clamp-2 text-sm text-muted-foreground">
                             Browse all available training programs.
-                          </p>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                    <li>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href="/protected/trainings/my-trainings"
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium">
-                            My Trainings
-                          </div>
-                          <p className="line-clamp-2 text-sm text-muted-foreground">
-                            View your enrolled and completed trainings.
                           </p>
                         </Link>
                       </NavigationMenuLink>
