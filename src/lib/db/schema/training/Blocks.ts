@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { Trainings } from "./Trainings";
-import {  MaterialsEntry } from "@/lib/types/Training";
+import {  MaterialsEntry } from "@/lib/types/training";
 
 /**
  * block is the smallest unit of a training

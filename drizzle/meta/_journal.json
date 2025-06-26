@@ -43,6 +43,13 @@
       "when": 1750782549318,
       "tag": "0005_foamy_doctor_faustus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1750939831832,
+      "tag": "0006_salty_fantastic_four",
+      "breakpoints": true
     }
   ]
 }
