@@ -31,6 +31,9 @@ export default function VirtualMentorPage() {
   const [allMessages, setAllMessages] = useState<Array<{ message: string } | { response: string }>>([
     { response: "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!" },
   ]);
+  const [_messages, setMessages] = useState<Array<{ role: string; content: string }>>([
+    { role: "system", content: "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!" },
+  ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [actionState, sendMessage, isPending] = useActionState(getVirtualMentorReply, initialState);
   const [userResponse, setUserResponse] = useState("");
@@ -47,12 +50,15 @@ export default function VirtualMentorPage() {
   // When actionState.reply changes, add the assistant message
   useEffect(() => {
     if (actionState.reply) {
-      setAllMessages((prev) => [
+      
+      setAllMessages(prev => [
         ...prev,
-        { message: userResponse },
         { response: actionState.reply },
       ]);
-      setUserResponse("")
+      setMessages(prev => [
+        ...prev,
+        { role: "assistant", content: actionState.reply },
+      ]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionState.reply]);
@@ -82,12 +88,6 @@ export default function VirtualMentorPage() {
             variant="outline"
             size="sm"
             className="shadow"
-            onClick={() => {
-              setAllMessages([
-                { response: "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!" },
-              ]);
-              form.reset();
-            }}
           >
             New Chat
           </Button>
@@ -134,7 +134,12 @@ export default function VirtualMentorPage() {
             className="flex gap-2 border-t border-border bg-background px-4 py-3"
             action={sendMessage}
           >
-            {/* Serialize allMessages as a hidden input for the server action */}
+            <input
+              type="hidden"
+              name="messages"
+              value={JSON.stringify(_messages ?? [])}
+              onChange={() => {}}
+            />
             <FormField
               name="message"
               render={() => (
@@ -152,6 +157,15 @@ export default function VirtualMentorPage() {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
                           if (!isPending && userResponse.trim()) {
+                            setAllMessages(prev => [
+                              ...prev,
+                              { message: userResponse },
+                            ]);
+                            setMessages(prev => [
+                              ...prev,
+                              { role: "user", content: userResponse },
+                            ]);
+                            setUserResponse("");
                             (e.target as HTMLTextAreaElement).form?.requestSubmit();
                           }
                         }
@@ -163,9 +177,24 @@ export default function VirtualMentorPage() {
               )}
             />
             <Button
-              type="submit"
+              type="button"
               variant="default"
               disabled={isPending}
+              onClick={e => {
+                if (!isPending && userResponse.trim()) {
+                  setAllMessages(prev => [
+                    ...prev,
+                    { message: userResponse },
+                  ]);
+                  setMessages(prev => [
+                    ...prev,
+                    { role: "user", content: userResponse },
+                  ]);
+                  setUserResponse("");
+                  // @ts-expect-error: e.target.form is not typed on Button event target, but is valid in the DOM
+                  e.target.form?.requestSubmit();
+                }
+              }}
             >
               {isPending ? "..." : "Send"}
             </Button>
