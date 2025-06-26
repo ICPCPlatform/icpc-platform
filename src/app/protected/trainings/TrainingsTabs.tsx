@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getUserApplications, applyToTraining } from "@/app/applications/actions";
 
 function formatDate(date: Date | string) {
   return new Date(date).toLocaleDateString("en-US", {
@@ -67,9 +68,7 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
   const [applying, setApplying] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/applications")
-      .then((res) => res.json())
-      .then((data) => setApplications(data.applications || []));
+    getUserApplications().then((apps) => setApplications(apps || []));
   }, []);
 
   const getAppStatus = (trainingId: number) => {
@@ -79,17 +78,13 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
 
   const handleApply = async (trainingId: number) => {
     setApplying(trainingId);
-    const res = await fetch("/api/applications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ trainingId }),
-    });
-    if (res.ok) {
+    try {
+      await applyToTraining(trainingId);
       setApplications((apps) => [
         ...apps,
         { applicationId: Date.now(), trainingId, status: "pending" },
       ]);
-    }
+    } catch {}
     setApplying(null);
   };
 

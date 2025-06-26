@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { getUserApplications, withdrawApplication } from "./actions";
 
 interface Application {
   applicationId: number;
@@ -17,10 +18,9 @@ export default function ApplicationsPage() {
   const [withdrawing, setWithdrawing] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/applications")
-      .then((res) => res.json())
-      .then((data) => {
-        setApplications(data.applications || []);
+    getUserApplications()
+      .then((apps) => {
+        setApplications(apps || []);
         setLoading(false);
       })
       .catch(() => {
@@ -32,18 +32,14 @@ export default function ApplicationsPage() {
   const handleWithdraw = async (trainingId: number) => {
     setWithdrawing(trainingId);
     setError(null);
-    const res = await fetch("/api/applications", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ trainingId }),
-    });
-    if (res.ok) {
+    try {
+      await withdrawApplication(trainingId);
       setApplications((apps) =>
         apps.map((app) =>
           app.trainingId === trainingId ? { ...app, status: "withdrawn" } : app
         )
       );
-    } else {
+    } catch {
       setError("Failed to withdraw application");
     }
     setWithdrawing(null);
