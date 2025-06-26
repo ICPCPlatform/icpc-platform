@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import StaffTabs from "./StaffTabs";
+import StaffTabs from "./_StaffTabs";
 import { db } from "@/lib/db";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { Users } from "@/lib/db/schema/user/Users";
