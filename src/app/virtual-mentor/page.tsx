@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Bot, User } from "lucide-react";
+import { Sparkles, Bot, User, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -13,6 +13,30 @@ import { Textarea } from "@/components/ui/textarea";
 // Utility to detect Arabic text
 function isArabic(text: string) {
   return /[\u0600-\u06FF]/.test(text);
+}
+
+// CopyButton for code blocks
+function CopyButton({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      aria-label="Copy code"
+      className="absolute top-2 right-2 z-10 p-1 rounded transition
+        text-muted-foreground hover:text-primary
+        bg-transparent hover:bg-muted/70 dark:hover:bg-accent/70
+        shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+      onClick={async e => {
+        e.preventDefault();
+        await navigator.clipboard.writeText(code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1200);
+      }}
+      tabIndex={0}
+    >
+      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+    </button>
+  );
 }
 
 export default function VirtualMentorPage() {
@@ -81,7 +105,7 @@ export default function VirtualMentorPage() {
                   <Bot className="w-5 h-5 text-green-500" />
                 )}
                 <div
-                  className={`rounded-xl px-4 py-2 text-sm max-w-2xl whitespace-pre-wrap shadow-sm transition-all duration-150 markdown-chat-bubble
+                  className={`rounded-xl px-4 py-2 text-sm max-w-2xl shadow-sm transition-all duration-150 markdown-chat-bubble
                     ${msg.role === "user"
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "bg-muted text-foreground border border-border"}
@@ -99,9 +123,30 @@ export default function VirtualMentorPage() {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         code(props: any) {
                           const { inline, className, children, ...rest } = props;
+                          const codeString = String(children);
                           const match = /language-(\w+)/.exec(className || "");
-                          return !inline ? (
-                            <div className="overflow-x-auto rounded-md bg-[#23272e] my-2" style={{maxWidth: '100%'}}>
+                          // Heuristic: treat as inline code if inline, or if not inline but code is short and has no newlines
+                          const isInlineLike = inline || (!inline && !codeString.includes('\n') && codeString.length < 30);
+                          if (isInlineLike) {
+                            return (
+                              <code
+                                className="bg-muted px-1 py-0.5 rounded text-[0.97em] font-mono text-primary border border-border whitespace-normal"
+                                style={{
+                                  fontFamily: 'Fira Mono, Menlo, Monaco, Consolas, monospace',
+                                  fontSize: 13,
+                                  wordBreak: 'break-word',
+                                  display: 'inline',
+                                }}
+                                {...rest}
+                              >
+                                {children}
+                              </code>
+                            );
+                          }
+                          // Otherwise, treat as code block
+                          return (
+                            <div className="relative overflow-x-auto rounded-md bg-[#23272e] my-4" style={{ maxWidth: '100%' }}>
+                              <CopyButton code={codeString.replace(/\n$/, "")} />
                               <SyntaxHighlighter
                                 style={oneDark}
                                 language={match ? match[1] : ""}
@@ -116,19 +161,10 @@ export default function VirtualMentorPage() {
                                   lineHeight: 1.5,
                                   maxWidth: '100%',
                                 }}
-                                {...rest}
                               >
-                                {String(children).replace(/\n$/, "")}
+                                {codeString.replace(/\n$/, "")}
                               </SyntaxHighlighter>
                             </div>
-                          ) : (
-                            <code
-                              className="bg-muted px-1 py-0.5 rounded text-[0.97em] font-mono text-primary border border-border"
-                              style={{ fontFamily: 'Fira Mono, Menlo, Monaco, Consolas, monospace', fontSize: 13 }}
-                              {...rest}
-                            >
-                              {children}
-                            </code>
                           );
                         },
                         strong({ children }) {
