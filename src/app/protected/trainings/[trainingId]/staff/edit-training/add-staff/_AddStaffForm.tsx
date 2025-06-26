@@ -34,7 +34,7 @@ export default function AddStaffForm({ trainingId }: { trainingId: number }) {
                 setMessage('Staff added successfully');
                 setUsername('');
                 setRoles({ instructor: false, problem_setter: false, mentor: false });
-            } else {
+            } else if (!result.success) {
                 setMessage(result.error || 'Failed to add staff');
             }
         } catch (error) {

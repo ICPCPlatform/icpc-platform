@@ -62,7 +62,7 @@ function validateSchema<T>(schema: z.ZodType<T>, data: unknown): T {
 }
 
 // Helper for consistent error response
-function errorResponse(error: unknown, fallback = "An error occurred") {
+function errorResponse(error: unknown, fallback = "An error occurred"): {success: false, error: string} {
   console.error(error);
   return { success: false, error: error instanceof Error ? error.message : fallback };
 }
@@ -71,11 +71,11 @@ export async function addStaffAction({
   trainingId,
   username,
   roles,
-}: {
+}:  {
   trainingId: string | number;
   username: string;
   roles: { instructor: boolean; problem_setter: boolean; mentor: boolean };
-}) {
+}) : Promise<{success: true} | {success:false, error: string}> {
   try {
     validateSchema(addStaffSchema, { trainingId, username, roles });
     const userId = await getUserIdByUsername(username);

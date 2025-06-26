@@ -65,11 +65,11 @@ export default function SearchUser({ trainingId }: { trainingId: number }) {
                 {searchResults && (
                     <div className="bg-muted p-4 rounded-md">
                         <h3 className="text-lg font-semibold mb-2">Search Results:</h3>
-                        {searchResults.length === 0 ? (
+                        { Array.isArray(searchResults) && searchResults.length === 0 ? (
                             <p>No users found</p>
                         ) : (
                             <div className="space-y-2">
-                                {searchResults.map((result, index) => (
+                                {Array.isArray(searchResults) && searchResults.map((result, index) => (
                                     <div key={index} className="bg-background p-3 rounded border">
                                         <div className="grid grid-cols-2 gap-2 text-sm">
                                             <div><strong>Username:</strong> {result.username}</div>
