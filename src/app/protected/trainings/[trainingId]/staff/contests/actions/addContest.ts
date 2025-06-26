@@ -28,7 +28,7 @@ export async function addContestAction(
     if (!user) {
       throw new Error("User not authenticated");
     }
-    const { userId  } = user;
+    const { userId } = user;
     const permissions = await getUserTrainingPermissions(userId, trainingId);
     if (!permissions.includes("Edit:contest")) {
       throw new Error("User does not have permissions for this training");
@@ -65,7 +65,7 @@ export async function addContestAction(
         date,
       })
       .execute();
-      revalidatePath(`/protected/trainings/${trainingId}`);
+    revalidatePath(`/protected/trainings/${trainingId}`);
   } catch (error) {
     console.error("Error adding contest:", error);
     throw new Error("Failed to add contest");
