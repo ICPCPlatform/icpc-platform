@@ -1,65 +1,83 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { useTrainingContext } from "@/providers/training";
 import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Trophy } from "lucide-react";
 
+// Type for contest standing data
+interface ContestStanding {
+  ContestInfo: {
+    id: number;
+    title: string;
+  };
+}
 
+// Extended training context type that might include standing
+interface ExtendedTrainingContext {
+  leaderboard: unknown[];
+  blocks: unknown[];
+  standing?: ContestStanding[];
+}
 
-const itemStyle = "w-full gap-3   text-sm font-medium rounded-md transition-colors whitespace-nowrap hover:bg-accent hover:text-accent-foreground my-2 box-border"
 export default function TrainingNavigation({
   trainingId,
 }: {
   trainingId: number;
 }) {
-  const training = useTrainingContext();
-  console.log(training);
+  const training = useTrainingContext() as ExtendedTrainingContext | null;
+
   return (
     <div className="flex gap-6">
       <aside>
-        <div className="flex-shrink-0 w-64 bg-card rounded-lg border p-4">
-          <nav
-            className={cn(
-              "rounded-lg",
-              "overflow-hidden",
-              "h-auto",
-              "self-center",
-            )}
-            // style={{ backgroundColor: "rgb(41, 41, 41)" }}
-          >
-            <ul className={cn("flex", "flex-col")}>
-            {(training?.standing) &&
-            <>
-              {training?.standing.map((context, i) => (
-                <li
-                key={i}
-                className={cn(itemStyle,"bg-slate-400")}
-                >
-                  <Link
-                    href={`/protected/trainings/${trainingId}/contests/${context.ContestInfo.id}/standing`}
-                    className={cn("w-full block box-border px-4 py-2")}
+        <Card className="flex-shrink-0 w-64">
+          <CardHeader>
+            <CardTitle className="text-lg">Training Navigation</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <nav className="space-y-2">
+              {/* Contest standings section - only show if standing data exists */}
+              {training?.standing && Array.isArray(training.standing) && training.standing.length > 0 && (
+                <>
+                  <div className="text-sm font-medium text-muted-foreground mb-2">
+                    Contest Standings
+                  </div>
+                  {training.standing.map((context: ContestStanding, i: number) => (
+                    <Button
+                      key={i}
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      className="w-full justify-start"
                     >
-                    contest: {context.ContestInfo.title}
+                      <Link
+                        href={`/protected/trainings/${trainingId}/contests/${context.ContestInfo.id}/standing`}
+                      >
+                        <Trophy className="h-4 w-4 mr-2" />
+                        {context.ContestInfo.title}
+                      </Link>
+                    </Button>
+                  ))}
+                </>
+              )}
+              
+              <div className="pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  className="w-full justify-start"
+                >
+                  <Link href={`/protected/trainings/${trainingId}/materials`}>
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Materials
                   </Link>
-                </li>
-              ))}
-              </>
-            }
-              <li
-                className={cn(itemStyle,
-                   "bg-zinc-500"
-                )}
-              >
-                <Link href={`/protected/trainings/${trainingId}/materials`} className={cn("w-full block box-border px-4 py-2")}>
-                  materials
-                </Link>
-              </li>
-              <li>
-
-              </li>
-            </ul>
-          </nav>
-        </div>
+                </Button>
+              </div>
+            </nav>
+          </CardContent>
+        </Card>
       </aside>
     </div>
   );

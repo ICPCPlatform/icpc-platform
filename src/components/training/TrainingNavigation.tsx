@@ -1,6 +1,8 @@
 import Link from "next/link";
 import React from "react";
 import { getUserTrainingPermissions, type TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type TrainingNavLink = {
   perm: TrainingPermissions;
@@ -42,15 +44,19 @@ export async function TrainingNavigation({
   );
 
   return (
-    <nav className={`mb-8 flex gap-2 border-b pb-2 ${className}`}>
+    <nav className={cn("flex flex-wrap gap-2 mb-8", className)}>
       {filteredLinks.map((link) => (
-        <Link
+        <Button
           key={link.href}
-          href={link.href}
-          className="px-3 py-2 rounded hover:bg-accent hover:text-accent-foreground font-medium"
+          variant="ghost"
+          size="sm"
+          asChild
+          className="font-medium"
         >
-          {link.label}
-        </Link>
+          <Link href={link.href}>
+            {link.label}
+          </Link>
+        </Button>
       ))}
     </nav>
   );
