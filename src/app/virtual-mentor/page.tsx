@@ -21,6 +21,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { useTransition, useCallback, useState as useReactState } from "react";
 
 // Utility to detect Arabic text
 function isArabic(text: string) {
@@ -56,6 +57,31 @@ const messageSchema = z.object({
   message: z.string().trim().min(1, "Message cannot be empty"),
 });
 
+// Inline useAction hook for async server action with pending and error state
+function useAction(action) {
+  const [error, setError] = useReactState(null);
+  const [isPending, startTransition] = useTransition();
+  const run = useCallback(
+    async (...args) => {
+      setError(null);
+      let result;
+      await new Promise(resolve => {
+        startTransition(async () => {
+          try {
+            result = await action(...args);
+          } catch (err) {
+            setError(err instanceof Error ? err.message : String(err));
+          }
+          resolve();
+        });
+      });
+      return result;
+    },
+    [action],
+  );
+  return [run, { isPending, error }];
+}
+
 export default function VirtualMentorPage() {
   const [messages, setMessages] = useState([
     {
@@ -66,6 +92,7 @@ export default function VirtualMentorPage() {
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
+  const [sendMessage, { isPending, error: actionError }] = useAction(getVirtualMentorReply);
 
   const form = useForm({
     resolver: zodResolver(messageSchema),
@@ -113,7 +140,9 @@ export default function VirtualMentorPage() {
             New Chat
           </Button>
         </div>
-        <div className="flex-1 overflow-y-auto px-0 py-4 md:px-8 md:py-6 space-y-2">
+        <div
+          className={`flex-1 overflow-y-auto px-0 py-4 md:px-8 md:py-6 space-y-2 transition-opacity duration-300 ${isPending ? "opacity-60" : "opacity-100"}`}
+        >
           {messages.map((msg, idx) => (
             <div
               key={idx}
@@ -229,22 +258,18 @@ export default function VirtualMentorPage() {
           <form
             className="flex gap-2 border-t border-border bg-background px-4 py-3"
             onSubmit={form.handleSubmit(async ({ message }) => {
-              if (!message.trim() || loading) return;
+              if (!message.trim() || isPending) return;
               setMessages(prev => [...prev, { role: "user", content: message }]);
               form.reset();
               setLoading(true);
-              try {
-                const reply = await getVirtualMentorReply([
-                  ...messages,
-                  { role: "user", content: message },
-                ]);
+              const reply = await sendMessage([
+                ...messages,
+                { role: "user", content: message },
+              ]);
+              if (reply) {
                 setMessages(prev => [...prev, { role: "assistant", content: reply }]);
-              } catch (err) {
-                // Optionally handle error
-                console.error(err);
-              } finally {
-                setLoading(false);
               }
+              setLoading(false);
             })}
           >
             <FormField
@@ -258,7 +283,7 @@ export default function VirtualMentorPage() {
                       placeholder="Type your question or paste your code..."
                       autoFocus
                       autoComplete="off"
-                      disabled={loading}
+                      disabled={loading || isPending}
                       onKeyDown={e => {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
@@ -273,11 +298,14 @@ export default function VirtualMentorPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" variant="default" disabled={loading}>
-              {loading ? "..." : "Send"}
+            <Button type="submit" variant="default" disabled={loading || isPending}>
+              {(loading || isPending) ? "..." : "Send"}
             </Button>
           </form>
         </Form>
+        {actionError && (
+          <div className="text-red-600 text-sm px-4 pb-2">{actionError}</div>
+        )}
       </Card>
       <style jsx global>{`
         .markdown-chat-bubble ul, .markdown-chat-bubble ol {
