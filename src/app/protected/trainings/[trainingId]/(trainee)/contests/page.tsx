@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { Contests } from "@/lib/db/schema/training/Contests";
 import { and, eq, isNull } from "drizzle-orm";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
-import { ContestsList } from "../staff/contests/_contestsList";
+import { ContestsList } from "../../staff/contests/_contestsList";
 
 export default async function ContestsPage({
   params,
