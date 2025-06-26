@@ -44,8 +44,8 @@ export default async function Page({ params }: { params: Promise<{ trainingId: s
           <thead>
             <tr>
               {standingView.map((field: StandingView) => (
-                <th key={field} className="border px-4 py-2 text-left capitalize">
-                  {field}
+                <th key={field} className="border px-4 py-2 text-left">
+                  {fieldLabels[field] || field}
                 </th>
               ))}
               <th className="border px-4 py-2 text-left">Score</th>
