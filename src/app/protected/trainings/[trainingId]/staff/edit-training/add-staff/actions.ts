@@ -38,6 +38,35 @@ const updateStaffSchema = z.object({
   }),
 });
 
+// Helper to get userId by username
+async function getUserIdByUsername(username: string) {
+  const res = await db
+    .select({ userId: Users.userId })
+    .from(Users)
+    .where(eq(Users.username, username))
+    .execute();
+  if (res.length === 0) throw Error("user not found");
+  return res[0].userId;
+}
+
+// Helper to revalidate path
+function getRevalidatePath(trainingId: string | number) {
+  return `/protected/trainings/${trainingId}/staff/edit-training/add-staff`;
+}
+
+// Helper for schema validation
+function validateSchema<T>(schema: z.ZodType<T>, data: unknown): T {
+  const result = schema.safeParse(data);
+  if (!result.success) throw Error(result.error.errors[0].message);
+  return result.data;
+}
+
+// Helper for consistent error response
+function errorResponse(error: unknown, fallback = "An error occurred") {
+  console.error(error);
+  return { success: false, error: error instanceof Error ? error.message : fallback };
+}
+
 export async function addStaffAction({
   trainingId,
   username,
@@ -47,47 +76,28 @@ export async function addStaffAction({
   username: string;
   roles: { instructor: boolean; problem_setter: boolean; mentor: boolean };
 }) {
-  const parseResult = addStaffSchema.safeParse({ trainingId, username, roles });
-  if (!parseResult.success) {
-    console.log(parseResult.error);
-    return { success: false, error: parseResult.error.errors[0].message };
-  }
   try {
-    const res = await db
-      .select({ userId: Users.userId })
-      .from(Users)
-      .where(eq(Users.username, username))
-      .execute();
-    if (res.length === 0) throw Error("user not found");
+    validateSchema(addStaffSchema, { trainingId, username, roles });
+    const userId = await getUserIdByUsername(username);
     const insertData = {
       trainingId: Number(trainingId),
-      userId: res[0].userId,
+      userId,
       instructor: roles.instructor,
       problemSetter: roles.problem_setter,
       mentor: roles.mentor,
     } satisfies typeof Staff.$inferInsert;
     await db.insert(Staff).values(insertData).execute();
-    revalidatePath(
-      `/protected/trainings/${trainingId}/staff/edit-training/add-staff`,
-    );
+    revalidatePath(getRevalidatePath(trainingId));
     return { success: true };
   } catch (error) {
-    console.error("Error adding staff:", error);
-    return { success: false, error: "Failed to add staff" };
+    return errorResponse(error, "Failed to add staff");
   }
 }
 
 export async function searchByUsername(username: string, trainingId: number) {
-  const parseResult = searchByUsernameSchema.safeParse({
-    username,
-    trainingId,
-  });
-  if (!parseResult.success) {
-    throw Error(parseResult.error.errors[0].message);
-  }
   try {
+    validateSchema(searchByUsernameSchema, { username, trainingId });
     const userData = await getUserData();
-
     if (userData == null || userData.role !== "admin") {
       throw Error("Unauthorized access");
     }
@@ -105,14 +115,10 @@ export async function searchByUsername(username: string, trainingId: number) {
         and(eq(Staff.userId, Users.userId), eq(Staff.trainingId, trainingId)),
       )
       .execute();
-    //
-    revalidatePath(
-      `protected/trainings/${trainingId}/staff/edit-training/add-staff`,
-    );
+    revalidatePath(getRevalidatePath(trainingId));
     return staff;
   } catch (error) {
-    console.error("Error searching by username:", error);
-    throw Error("Error occurred while searching for user");
+    return errorResponse(error, "Error occurred while searching for user");
   }
 }
 
@@ -123,57 +129,40 @@ export async function deleteStaff({
   trainingId: string | number;
   username: string;
 }) {
-  const parseResult = deleteStaffSchema.safeParse({ trainingId, username });
-  if (!parseResult.success) {
-    console.log(parseResult.error);
-    return { success: false, error: parseResult.error.errors[0].message };
-  }
   try {
-    const res = await db
-      .select({ userId: Users.userId })
-      .from(Users)
-      .where(eq(Users.username, username))
+    validateSchema(deleteStaffSchema, { trainingId, username });
+    const userId = await getUserIdByUsername(username);
+    const assignedTrainees = await db
+      .select({})
+      .from(Trainees)
+      .where(
+        and(
+          eq(Trainees.mentorId, userId),
+          eq(Trainees.trainingId, Number(trainingId)),
+          isNull(Trainees.deleted),
+        ),
+      )
       .execute();
-    if (res.length === 0) throw Error("user not found");
-
-    const staffId = res[0].userId;
-    if (
-      await db
-        .select({})
-        .from(Trainees)
-        .where(
-          and(
-            eq(Trainees.mentorId, staffId),
-            eq(Trainees.trainingId, Number(trainingId)),
-            isNull(Trainees.deleted), // the staff is a mentor and have trainees assigned
-          ),
-        )
-        .execute()
-    ) {
+    if (assignedTrainees.length > 0) {
       return {
         success: false,
         error: "Cannot delete staff member who has trainees assigned",
       };
     }
-
     await db
       .update(Staff)
       .set({ deleted: new Date() })
       .where(
         and(
-          eq(Staff.userId, res[0].userId),
+          eq(Staff.userId, userId),
           eq(Staff.trainingId, Number(trainingId)),
         ),
       )
       .execute();
-
-    revalidatePath(
-      `/protected/trainings/${trainingId}/staff/edit-training/add-staff`,
-    );
+    revalidatePath(getRevalidatePath(trainingId));
     return { success: true };
   } catch (error) {
-    console.error("Error deleting staff:", error);
-    return { success: false, error: "Failed to delete staff" };
+    return errorResponse(error, "Failed to delete staff");
   }
 }
 
@@ -186,61 +175,44 @@ export async function updateStaff({
   username: string;
   roles: { instructor: boolean; problem_setter: boolean; mentor: boolean };
 }) {
-  const parseResult = updateStaffSchema.safeParse({
-    trainingId,
-    username,
-    roles,
-  });
-  if (!parseResult.success) {
-    console.log(parseResult.error);
-    return { success: false, error: parseResult.error.errors[0].message };
-  }
   try {
-    const res = await db
-      .select({ userId: Users.userId })
-      .from(Users)
-      .where(eq(Users.username, username))
+    validateSchema(updateStaffSchema, { trainingId, username, roles });
+    const userId = await getUserIdByUsername(username);
+    const isAssigned2aTrainee = await db
+      .select({})
+      .from(Trainees)
+      .where(
+        and(
+          eq(Trainees.mentorId, userId),
+          eq(Trainees.trainingId, Number(trainingId)),
+          isNull(Trainees.deleted),
+        ),
+      )
       .execute();
-    if (res.length === 0) throw Error("user not found");
-    
-    const isAssigned2aTrainee = await db.select({}).from(Trainees).where(
-      and(
-        eq(Trainees.mentorId, res[0].userId),
-        eq(Trainees.trainingId, Number(trainingId)),
-        isNull(Trainees.deleted), // Check if the mentor has trainees assigned
-      ),
-    ).execute();
-
     if (isAssigned2aTrainee.length > 0 && !roles.mentor) {
       return {
         success: false,
         error: "Cannot remove mentor role while there are trainees assigned",
       };
     }
-
-
     await db
       .update(Staff)
       .set({
         instructor: roles.instructor,
         problemSetter: roles.problem_setter,
         mentor: roles.mentor,
-        deleted: null, // In case you want to "undelete" a staff member
+        deleted: null,
       })
       .where(
         and(
-          eq(Staff.userId, res[0].userId),
+          eq(Staff.userId, userId),
           eq(Staff.trainingId, Number(trainingId)),
         ),
       )
       .execute();
-
-    revalidatePath(
-      `/protected/trainings/${trainingId}/staff/edit-training/add-staff`,
-    );
+    revalidatePath(getRevalidatePath(trainingId));
     return { success: true };
   } catch (error) {
-    console.error("Error updating staff:", error);
-    return { success: false, error: "Failed to update staff" };
+    return errorResponse(error, "Failed to update staff");
   }
 }
