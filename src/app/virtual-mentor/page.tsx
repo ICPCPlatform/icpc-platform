@@ -14,6 +14,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import rehypeSanitize from "rehype-sanitize";
 import { getVirtualMentorReply } from "./actions";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 
 // Utility to detect Arabic text
 function isArabic(text: string) {
@@ -60,12 +67,7 @@ export default function VirtualMentorPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(messageSchema),
     defaultValues: { message: "" },
   });
@@ -105,7 +107,7 @@ export default function VirtualMentorPage() {
                     "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
                 },
               ]);
-              reset();
+              form.reset();
             }}
           >
             New Chat
@@ -223,52 +225,59 @@ export default function VirtualMentorPage() {
           ))}
           <div ref={messagesEndRef} />
         </div>
-        <form
-          className="flex gap-2 border-t border-border bg-background px-4 py-3"
-          onSubmit={handleSubmit(async ({ message }) => {
-            if (!message.trim() || loading) return;
-            setMessages(prev => [...prev, { role: "user", content: message }]);
-            reset();
-            setLoading(true);
-            try {
-              const reply = await getVirtualMentorReply([
-                ...messages,
-                { role: "user", content: message },
-              ]);
-              setMessages(prev => [...prev, { role: "assistant", content: reply }]);
-            } catch (err) {
-              // Optionally handle error
-              console.error(err);
-            } finally {
-              setLoading(false);
-            }
-          })}
-        >
-          <Textarea
-            {...register("message")}
-            className="flex-1 resize-none min-h-[44px] max-h-40"
-            placeholder="Type your question or paste your code..."
-            autoFocus
-            autoComplete="off"
-            disabled={loading}
-            onKeyDown={e => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                if (!loading && (e.target as HTMLTextAreaElement).value.trim()) {
-                  (e.target as HTMLTextAreaElement).form?.requestSubmit();
-                }
+        <Form {...form}>
+          <form
+            className="flex gap-2 border-t border-border bg-background px-4 py-3"
+            onSubmit={form.handleSubmit(async ({ message }) => {
+              if (!message.trim() || loading) return;
+              setMessages(prev => [...prev, { role: "user", content: message }]);
+              form.reset();
+              setLoading(true);
+              try {
+                const reply = await getVirtualMentorReply([
+                  ...messages,
+                  { role: "user", content: message },
+                ]);
+                setMessages(prev => [...prev, { role: "assistant", content: reply }]);
+              } catch (err) {
+                // Optionally handle error
+                console.error(err);
+              } finally {
+                setLoading(false);
               }
-            }}
-          />
-          <Button type="submit" variant="default" disabled={loading}>
-            {loading ? "..." : "Send"}
-          </Button>
-        </form>
-        {errors.message && (
-          <div className="mt-2 text-sm text-red-600 dark:text-red-400 px-4 pb-2">
-            {errors.message.message}
-          </div>
-        )}
+            })}
+          >
+            <FormField
+              name="message"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      className="flex-1 resize-none min-h-[44px] max-h-40"
+                      placeholder="Type your question or paste your code..."
+                      autoFocus
+                      autoComplete="off"
+                      disabled={loading}
+                      onKeyDown={e => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          if (!loading && (e.target as HTMLTextAreaElement).value.trim()) {
+                            (e.target as HTMLTextAreaElement).form?.requestSubmit();
+                          }
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" variant="default" disabled={loading}>
+              {loading ? "..." : "Send"}
+            </Button>
+          </form>
+        </Form>
       </Card>
       <style jsx global>{`
         .markdown-chat-bubble ul, .markdown-chat-bubble ol {
