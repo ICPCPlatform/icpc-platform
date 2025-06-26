@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getUserApplications, applyToTraining } from "@/app/applications/actions";
 
 function formatDate(date: Date | string) {
   return new Date(date).toLocaleDateString("en-US", {
@@ -47,6 +48,12 @@ interface Training {
   standingView?: string[];
 }
 
+interface Application {
+  applicationId: number;
+  trainingId: number;
+  status: string;
+}
+
 interface TrainingsTabsProps {
   myTrainings: Training[];
   allTrainings: Training[];
@@ -57,6 +64,32 @@ interface TrainingsTabsProps {
 export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaff, enrolledIds }: TrainingsTabsProps) {
   const [tab, setTab] = useState<'all' | 'my'>('all');
   const [modalTraining, setModalTraining] = useState<Training | null>(null);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [applying, setApplying] = useState<number | null>(null);
+
+  useEffect(() => {
+    getUserApplications().then((apps) => setApplications((apps || []).map(app => ({
+      ...app,
+      status: app.status || ""
+    }))));
+  }, []);
+
+  const getAppStatus = (trainingId: number) => {
+    const app = applications.find((a) => a.trainingId === trainingId);
+    return app ? app.status : null;
+  };
+
+  const handleApply = async (trainingId: number) => {
+    setApplying(trainingId);
+    try {
+      await applyToTraining(trainingId);
+      setApplications((apps) => [
+        ...apps,
+        { applicationId: Date.now(), trainingId, status: "pending" },
+      ]);
+    } catch {}
+    setApplying(null);
+  };
 
   const renderDetailsModal = () => {
     if (!modalTraining) return null;
@@ -152,6 +185,7 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
                 const statusText = training.status ? training.status.charAt(0).toUpperCase() + training.status.slice(1) : 'Unknown';
                 const id = training.id ?? training.trainingId;
                 const isEnrolled = enrolledIds.includes(id!);
+                if (typeof id !== "number") return null;
                 return (
                   <Card key={id} className="overflow-hidden hover:shadow-md transition-shadow">
                     <CardHeader>
@@ -186,17 +220,46 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
                             Go to Dashboard
                           </Link>
                         </Button>
-                      ) : (
-                        <Button
-                          onClick={async () => {
-                            await fetch(`/protected/api/training/join/${id}`);
-                            window.location.reload();
-                          }}
-                          className="min-w-[90px] font-semibold"
-                        >
-                          Apply
-                        </Button>
-                      )}
+                      ) : (() => {
+                        const status = getAppStatus(id) || "";
+                        switch (status) {
+                          case "pending":
+                          case "applied":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Pending
+                              </Button>
+                            );
+                          case "withdrawn":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Withdrawn
+                              </Button>
+                            );
+                          case "accepted":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Accepted
+                              </Button>
+                            );
+                          case "rejected":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Rejected
+                              </Button>
+                            );
+                          default:
+                            return (
+                              <Button
+                                onClick={() => handleApply(id)}
+                                className="min-w-[90px] font-semibold"
+                                disabled={applying === id}
+                              >
+                                {applying === id ? "Applying..." : "Apply"}
+                              </Button>
+                            );
+                        }
+                      })()}
                     </CardFooter>
                   </Card>
                 );
@@ -219,6 +282,7 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
               {myTrainings.map((training) => {
                 const statusText = training.status ? training.status.charAt(0).toUpperCase() + training.status.slice(1) : 'Unknown';
                 const id = training.id ?? training.trainingId;
+                if (typeof id !== "number") return null;
                 return (
                   <Card key={training.trainingId} className="overflow-hidden hover:shadow-md transition-shadow">
                     <CardHeader>
