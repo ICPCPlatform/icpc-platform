@@ -9,6 +9,10 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import rehypeSanitize from "rehype-sanitize";
 
 // Utility to detect Arabic text
 function isArabic(text: string) {
@@ -39,6 +43,11 @@ function CopyButton({ code }: { code: string }) {
   );
 }
 
+// Zod schema for message validation
+const messageSchema = z.object({
+  message: z.string().trim().min(1, "Message cannot be empty"),
+});
+
 export default function VirtualMentorPage() {
   const [messages, setMessages] = useState([
     {
@@ -47,11 +56,18 @@ export default function VirtualMentorPage() {
         "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
     },
   ]);
-  const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(messageSchema),
+    defaultValues: { message: "" },
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -88,7 +104,7 @@ export default function VirtualMentorPage() {
                     "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
                 },
               ]);
-              setError("");
+              reset();
             }}
           >
             New Chat
@@ -123,6 +139,7 @@ export default function VirtualMentorPage() {
                   {msg.role === "assistant" || msg.role === "system" ? (
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeSanitize]}
                       components={{
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         code(props: any) {
@@ -207,58 +224,53 @@ export default function VirtualMentorPage() {
         </div>
         <form
           className="flex gap-2 border-t border-border bg-background px-4 py-3"
-          onSubmit={async e => {
-            e.preventDefault();
-            if (!input.trim() || loading) return;
-            setMessages(prev => [...prev, { role: "user", content: input }]);
-            setInput("");
+          onSubmit={handleSubmit(async ({ message }) => {
+            if (!message.trim() || loading) return;
+            setMessages(prev => [...prev, { role: "user", content: message }]);
+            reset();
             setLoading(true);
-            setError("");
             try {
               const res = await fetch("/api/virtual-mentor", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messages: [
                   ...messages,
-                  { role: "user", content: input },
+                  { role: "user", content: message },
                 ] }),
               });
               const data = await res.json();
               if (!res.ok) throw new Error(data.error || "Unknown error");
               setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
             } catch (err: unknown) {
-              setError(err instanceof Error ? err.message : "Failed to get response");
+              console.error(err);
             } finally {
               setLoading(false);
             }
-          }}
+          })}
         >
           <Textarea
-            ref={textareaRef}
+            {...register("message")}
             className="flex-1 resize-none min-h-[44px] max-h-40"
             placeholder="Type your question or paste your code..."
-            value={input}
-            onChange={e => setInput(e.target.value)}
+            autoFocus
+            autoComplete="off"
+            disabled={loading}
             onKeyDown={e => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                if (!loading && input.trim()) {
-                  // Manually trigger form submit
+                if (!loading && (e.target as HTMLTextAreaElement).value.trim()) {
                   (e.target as HTMLTextAreaElement).form?.requestSubmit();
                 }
               }
             }}
-            autoFocus
-            autoComplete="off"
-            disabled={loading}
           />
           <Button type="submit" variant="default" disabled={loading}>
             {loading ? "..." : "Send"}
           </Button>
         </form>
-        {error && (
+        {errors.message && (
           <div className="mt-2 text-sm text-red-600 dark:text-red-400 px-4 pb-2">
-            {error}
+            {errors.message.message}
           </div>
         )}
       </Card>

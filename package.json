@@ -53,6 +53,7 @@
     "react-markdown": "^10.1.0",
     "react-syntax-highlighter": "^15.6.1",
     "react-toastify": "^11.0.5",
+    "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "resend": "^4.1.2",
     "server-only": "^0.0.1",
