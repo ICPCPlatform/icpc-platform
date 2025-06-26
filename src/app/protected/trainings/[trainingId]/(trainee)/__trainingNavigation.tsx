@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Trophy } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 // Type for contest standing data
 interface ContestStanding {
@@ -27,6 +28,12 @@ export default function TrainingNavigation({
   trainingId: number;
 }) {
   const training = useTrainingContext() as ExtendedTrainingContext | null;
+  const pathname = usePathname();
+  
+  // If on leaderboard page, do not render the sidebar at all
+  if (pathname.includes("/leaderboard")) {
+    return <></>;
+  }
 
   return (
     <div className="flex gap-6">

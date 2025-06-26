@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext } from "react";
 import { TrainingFlatLeaderboardDTO } from "@/dao/getTrainingFullData";
-const trainingContext = createContext<TrainingFlatLeaderboardDTO | null>(null);
+const trainingContext = createContext<TrainingFlatLeaderboardDTO & { userRoles?: string[] } | null>(null);
 export default function TrainingProvider({
   children,
   trainingData,

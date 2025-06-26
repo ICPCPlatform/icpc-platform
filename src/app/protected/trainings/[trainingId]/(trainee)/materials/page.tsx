@@ -56,9 +56,6 @@ export default function Page() {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle>{block.title}</CardTitle>
-                      {block.description && (
-                        <CardDescription className="mb-1">{block.description}</CardDescription>
-                      )}
                       {materials.length > 0 && (
                         <CardDescription>{materials.length} resource{materials.length > 1 ? 's' : ''}</CardDescription>
                       )}
