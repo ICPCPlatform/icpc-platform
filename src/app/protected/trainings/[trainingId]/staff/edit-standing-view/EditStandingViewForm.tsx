@@ -7,6 +7,7 @@ import { updateStandingView } from "./actions";
 import type { StandingView } from "@/lib/db/schema/training/Trainings";
 import { redirect, useRouter } from "next/navigation";
 import { z } from "zod";
+import { Form } from "@/components/ui/form";
 
 // Zod validation schema for the form
 const standingViewSchema = z.array(z.enum(["name", "cfHandle", "vjudge", "gmail", "level", "university", "faculty"]));
@@ -81,7 +82,7 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
         </CardHeader>
         <CardContent>
           {message && <div className="mb-4 text-sm text-green-600">{message}</div>}
-          <form className="space-y-6" onSubmit={e => { e.preventDefault(); handleSave(); }}>
+          <Form className="space-y-6" onSubmit={e => { e.preventDefault(); handleSave(); }}>
             <div className="mb-4 font-semibold">Selected Columns (drag to reorder):</div>
             <ul className="mb-6">
               {selected.map((key, idx) => {
@@ -115,7 +116,7 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
                 </label>
               ))}
             </div>
-          </form>
+          </Form>
         </CardContent>
         <CardFooter className="flex gap-2 justify-end">
           <Button variant="ghost" onClick={handleCancel} disabled={isPending}>
