@@ -202,6 +202,22 @@ export async function updateStaff({
       .where(eq(Users.username, username))
       .execute();
     if (res.length === 0) throw Error("user not found");
+    
+    const isAssigned2aTrainee = await db.select({}).from(Trainees).where(
+      and(
+        eq(Trainees.mentorId, res[0].userId),
+        eq(Trainees.trainingId, Number(trainingId)),
+        isNull(Trainees.deleted), // Check if the mentor has trainees assigned
+      ),
+    ).execute();
+
+    if (isAssigned2aTrainee.length > 0 && !roles.mentor) {
+      return {
+        success: false,
+        error: "Cannot remove mentor role while there are trainees assigned",
+      };
+    }
+
 
     await db
       .update(Staff)
