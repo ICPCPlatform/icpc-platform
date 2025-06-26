@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import { addStaffAction } from '@/app/protected/trainings/[trainingId]/staff/staff-management/actions';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,36 +16,31 @@ export default function AddStaffForm({ trainingId }: { trainingId: number }) {
         mentor: false
     });
     const [message, setMessage] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        setIsLoading(true);
-        setMessage('');
+        startTransition(async () => {
+            setMessage('');
 
-        try {
-            const result = await addStaffAction({
-                trainingId,
-                username,
-                roles
-            });
+            try {
+                await addStaffAction({
+                    trainingId,
+                    username,
+                    roles
+                });
 
-            if (result.success) {
                 setMessage('Staff added successfully');
                 setUsername('');
                 setRoles({ instructor: false, problem_setter: false, mentor: false });
-            } else {
-                setMessage(result.error || 'Failed to add staff');
+            } catch (error) {
+                if (error instanceof Error) {
+                    setMessage('Error occurred: ' + error.message);
+                } else {
+                    setMessage('An unknown error occurred');
+                }
             }
-        } catch (error) {
-            if (error instanceof Error) {
-                setMessage('Error occurred: ' + error.message);
-            } else {
-                setMessage('An unknown error occurred');
-            }
-        } finally {
-            setIsLoading(false);
-        }
+        });
     }
 
     function handleRoleChangeByName(role: keyof typeof roles, checked: boolean) {
@@ -99,8 +94,8 @@ export default function AddStaffForm({ trainingId }: { trainingId: number }) {
                         </label>
                     </div>
                 </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Adding...' : 'Add Staff'}
+                    <Button type="submit" className="w-full" disabled={isPending}>
+                    {isPending ? 'Adding...' : 'Add Staff'}
                     </Button>
             </form>
             {message && (

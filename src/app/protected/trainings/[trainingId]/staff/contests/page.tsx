@@ -16,6 +16,15 @@ export default async function ContestsPage({
     redirect("not-found");
   }
 
+  const blocks = await db
+    .select({
+      blockNumber: Blocks.blockNumber,
+      title: Blocks.title,
+    })
+    .from(Blocks)
+    .where(and(eq(Blocks.trainingId, trainingId), isNull(Blocks.deleted)))
+    .execute();
+
   const contests = await db
     .select({
       trainingId: Contests.trainingId,
@@ -38,7 +47,7 @@ export default async function ContestsPage({
     <div className="container py-8 px-4 md:px-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Contests</h1>
-        <AddContestButton trainingId={trainingId} />
+        <AddContestButton trainingId={trainingId} blocks={blocks} />
       </div>
 
       <ContestsList contests={contests} trainingId={trainingId} />

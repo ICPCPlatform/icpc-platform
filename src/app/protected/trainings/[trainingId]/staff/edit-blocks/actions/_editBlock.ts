@@ -20,15 +20,12 @@ export async function updateBlock(input: z.infer<typeof inputSchema>) {
     const user = await getUserData();
 
     if (!user) {
-      return { success: false, error: "User not found" };
+      throw new Error('unautherized');
     }
     const userPermissions = await getUserTrainingPermissions(user.userId, trainingId)
 
     if (!userPermissions.includes("Edit:block")) {
-      return {
-        success: false,
-        error: "You do not have permission to edit blocks",
-      };
+      throw new Error("unautherized")
     }
     db
       .update(Blocks)
@@ -49,10 +46,13 @@ export async function updateBlock(input: z.infer<typeof inputSchema>) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       // return zod error
-      return { success: false, error: "Validation error" };
+      throw new Error(error.issues
+        .map((issue) => 
+          `${issue.path.join('.')}: ${issue.message}`)
+        .join('\n'));
     }
     console.error("Error updating block:", error);
 
-    return { success: false, error: "Unknown error" };
+    throw error;
   }
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import AddStaffForm from "./_AddStaffForm";
@@ -16,7 +16,7 @@ export default function StaffTabs({ trainingId, staffList }: { trainingId: numbe
   const [updateRoles, setUpdateRoles] = useState({ instructor: false, problem_setter: false, mentor: false });
   const [updateError, setUpdateError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState("");
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   async function handleUpdateSearch(e: React.FormEvent) {
@@ -43,36 +43,33 @@ export default function StaffTabs({ trainingId, staffList }: { trainingId: numbe
 
   async function handleUpdateSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsUpdating(true);
-    setUpdateError("");
-    setUpdateSuccess("");
-    try {
-      const res = await updateStaff({
-        trainingId,
-        username: updateUsername,
-        roles: updateRoles,
-      });
-      if (res.success) {
+    startTransition(async () => {
+      setUpdateError("");
+      setUpdateSuccess("");
+      try {
+        await updateStaff({
+          trainingId,
+          username: updateUsername,
+          roles: updateRoles,
+        });
         setUpdateSuccess("Staff roles updated successfully");
         router.refresh();
-      } else {
-        setUpdateError(res.error || "Failed to update staff");
+      } catch (err: unknown) {
+        setUpdateError(err instanceof Error ? err.message : "Unknown error");
       }
-    } catch (err: unknown) {
-      setUpdateError(err instanceof Error ? err.message : "Unknown error");
-    } finally {
-      setIsUpdating(false);
-    }
+    });
   }
 
   async function handleDelete(username: string) {
     if (!window.confirm(`Are you sure you want to delete staff: ${username}?`)) return;
-    try {
-      await deleteStaff({ trainingId, username });
-      router.refresh();
-    } catch {
-      alert("Failed to delete staff");
-    }
+    startTransition(async () => {
+      try {
+        await deleteStaff({ trainingId, username });
+        router.refresh();
+      } catch (err: unknown) {
+        alert(err instanceof Error ? err.message : "Failed to delete staff");
+      }
+    });
   }
 
   return (
@@ -148,8 +145,8 @@ export default function StaffTabs({ trainingId, staffList }: { trainingId: numbe
                 Mentor
               </label>
             </div>
-            <Button type="submit" disabled={isUpdating}>
-              {isUpdating ? "Updating..." : "Update Staff Roles"}
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Updating..." : "Update Staff Roles"}
             </Button>
           </form>
         )}

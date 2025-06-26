@@ -9,6 +9,9 @@ import {TrainingFormData} from "@/lib/validation/training/trainingValidations";
 import {TrainingEdit} from "@/app/protected/trainings/[trainingId]/staff/edit-training/_trainingForm";
 
 
+// I don't know how is this working 
+
+
 /**
  * Fetches a training by ID.
  * @param trainingId - The ID of the training.
@@ -141,6 +144,6 @@ export async function updateTraining({trainingId, ...data}: TrainingFormData & {
             .execute();
     } catch (error) {
         console.error("Error updating training:", error);
-        return null;
+        throw error
     }
 }

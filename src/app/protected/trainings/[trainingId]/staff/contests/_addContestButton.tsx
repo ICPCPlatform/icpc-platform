@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
@@ -8,26 +10,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddContestForm } from "./_addContest";
-import { db } from "@/lib/db";
-import { Blocks } from "@/lib/db/schema/training/Blocks";
-import { eq, and, isNull } from "drizzle-orm";
+import { useState } from "react";
 
 type AddContestButtonProps = {
   trainingId: number;
+  blocks: Array<{ blockNumber: number; title: string }>;
 };
 
-export async function AddContestButton({ trainingId }: AddContestButtonProps) {
-  const blocks = await db
-    .select({
-      blockNumber: Blocks.blockNumber,
-      title: Blocks.title,
-    })
-    .from(Blocks)
-    .where(and(eq(Blocks.trainingId, trainingId), isNull(Blocks.deleted)))
-    .execute();
+export function AddContestButton({ trainingId, blocks }: AddContestButtonProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
@@ -38,7 +36,7 @@ export async function AddContestButton({ trainingId }: AddContestButtonProps) {
         <DialogHeader>
           <DialogTitle>Add New Contest</DialogTitle>
         </DialogHeader>
-        <AddContestForm trainingId={trainingId} blocks={blocks}/>
+        <AddContestForm trainingId={trainingId} blocks={blocks} onClose={handleClose} />
       </DialogContent>
     </Dialog>
   );

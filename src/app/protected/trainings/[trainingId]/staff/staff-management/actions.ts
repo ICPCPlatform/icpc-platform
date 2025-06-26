@@ -5,6 +5,7 @@ import { Staff } from "@/lib/db/schema/training/Staff";
 import {getUserData} from "@/lib/session";
 import {Users} from "@/lib/db/schema/user/Users";
 import {eq, and } from "drizzle-orm";
+// todo
 import { z } from 'zod';
 import { revalidatePath } from "next/cache";
 
@@ -49,12 +50,12 @@ export async function addStaffAction({
 }) {
     const parseResult = addStaffSchema.safeParse({ trainingId, username, roles });
     if (!parseResult.success) {
-        console.log(parseResult.error)
-        return { success: false, error: parseResult.error.errors[0].message };
+        const errorMessages = parseResult.error.errors.map(error => error.message).join(', ');
+        throw new Error(errorMessages);
     }
     try {
         const res = await db.select({userId: Users.userId}).from(Users).where(eq(Users.username, username)).execute()
-        if (res.length === 0) throw Error('user not found');
+        if (res.length === 0) throw new Error('User not found');
         const insertData = {
             trainingId: Number(trainingId),
             userId : res[0].userId,
@@ -63,11 +64,10 @@ export async function addStaffAction({
             mentor: roles.mentor,
         } satisfies typeof Staff.$inferInsert;
         await db.insert(Staff).values(insertData).execute();
-        revalidatePath(`/protected/trainings/${trainingId}/staff/edit-training/add-staff`);
-        return { success: true };
+        revalidatePath(`/protected/trainings/${trainingId}/staff/staff-management`);
     } catch (error) {
         console.error("Error adding staff:", error);
-        return { success: false, error: "Failed to add staff" };
+        throw new Error("Failed to add staff");
     }
 }
 
@@ -114,12 +114,11 @@ export async function deleteStaff({
 }) {
     const parseResult = deleteStaffSchema.safeParse({ trainingId, username });
     if (!parseResult.success) {
-        console.log(parseResult.error)
-        return { success: false, error: parseResult.error.errors[0].message };
-    }
+         throw new Error(parseResult.error.errors[0].message);   
+         }
     try {
         const res = await db.select({userId: Users.userId}).from(Users).where(eq(Users.username, username)).execute()
-        if (res.length === 0) throw Error('user not found');
+        if (res.length === 0) throw new Error('User not found');
 
         await db
           .update(Staff)
@@ -132,11 +131,10 @@ export async function deleteStaff({
           )
           .execute();
 
-        revalidatePath(`/protected/trainings/${trainingId}/staff/edit-training/add-staff`);
-        return { success: true };
+        revalidatePath(`/protected/trainings/${trainingId}/staff/staff-management`);
     } catch (error) {
         console.error("Error deleting staff:", error);
-        return { success: false, error: "Failed to delete staff" };
+        throw new Error("Failed to delete staff");
     }
 }
 
@@ -151,12 +149,11 @@ export async function updateStaff({
 }) {
     const parseResult = updateStaffSchema.safeParse({ trainingId, username, roles });
     if (!parseResult.success) {
-        console.log(parseResult.error)
-        return { success: false, error: parseResult.error.errors[0].message };
+        throw new Error(parseResult.error.errors[0].message);
     }
     try {
         const res = await db.select({userId: Users.userId}).from(Users).where(eq(Users.username, username)).execute();
-        if (res.length === 0) throw Error('user not found');
+        if (res.length === 0) throw new Error('User not found');
 
         await db
             .update(Staff)
@@ -174,11 +171,10 @@ export async function updateStaff({
             )
             .execute();
 
-        revalidatePath(`/protected/trainings/${trainingId}/staff/edit-training/add-staff`);
-        return { success: true };
+        revalidatePath(`/protected/trainings/${trainingId}/staff/staff-management`);
     } catch (error) {
         console.error("Error updating staff:", error);
-        return { success: false, error: "Failed to update staff" };
+        throw new Error("Failed to update staff");
     }
 }
 

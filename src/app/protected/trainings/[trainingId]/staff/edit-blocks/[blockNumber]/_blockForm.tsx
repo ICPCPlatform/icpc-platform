@@ -1,11 +1,11 @@
 "use client"
-import {useRouter} from "next/navigation";
-import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
-import {BlockFormData, blockValidations} from "@/lib/validation/training/blockValidations";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {useState} from "react";
-import {updateBlock} from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
+import { useRouter } from "next/navigation";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { BlockFormData, blockValidations } from "@/lib/validation/training/blockValidations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useState, useTransition } from "react";
+import { updateBlock } from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
 
 
 //
@@ -25,10 +25,10 @@ type BlockFormProps = {
  * @param isEdit - Flag to indicate if the form is for editing an existing block or creating a new one.
  * @constructor
  */
-export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFormProps>) {
+export default function BlockForm({ initialData, isEdit = true }: Readonly<BlockFormProps>) {
     const router = useRouter();
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isPending, startTransition] = useTransition();
 
     // Check if initialData is null
     const form = useForm<BlockFormData>({
@@ -41,30 +41,31 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
     });
 
     // Handle form submission
-    const onSubmit: SubmitHandler<BlockFormData> = async (data) => {
-        setIsSubmitting(true);
-        setError(null);
+    const onSubmit: SubmitHandler<BlockFormData> = (data) => {
+        startTransition(async () => {
+            setError(null);
 
-        try {
-            // Validate the block number and training ID
-            if (isEdit && (!initialData?.blockNumber || !initialData?.trainingId)) {
-                throw new Error("Missing required block identification data");
+            try {
+                // Validate the block number and training ID
+                if (isEdit && (!initialData?.blockNumber || !initialData?.trainingId)) {
+                    throw new Error("Missing required block identification data");
+                }
+
+                // Update the block in the database
+                await updateBlock({
+                    blockNumber: initialData!.blockNumber, // Non-null assertion after validation
+                    trainingId: initialData!.trainingId,   // Non-null assertion after validation
+                    newBlockData: { ...data, date: data.date.toDateString() }
+                });
+                // Redirect to the blocks page
+                router.push(`/protected/trainings/${initialData?.trainingId}/staff/edit-blocks`);
+
+            } catch (err) {
+                console.error("Submission failed:", err);
+                setError("error");
             }
-            // Update the block in the database
-            await updateBlock({
-                blockNumber: initialData!.blockNumber, // Non-null assertion after validation
-                trainingId: initialData!.trainingId,   // Non-null assertion after validation
-                ...data
-            });
-            // Redirect to the blocks page
-            router.push(`/protected/trainings/${initialData?.trainingId}/staff/edit-blocks`);
 
-        } catch (err) {
-            console.error("Submission failed:", err);
-            setError("Failed to save block. Please try again.");
-        } finally {
-            setIsSubmitting(false);
-        }
+        });
     };
 
     return (<FormProvider {...form}>
@@ -85,7 +86,7 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
                 <FormField
                     control={form.control}
                     name="title"
-                    render={({field}) => (<FormItem>
+                    render={({ field }) => (<FormItem>
                         <FormLabel className="form-label">Title</FormLabel>
                         <FormControl>
                             <input
@@ -93,29 +94,29 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
                                 placeholder="Enter block title..."
                                 className="form-input"
                                 {...field}
-                                disabled={isSubmitting}
+                                disabled={isPending}
                             />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>)}
                 />
 
                 <FormField
                     control={form.control}
                     name="description"
-                    render={({field}) => (<FormItem>
+                    render={({ field }) => (<FormItem>
                         <FormLabel className="form-label">Description</FormLabel>
                         <FormControl>
-                  <textarea
-                      placeholder="Describe the content of the block..."
-                      maxLength={512}
-                      rows={5}
-                      className="form-input resize-none"
-                      {...field}
-                      disabled={isSubmitting}
-                  />
+                            <textarea
+                                placeholder="Describe the content of the block..."
+                                maxLength={512}
+                                rows={5}
+                                className="form-input resize-none"
+                                {...field}
+                                disabled={isPending}
+                            />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>)}
                 />
 
@@ -123,7 +124,7 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
                 <FormField
                     control={form.control}
                     name="hidden"
-                    render={({field}) => (<FormItem className="toggle-field">
+                    render={({ field }) => (<FormItem className="toggle-field">
                         <FormLabel className="toggle-label">Visibility</FormLabel>
                         <FormControl>
                             <label className="toggle-container">
@@ -132,22 +133,22 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
                                     className="toggle-input"
                                     checked={field.value}
                                     onChange={field.onChange}
-                                    disabled={isSubmitting}
+                                    disabled={isPending}
                                 />
                                 <span className="toggle-slider"></span>
                                 <span className="ml-3 text-sm text-muted-foreground">
-            {field.value ? "Hidden" : "Visible"}
-          </span>
+                                    {field.value ? "Hidden" : "Visible"}
+                                </span>
                             </label>
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>)}
                 />
 
                 <FormField
                     control={form.control}
                     name="date"
-                    render={({field}) => (<FormItem>
+                    render={({ field }) => (<FormItem>
                         <FormLabel className="form-label">Schedule Date</FormLabel>
                         <FormControl>
                             <input
@@ -159,11 +160,11 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
                                 value={field.value ? field.value.toISOString().split('T')[0] : ""}
                                 // Convert string back to Date on change
                                 onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : null)}
-                                disabled={isSubmitting}
+                                disabled={isPending}
                                 min={new Date().toISOString().split('T')[0]}
                             />
                         </FormControl>
-                        <FormMessage/>
+                        <FormMessage />
                     </FormItem>)}
                 />
 
@@ -174,15 +175,15 @@ export default function BlockForm({initialData, isEdit = true}: Readonly<BlockFo
                 <button
                     type="submit"
                     className="add-block-button"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                 >
-                    {isSubmitting ? 'Saving...' : 'Save Changes'}
+                    {isPending ? 'Saving...' : 'Save Changes'}
                 </button>
                 <button
                     type="button"
                     onClick={() => router.back()}
                     className="delete-button"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                 >
                     Cancel
                 </button>
