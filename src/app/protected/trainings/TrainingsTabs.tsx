@@ -68,7 +68,10 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
   const [applying, setApplying] = useState<number | null>(null);
 
   useEffect(() => {
-    getUserApplications().then((apps) => setApplications(apps || []));
+    getUserApplications().then((apps) => setApplications((apps || []).map(app => ({
+      ...app,
+      status: app.status || ""
+    }))));
   }, []);
 
   const getAppStatus = (trainingId: number) => {
@@ -217,31 +220,46 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
                             Go to Dashboard
                           </Link>
                         </Button>
-                      ) : getAppStatus(id) === "pending" || getAppStatus(id) === "applied" ? (
-                        <Button disabled className="min-w-[90px] font-semibold">
-                          Pending
-                        </Button>
-                      ) : getAppStatus(id) === "withdrawn" ? (
-                        <Button disabled className="min-w-[90px] font-semibold">
-                          Withdrawn
-                        </Button>
-                      ) : getAppStatus(id) === "accepted" ? (
-                        <Button disabled className="min-w-[90px] font-semibold">
-                          Accepted
-                        </Button>
-                      ) : getAppStatus(id) === "rejected" ? (
-                        <Button disabled className="min-w-[90px] font-semibold">
-                          Rejected
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => handleApply(id)}
-                          className="min-w-[90px] font-semibold"
-                          disabled={applying === id}
-                        >
-                          {applying === id ? "Applying..." : "Apply"}
-                        </Button>
-                      )}
+                      ) : (() => {
+                        const status = getAppStatus(id) || "";
+                        switch (status) {
+                          case "pending":
+                          case "applied":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Pending
+                              </Button>
+                            );
+                          case "withdrawn":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Withdrawn
+                              </Button>
+                            );
+                          case "accepted":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Accepted
+                              </Button>
+                            );
+                          case "rejected":
+                            return (
+                              <Button disabled className="min-w-[90px] font-semibold">
+                                Rejected
+                              </Button>
+                            );
+                          default:
+                            return (
+                              <Button
+                                onClick={() => handleApply(id)}
+                                className="min-w-[90px] font-semibold"
+                                disabled={applying === id}
+                              >
+                                {applying === id ? "Applying..." : "Apply"}
+                              </Button>
+                            );
+                        }
+                      })()}
                     </CardFooter>
                   </Card>
                 );

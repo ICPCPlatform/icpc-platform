@@ -18,19 +18,21 @@ export async function applyToTraining(trainingId: number) {
   if (!user) throw new Error("Not authenticated");
   const parse = trainingIdSchema.safeParse({ trainingId });
   if (!parse.success) throw new Error("Invalid trainingId");
-  const existing = await db
-    .select()
-    .from(Applications)
-    .where(and(eq(Applications.userId, user.userId), eq(Applications.trainingId, trainingId)))
-    .execute();
-  if (existing.length > 0) throw new Error("Already applied");
-  await db.insert(Applications).values({
-    userId: user.userId,
-    trainingId,
-    status: "pending",
-    description: "",
-  }).execute();
-  return { success: true };
+  return await db.transaction(async (tx) => {
+    const existing = await tx
+      .select()
+      .from(Applications)
+      .where(and(eq(Applications.userId, user.userId), eq(Applications.trainingId, trainingId)))
+      .execute();
+    if (existing.length > 0) throw new Error("Already applied");
+    await tx.insert(Applications).values({
+      userId: user.userId,
+      trainingId,
+      status: "pending",
+      description: "",
+    }).execute();
+    return { success: true };
+  });
 }
 
 export async function withdrawApplication(trainingId: number) {
@@ -38,11 +40,13 @@ export async function withdrawApplication(trainingId: number) {
   if (!user) throw new Error("Not authenticated");
   const parse = trainingIdSchema.safeParse({ trainingId });
   if (!parse.success) throw new Error("Invalid trainingId");
-  const result = await db
-    .update(Applications)
-    .set({ status: "withdrawn" })
-    .where(and(eq(Applications.userId, user.userId), eq(Applications.trainingId, trainingId)))
-    .execute();
-  if (result.rowCount === 0) throw new Error("Application not found");
-  return { success: true };
+  return await db.transaction(async (tx) => {
+    const result = await tx
+      .update(Applications)
+      .set({ status: "withdrawn" })
+      .where(and(eq(Applications.userId, user.userId), eq(Applications.trainingId, trainingId)))
+      .execute();
+    if (result.rowCount === 0) throw new Error("Application not found");
+    return { success: true };
+  });
 } 
