@@ -97,6 +97,13 @@ export function Navbar() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link href="/virtual-mentor" className={navigationMenuTriggerStyle()}>
+                    Virtual Mentor
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
                 <a href="https://forms.gle/i22PhB5fZYF4THa46" target="_blank">
                     Report a bug
                 </a>
