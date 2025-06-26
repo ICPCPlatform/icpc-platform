@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { Trainings, type StandingView } from "@/lib/db/schema/training/Trainings";
 import { eq } from "drizzle-orm";
 import { getUserData } from "@/lib/session";
+import { notFound } from "next/navigation";
 
 async function getStandingViewConfig(trainingId: number): Promise<StandingView[]> {
   const result = await db
@@ -17,7 +18,7 @@ async function getStandingViewConfig(trainingId: number): Promise<StandingView[]
 export default async function Page({ params }: { params: Promise<{ trainingId: string }> }) {
   const user = await getUserData();
   if (!user) {
-    return <div>Not authenticated</div>;
+    notFound();
   }
 
   const { trainingId: trainingIdStr } = await params;
@@ -44,8 +45,8 @@ export default async function Page({ params }: { params: Promise<{ trainingId: s
           <thead>
             <tr>
               {standingView.map((field: StandingView) => (
-                <th key={field} className="border px-4 py-2 text-left">
-                  {fieldLabels[field] || field}
+                <th key={field} className="border px-4 py-2 text-left capitalize">
+                  {field}
                 </th>
               ))}
               <th className="border px-4 py-2 text-left">Score</th>
