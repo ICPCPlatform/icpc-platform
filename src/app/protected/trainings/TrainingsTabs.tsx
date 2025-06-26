@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,6 +47,12 @@ interface Training {
   standingView?: string[];
 }
 
+interface Application {
+  applicationId: number;
+  trainingId: number;
+  status: string;
+}
+
 interface TrainingsTabsProps {
   myTrainings: Training[];
   allTrainings: Training[];
@@ -57,6 +63,35 @@ interface TrainingsTabsProps {
 export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaff, enrolledIds }: TrainingsTabsProps) {
   const [tab, setTab] = useState<'all' | 'my'>('all');
   const [modalTraining, setModalTraining] = useState<Training | null>(null);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [applying, setApplying] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/applications")
+      .then((res) => res.json())
+      .then((data) => setApplications(data.applications || []));
+  }, []);
+
+  const getAppStatus = (trainingId: number) => {
+    const app = applications.find((a) => a.trainingId === trainingId);
+    return app ? app.status : null;
+  };
+
+  const handleApply = async (trainingId: number) => {
+    setApplying(trainingId);
+    const res = await fetch("/api/applications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trainingId }),
+    });
+    if (res.ok) {
+      setApplications((apps) => [
+        ...apps,
+        { applicationId: Date.now(), trainingId, status: "pending" },
+      ]);
+    }
+    setApplying(null);
+  };
 
   const renderDetailsModal = () => {
     if (!modalTraining) return null;
@@ -152,6 +187,7 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
                 const statusText = training.status ? training.status.charAt(0).toUpperCase() + training.status.slice(1) : 'Unknown';
                 const id = training.id ?? training.trainingId;
                 const isEnrolled = enrolledIds.includes(id!);
+                if (typeof id !== "number") return null;
                 return (
                   <Card key={id} className="overflow-hidden hover:shadow-md transition-shadow">
                     <CardHeader>
@@ -186,15 +222,29 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
                             Go to Dashboard
                           </Link>
                         </Button>
+                      ) : getAppStatus(id) === "pending" || getAppStatus(id) === "applied" ? (
+                        <Button disabled className="min-w-[90px] font-semibold">
+                          Pending
+                        </Button>
+                      ) : getAppStatus(id) === "withdrawn" ? (
+                        <Button disabled className="min-w-[90px] font-semibold">
+                          Withdrawn
+                        </Button>
+                      ) : getAppStatus(id) === "accepted" ? (
+                        <Button disabled className="min-w-[90px] font-semibold">
+                          Accepted
+                        </Button>
+                      ) : getAppStatus(id) === "rejected" ? (
+                        <Button disabled className="min-w-[90px] font-semibold">
+                          Rejected
+                        </Button>
                       ) : (
                         <Button
-                          onClick={async () => {
-                            await fetch(`/protected/api/training/join/${id}`);
-                            window.location.reload();
-                          }}
+                          onClick={() => handleApply(id)}
                           className="min-w-[90px] font-semibold"
+                          disabled={applying === id}
                         >
-                          Apply
+                          {applying === id ? "Applying..." : "Apply"}
                         </Button>
                       )}
                     </CardFooter>
@@ -219,6 +269,7 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
               {myTrainings.map((training) => {
                 const statusText = training.status ? training.status.charAt(0).toUpperCase() + training.status.slice(1) : 'Unknown';
                 const id = training.id ?? training.trainingId;
+                if (typeof id !== "number") return null;
                 return (
                   <Card key={training.trainingId} className="overflow-hidden hover:shadow-md transition-shadow">
                     <CardHeader>
