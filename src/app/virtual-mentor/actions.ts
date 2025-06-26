@@ -1,12 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+"use server";
 
-export const runtime = "edge";
-
-async function callGemini(messages: { role: string; content: string }[]) {
+export async function getVirtualMentorReply(messages: { role: string; content: string }[]) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("Gemini API key not set");
 
-  // Updated system prompt with new Virtual Mentor Behavior Rules and C++ context
+  // System prompt (same as before)
   const systemPrompt = `### 🧠 Virtual Mentor Behavior Rules
 
 These are the core behavior rules you must follow when helping users:
@@ -108,17 +106,4 @@ These are the core behavior rules you must follow when helping users:
   // Extract the response text
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
   return text;
-}
-
-export async function POST(req: NextRequest) {
-  try {
-    const { messages } = await req.json();
-    if (!Array.isArray(messages)) {
-      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-    }
-    const reply = await callGemini(messages);
-    return NextResponse.json({ reply });
-  } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : "Internal error" }, { status: 500 });
-  }
 } 

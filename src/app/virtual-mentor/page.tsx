@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import rehypeSanitize from "rehype-sanitize";
+import { getVirtualMentorReply } from "./actions";
 
 // Utility to detect Arabic text
 function isArabic(text: string) {
@@ -230,18 +231,13 @@ export default function VirtualMentorPage() {
             reset();
             setLoading(true);
             try {
-              const res = await fetch("/api/virtual-mentor", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ messages: [
-                  ...messages,
-                  { role: "user", content: message },
-                ] }),
-              });
-              const data = await res.json();
-              if (!res.ok) throw new Error(data.error || "Unknown error");
-              setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
-            } catch (err: unknown) {
+              const reply = await getVirtualMentorReply([
+                ...messages,
+                { role: "user", content: message },
+              ]);
+              setMessages(prev => [...prev, { role: "assistant", content: reply }]);
+            } catch (err) {
+              // Optionally handle error
               console.error(err);
             } finally {
               setLoading(false);
