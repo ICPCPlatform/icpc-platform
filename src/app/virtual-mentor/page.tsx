@@ -60,20 +60,26 @@ export default function VirtualMentorPage() {
   return (
     <div className="container min-h-screen py-8 flex flex-col">
       <section className="mb-4 text-center space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center justify-center gap-2">
-          <Sparkles className="h-7 w-7 text-primary" />
-          Virtual Mentor
-        </h1>
-        <div className="flex items-center justify-center gap-2 max-w-xl mx-auto">
-          <Badge className="bg-green-500/10 text-green-500">AI</Badge>
-          <span className="text-muted-foreground">Powered by Gemini</span>
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <Sparkles className="h-7 w-7 text-primary" />
+            Virtual Mentor
+            <Badge className="bg-green-500/10 text-green-500 ml-2">AI</Badge>
+          </h1>
         </div>
-        <div className="mt-2 text-sm text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 rounded-md px-4 py-2">
-          <b>Disclaimer:</b> The Virtual Mentor will only give hints and feedback, not direct answers or code corrections. If you send code, it will point out issues but not fix them for you.
+        <div className="mt-3 flex justify-center">
+          <div className="text-sm text-yellow-700 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 rounded-md px-4 py-2 max-w-xl mx-auto shadow-sm">
+            <b>Disclaimer:</b> The Virtual Mentor will only give hints and feedback, not direct answers or code corrections. If you send code, it will point out issues but not fix them for you.
+          </div>
         </div>
-        <div className="flex justify-center mt-4">
+      </section>
+      <Card className="flex-1 flex flex-col gap-0 bg-card p-0 min-h-[400px] border shadow-md relative">
+        {/* New Chat button in top-right */}
+        <div className="absolute top-4 right-4 z-10">
           <Button
             variant="outline"
+            size="sm"
+            className="shadow"
             onClick={() => {
               setMessages([
                 {
@@ -88,8 +94,6 @@ export default function VirtualMentorPage() {
             New Chat
           </Button>
         </div>
-      </section>
-      <Card className="flex-1 flex flex-col gap-0 bg-card p-0 min-h-[400px] border shadow-md">
         <div className="flex-1 overflow-y-auto px-0 py-4 md:px-8 md:py-6 space-y-2">
           {messages.map((msg, idx) => (
             <div
