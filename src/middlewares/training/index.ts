@@ -8,10 +8,11 @@
 
 import { getUserDataMiddleware } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
-import { extractTrainingId, userTrainingPermissions } from "./utils";
+import { userTrainingPermissions } from "./utils";
 import { TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { composeMiddlewares, NoAction } from "../utils";
 import UrlPattern from "url-pattern";
+import { z } from "zod";
 
 /**
  * Configuration for training route permissions
@@ -86,8 +87,13 @@ const permissionNeedToPath: {
       "/protected/trainings/:trainingId/staff/edit-training",
       ),
     permissions: ["Edit:training"],
-  }
-  
+  },
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/staff-management(/:tail*)",
+    ),
+    permissions: ["Edit:staff"],
+  },
 ];
 
 /**
@@ -123,9 +129,16 @@ function trainingMiddlewareBuilder({
     const url = req.nextUrl.pathname;
 
     // Skip if URL doesn't match the pattern
-    if (!urlPath.match(url)) return [NoAction, req];
+    const match = urlPath.match(url);
+    if (!match) return [NoAction, req];
+    const trainingIdRaw = Number(match.trainingId);
+    let trainingId;
+    if (!isNaN(trainingIdRaw) && z.number().int().safeParse(trainingIdRaw).success) {
+        trainingId = trainingIdRaw;
+    } else {
+        return new NextResponse('/404', { status: 404 });
+    }
 
-    const trainingId = extractTrainingId(url)!;
     const user = await getUserDataMiddleware(req);
 
     // Handle authentication
