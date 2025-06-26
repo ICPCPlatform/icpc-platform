@@ -3,7 +3,7 @@ import StaffTabs from "./StaffTabs";
 import { db } from "@/lib/db";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { Users } from "@/lib/db/schema/user/Users";
-import { eq } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import { z } from "zod";
 
 export default async function StaffManagementPage({
@@ -13,7 +13,6 @@ export default async function StaffManagementPage({
 }) {
   const { trainingId } = await params;
   if (typeof trainingId === "undefined") return;
-
 
   const staffList = await getAllTrainingStaff(trainingId);
 
@@ -53,7 +52,9 @@ async function getAllTrainingStaff(trainingId: string) {
         mentor: Staff.mentor,
       })
       .from(Staff)
-      .where(eq(Staff.trainingId, Number(trainingId)))
+      .where(
+        and(eq(Staff.trainingId, Number(trainingId)), isNull(Staff.deleted)),
+      )
       .innerJoin(Users, eq(Users.userId, Staff.userId))
       .execute();
     return staff;
