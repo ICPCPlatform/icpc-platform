@@ -5,15 +5,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { updateStandingView } from "./actions";
 import type { StandingView } from "@/lib/db/schema/training/Trainings";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { z } from "zod";
 
-const ALL_COLUMNS = [
+// Zod validation schema for the form
+const standingViewSchema = z.array(z.enum(["name", "cfHandle", "vjudge", "gmail", "level", "university", "faculty"]));
+
+// Type-safe ALL_COLUMNS array that matches StandingView type
+const ALL_COLUMNS: Array<{ key: StandingView; label: string }> = [
   { key: "name", label: "Name" },
-  { key: "username", label: "Username" },
   { key: "cfHandle", label: "Codeforces Handle" },
   { key: "vjudge", label: "Vjudge Handle" },
   { key: "gmail", label: "Gmail" },
-  { key: "email", label: "Email" },
   { key: "level", label: "Level" },
   { key: "university", label: "University" },
   { key: "faculty", label: "Faculty" },
@@ -30,6 +33,7 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
   const [selected, setSelected] = useState<string[]>(initial);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleToggle = (key: string) => {
     setSelected((prev) =>
@@ -43,14 +47,21 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
 
   const handleSave = () => {
     setMessage(null);
+    
+    // Validate the selected columns using Zod
+    const validationResult = standingViewSchema.safeParse(selected);
+    if (!validationResult.success) {
+      setMessage("Invalid column selection. Please check your choices.");
+      return;
+    }
+
     startTransition(async () => {
       const res = await updateStandingView({
         trainingId,
-        standingView: selected as StandingView[],
+        standingView: validationResult.data,
       });
       if (res.success) {
         setMessage("Standing view updated.");
-        const router = useRouter();
         router.push(`/protected/trainings/${trainingId}/leaderboard`);
       } else {
         setMessage(res.error || "Failed to update.");

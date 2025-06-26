@@ -1,11 +1,31 @@
-"use client";
+import { getTrainingFullData } from "@/dao/getTrainingFullData";
+import { db } from "@/lib/db";
+import { Trainings, type StandingView } from "@/lib/db/schema/training/Trainings";
+import { eq } from "drizzle-orm";
+import { getUserData } from "@/lib/session";
 
-import { useTrainingContext } from "@/providers/training";
+async function getStandingViewConfig(trainingId: number): Promise<StandingView[]> {
+  const result = await db
+    .select({ standingView: Trainings.standingView })
+    .from(Trainings)
+    .where(eq(Trainings.trainingId, trainingId))
+    .execute();
+  
+  return result[0]?.standingView || ["name", "cfHandle", "level"];
+}
 
-export default function Page() {
-  const training = useTrainingContext();
+export default async function Page({ params }: { params: Promise<{ trainingId: string }> }) {
+  const user = await getUserData();
+  if (!user) {
+    return <div>Not authenticated</div>;
+  }
+
+  const { trainingId: trainingIdStr } = await params;
+  const trainingId = parseInt(trainingIdStr);
+  const training = await getTrainingFullData({ trainingId, userId: user.userId });
+  const standingView = await getStandingViewConfig(trainingId);
+  
   const leaderboard = training?.leaderboard || [];
-  const standingView = training?.standingView || [];
 
   if (!leaderboard.length || !standingView.length) {
     return (
@@ -23,7 +43,7 @@ export default function Page() {
         <table className="min-w-full border-collapse border rounded">
           <thead>
             <tr>
-              {standingView.map((field) => (
+              {standingView.map((field: StandingView) => (
                 <th key={field} className="border px-4 py-2 text-left capitalize">
                   {field}
                 </th>
@@ -34,7 +54,7 @@ export default function Page() {
           <tbody>
             {leaderboard.map((user, idx) => (
               <tr key={user.userId || idx}>
-                {standingView.map((field) => (
+                {standingView.map((field: StandingView) => (
                   <td key={field} className="border px-4 py-2">
                     {user[field] !== undefined && user[field] !== null && user[field] !== "" ? user[field] : "-"}
                   </td>

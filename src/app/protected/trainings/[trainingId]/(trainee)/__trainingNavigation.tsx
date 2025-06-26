@@ -1,16 +1,11 @@
 "use client";
 
-<<<<<<< feature/trainings-leaderboard
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-=======
 import { useTrainingContext } from "@/providers/training";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Trophy } from "lucide-react";
->>>>>>> development
+import { usePathname } from "next/navigation";
 
 // Type for contest standing data
 interface ContestStanding {
@@ -32,37 +27,13 @@ export default function TrainingNavigation({
 }: {
   trainingId: number;
 }) {
-<<<<<<< feature/trainings-leaderboard
-  // const training = useTrainingContext(); // Remove unused variable
+  const training = useTrainingContext() as ExtendedTrainingContext | null;
   const pathname = usePathname();
+  
   // If on leaderboard page, do not render the sidebar at all
   if (pathname.includes("/leaderboard")) {
-    return null;
+    return <></>;
   }
-  return (
-    <div className="flex gap-6">
-      <aside>
-        <div className="flex-shrink-0 w-64 bg-card rounded-lg border p-4">
-          <nav
-            className={cn(
-              "rounded-lg",
-              "overflow-hidden",
-              "h-auto",
-              "self-center",
-            )}
-          >
-            <ul className={cn("flex", "flex-col")}> 
-              <li className={cn(itemStyle, "bg-zinc-500")}
-              >
-                <Link href={`/protected/trainings/${trainingId}/materials`} className={cn("w-full block box-border px-4 py-2")}>
-                  materials
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-=======
-  const training = useTrainingContext() as ExtendedTrainingContext | null;
 
   return (
     <div className="flex gap-6">
@@ -114,7 +85,6 @@ export default function TrainingNavigation({
             </nav>
           </CardContent>
         </Card>
->>>>>>> development
       </aside>
     </div>
   );
