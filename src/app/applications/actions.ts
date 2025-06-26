@@ -3,6 +3,9 @@ import { db } from "@/lib/db";
 import { Applications } from "@/lib/db/schema/training/Applications";
 import { getUserData } from "@/lib/session";
 import { eq, and } from "drizzle-orm";
+import { z } from "zod";
+
+const trainingIdSchema = z.object({ trainingId: z.number().int().positive() });
 
 export async function getUserApplications() {
   const user = await getUserData();
@@ -13,7 +16,8 @@ export async function getUserApplications() {
 export async function applyToTraining(trainingId: number) {
   const user = await getUserData();
   if (!user) throw new Error("Not authenticated");
-  if (!trainingId) throw new Error("Missing trainingId");
+  const parse = trainingIdSchema.safeParse({ trainingId });
+  if (!parse.success) throw new Error("Invalid trainingId");
   const existing = await db
     .select()
     .from(Applications)
@@ -32,7 +36,8 @@ export async function applyToTraining(trainingId: number) {
 export async function withdrawApplication(trainingId: number) {
   const user = await getUserData();
   if (!user) throw new Error("Not authenticated");
-  if (!trainingId) throw new Error("Missing trainingId");
+  const parse = trainingIdSchema.safeParse({ trainingId });
+  if (!parse.success) throw new Error("Invalid trainingId");
   const result = await db
     .update(Applications)
     .set({ status: "withdrawn" })
