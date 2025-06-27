@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 
 // Type for contest standing data
 interface ContestStanding {
-  ContestInfo: {
+  contestInfo: {
     id: number;
     title: string;
   };
@@ -50,22 +50,24 @@ export default function TrainingNavigation({
                   <div className="text-sm font-medium text-muted-foreground mb-2">
                     Contest Standings
                   </div>
-                  {training.standing.map((context: ContestStanding, i: number) => (
-                    <Button
-                      key={i}
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="w-full justify-start"
-                    >
-                      <Link
-                        href={`/protected/trainings/${trainingId}/contests/${context.ContestInfo.id}/standing`}
+                  {training.standing.map((context: ContestStanding, i: number) =>
+                    context?.contestInfo ? (
+                      <Button
+                        key={i}
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="w-full justify-start"
                       >
-                        <Trophy className="h-4 w-4 mr-2" />
-                        {context.ContestInfo.title}
-                      </Link>
-                    </Button>
-                  ))}
+                        <Link
+                          href={`/protected/trainings/${trainingId}/contests/${context.contestInfo.id}/standing`}
+                        >
+                          <Trophy className="h-4 w-4 mr-2" />
+                          {context.contestInfo.title}
+                        </Link>
+                      </Button>
+                    ) : null
+                  )}
                 </>
               )}
               
