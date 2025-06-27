@@ -11,7 +11,7 @@ import { Blocks } from "@/lib/db/schema/training/Blocks";
 import {
   TrainingFullDTO,
   LeaderBoardEntry,
-} from "@/lib/types/training";
+} from "@/lib/types/Training";
 import { Contests } from "@/lib/db/schema/training/Contests";
 
 export async function getTrainingFullData({
