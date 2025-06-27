@@ -5,9 +5,6 @@ import { Trainees } from "../db/schema/training/Trainees";
 import { eq, and, isNull } from "drizzle-orm";
 import { Trainings } from "../db/schema/training/Trainings";
 
-
-
-
 type PermissionAction = "View" | "Edit";
 type PermissionTarget =
   | "standing"
@@ -20,7 +17,8 @@ type PermissionTarget =
   | "staff";
 
 export type TrainingPermissions =
-  | `${PermissionAction}:${PermissionTarget}` | "View:trainee";
+  | `${PermissionAction}:${PermissionTarget}`
+  | "View:trainee";
 
 async function getUserTrainingPermissionsNotCache(
   userId: string,
@@ -49,6 +47,7 @@ async function getUserTrainingPermissionsNotCache(
       "View:attendance",
       "Edit:attendance",
       "Edit:staff",
+      "View:trainee"
     ];
   }
 
@@ -82,7 +81,7 @@ async function getUserTrainingPermissionsNotCache(
         "View:practice",
         "View:attendance",
         "Edit:attendance",
-        "View:trainee"
+        "View:trainee",
       ] as const
     ).forEach((perm) => permissions.add(perm));
 
@@ -104,7 +103,7 @@ async function getUserTrainingPermissionsNotCache(
           "View:block",
           "Edit:block",
           "Edit:training",
-            "View:training",
+          "View:training",
           "View:trainee",
         ] as const
       ).forEach((perm) => permissions.add(perm));
@@ -139,7 +138,7 @@ async function getUserTrainingPermissionsNotCache(
     .execute();
 
   if (studentRes.length === 1) {
-    return ["View:trainee"]; //
+    return ["View:trainee"];
   }
 
   return [];

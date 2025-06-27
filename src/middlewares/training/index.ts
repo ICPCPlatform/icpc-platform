@@ -6,7 +6,7 @@
  * training resources and materials.
  */
 
-import { getUserDataMiddleware } from "@/lib/session";
+import { getUserData } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 import { userTrainingPermissions } from "./utils";
 import { TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";

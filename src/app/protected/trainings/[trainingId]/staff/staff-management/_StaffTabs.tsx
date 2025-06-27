@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useTransition } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export default function StaffTabs({ trainingId, staffList }: { trainingId: numbe
   const [updateRoles, setUpdateRoles] = useState({ instructor: false, problem_setter: false, mentor: false });
   const [updateError, setUpdateError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState("");
+
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -58,6 +60,7 @@ export default function StaffTabs({ trainingId, staffList }: { trainingId: numbe
         setUpdateError(err instanceof Error ? err.message : "Unknown error");
       }
     });
+
   }
 
   async function handleDelete(username: string) {

@@ -8,7 +8,7 @@ import {
   timestamp,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { LeaderBoard } from "@/lib/types/training";
+import { LeaderBoard } from "@/lib/types/Training";
 import { Users } from "../user/Users";
 import { citext } from "@/lib/db/util";
 

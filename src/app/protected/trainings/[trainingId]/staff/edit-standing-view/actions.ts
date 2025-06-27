@@ -1,11 +1,12 @@
 "use server";
 import "server-only";
 import { db } from "@/lib/db";
-import { Trainings, type StandingView } from "@/lib/db/schema/training/Trainings";
+import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { eq } from "drizzle-orm";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { getUserData } from "@/lib/session";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 // Zod validation schema for the updateStandingView action
 const updateStandingViewSchema = z.object({
@@ -16,28 +17,29 @@ const updateStandingViewSchema = z.object({
 export async function updateStandingView({
   trainingId,
   standingView,
-}: {
-  trainingId: number;
-  standingView: StandingView[];
-}) {
-  // Validate input using Zod
-  const validationResult = updateStandingViewSchema.safeParse({ trainingId, standingView });
-  if (!validationResult.success) {
-    return { success: false, error: "Invalid input data", details: validationResult.error.errors };
-  }
+}: z.infer<typeof updateStandingViewSchema>) {
+  try {
+    const parsedData = updateStandingViewSchema.parse({
+      trainingId,
+      standingView,
+    });
+    const user = await getUserData();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+    const permissions = await getUserTrainingPermissions(user.userId, trainingId);
+    if (!permissions.includes("Edit:training")) {
+      throw new Error("User does not have permissions for this training");
+    }
 
-  const user = await getUserData();
-  if (!user) {
-    return { success: false, error: "Not authenticated" };
+    await db
+      .update(Trainings)
+      .set({ standingView: parsedData.standingView })
+      .where(eq(Trainings.trainingId, parsedData.trainingId))
+      .execute();
+    revalidatePath(`/protected/trainings/${trainingId}/staff/edit-standing-view`);
+  } catch (error) {
+    console.error("Error updating standing view:", error);
+    throw new Error("Failed to update standing view");
   }
-  const permissions = await getUserTrainingPermissions(user.userId, trainingId);
-  if (!permissions.includes("Edit:standing")) {
-    return { success: false, error: "Permission denied" };
-  }
-  await db
-    .update(Trainings)
-    .set({ standingView })
-    .where(eq(Trainings.trainingId, trainingId))
-    .execute();
-  return { success: true };
 } 

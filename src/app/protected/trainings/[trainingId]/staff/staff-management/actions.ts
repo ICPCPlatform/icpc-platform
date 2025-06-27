@@ -5,7 +5,7 @@ import { Staff } from "@/lib/db/schema/training/Staff";
 import {getUserData} from "@/lib/session";
 import {Users} from "@/lib/db/schema/user/Users";
 import {eq, and } from "drizzle-orm";
-// todo
+
 import { z } from 'zod';
 import { revalidatePath } from "next/cache";
 
@@ -154,7 +154,6 @@ export async function updateStaff({
     try {
         const res = await db.select({userId: Users.userId}).from(Users).where(eq(Users.username, username)).execute();
         if (res.length === 0) throw new Error('User not found');
-
         await db
             .update(Staff)
             .set({
@@ -170,7 +169,6 @@ export async function updateStaff({
                 )
             )
             .execute();
-
         revalidatePath(`/protected/trainings/${trainingId}/staff/staff-management`);
     } catch (error) {
         console.error("Error updating staff:", error);

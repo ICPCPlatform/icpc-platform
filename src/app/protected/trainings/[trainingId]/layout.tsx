@@ -3,12 +3,19 @@ import { getUserData } from "@/lib/session";
 import Link from "next/link";
 import React from "react";
 import { TrainingNavigation } from "@/components/training/TrainingNavigation";
+import { getStaffRoles } from "@/dao/getStaffRoles";
 
-function Breadcrumb({ trainingName, section }: { trainingName: string; section?: string }) {
+function Breadcrumb({
+  trainingName,
+  section,
+}: {
+  trainingName: string;
+  section?: string;
+}) {
   return (
     <nav className="text-sm mb-4 text-muted-foreground">
-      <Link href="/protected/trainings">Dashboard</Link> &gt; {" "}
-      <Link href="/protected/trainings/my-trainings">My Trainings</Link> &gt; {" "}
+      <Link href="/protected/trainings">Dashboard</Link> &gt;{" "}
+      <Link href="/protected/trainings/my-trainings">My Trainings</Link> &gt;{" "}
       <span>{trainingName}</span>
       {section && <span> &gt; {section}</span>}
     </nav>
@@ -27,10 +34,18 @@ export default async function TrainingLayout({
   const user = await getUserData();
   const userId = user?.userId;
   // Fetch training data with userId to get userRoles
-  const trainingData = await getTrainingFullData({ trainingId: trainingIdNumber, userId });
-  const trainingName = trainingData?.blocks?.[0]?.title ? `Training #${trainingIdNumber}` : `Training #${trainingIdNumber}`;
+  const trainingData = await getTrainingFullData({
+    trainingId: trainingIdNumber,
+    userId,
+  });
+
+  const trainingName = trainingData.title;
+
   // Use userRoles from trainingData
-  const userRoles = trainingData.userRoles || [];
+  const userRoles = await getStaffRoles({
+    userId,
+    trainingId: trainingIdNumber,
+  });
 
   return (
     <div className="container mx-auto py-6">
@@ -47,4 +62,4 @@ export default async function TrainingLayout({
       <main>{children}</main>
     </div>
   );
-} 
+}

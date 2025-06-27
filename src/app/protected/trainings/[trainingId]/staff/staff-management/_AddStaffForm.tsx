@@ -16,6 +16,7 @@ export default function AddStaffForm({ trainingId }: { trainingId: number }) {
         mentor: false
     });
     const [message, setMessage] = useState('');
+
     const [isPending, startTransition] = useTransition();
 
     async function handleSubmit(e: React.FormEvent) {
@@ -96,6 +97,7 @@ export default function AddStaffForm({ trainingId }: { trainingId: number }) {
                 </div>
                     <Button type="submit" className="w-full" disabled={isPending}>
                     {isPending ? 'Adding...' : 'Add Staff'}
+
                     </Button>
             </form>
             {message && (

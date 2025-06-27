@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { Blocks } from "./Blocks";
-import { StandingEntry } from "@/lib/types/training";
+import { StandingEntry } from "@/lib/types/Training";
 type Judge = "cf" | "vj";
 
 /**
