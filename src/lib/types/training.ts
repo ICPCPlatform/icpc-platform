@@ -5,10 +5,11 @@ export type TrainingFullDTO = {
   standing:
     | {
         ContestInfo: ContestInfo;
-        rankings: RankingEntryWithDetails[];
+        rankings: RankingEntryWithTrainees[];
         problems: string[];
       }[]
     | undefined;
+  leaderBoard: LeaderBoardWithTrainees[];
   blocks: Blocks; // to in the DAO
 };
 
@@ -89,7 +90,7 @@ export type Trainee = {
   faculty?: string;
 };
 
-export interface LeaderBoardEntry{
+export interface LeaderBoardEntry {
   userId: string;
   points: number;
 }
@@ -97,6 +98,11 @@ export type LeaderBoard = LeaderBoardEntry[];
 /**
  * Standing Entry with Trainee Details
  */
-export type RankingEntryWithDetails = Omit<Trainee & Ranking, "userId">;
+export type RankingEntryWithTrainees = Omit<Trainee & Ranking, "userId">;
 
-export {type TrainingPermissions} from "@/lib/permissions/getUserTrainingPermissions";
+export type LeaderBoardWithTrainees = Omit<
+  Trainee & LeaderBoardEntry,
+  "userId"
+>;
+
+export { type TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
