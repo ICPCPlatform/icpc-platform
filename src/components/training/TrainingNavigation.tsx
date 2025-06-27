@@ -30,7 +30,7 @@ export async function TrainingNavigation({
     { perm: "View:material", href: `/protected/trainings/${trainingId}/materials`, label: "Materials" },
     { perm: "View:contest", href: `/protected/trainings/${trainingId}/contests`, label: "Contests" },
     { perm: "View:standing", href: `/protected/trainings/${trainingId}/leaderboard`, label: "Leaderboard" },
-    { perm: "Edit:staff", href: `/protected/trainings/${trainingId}/staff/edit-training/add-staff`, label: "Manage Staff" },
+    { perm: "Edit:staff", href: `/protected/trainings/${trainingId}/staff/staff-management`, label: "Staff Management" },
     { perm: "Edit:training", href: `/protected/trainings/${trainingId}/staff/edit-training`, label: "Edit Training" },
     { perm: "Edit:block", href: `/protected/trainings/${trainingId}/staff/edit-blocks`, label: "Edit Blocks" },
     { perm: "Edit:standing", href: `/protected/trainings/${trainingId}/staff/edit-standing-view`, label: "Standing View" },
