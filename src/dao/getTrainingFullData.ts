@@ -8,9 +8,7 @@ import { and, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
-import { Staff } from "@/lib/db/schema/training/Staff";
 import {
-  Trainee,
   TrainingFullDTO,
   LeaderBoardEntry,
 } from "@/lib/types/training";
@@ -18,11 +16,10 @@ import { Contests } from "@/lib/db/schema/training/Contests";
 
 export async function getTrainingFullData({
   trainingId,
-  userId,
 }: {
   trainingId: number;
   userId?: string;
-}): Promise<TrainingFullDTO & { userRoles?: string[] }> {
+}): Promise<TrainingFullDTO > {
   // Fetch training details
   const trainingResult = await db
     .select({
@@ -30,6 +27,7 @@ export async function getTrainingFullData({
       standingView: Trainings.standingView,
       headId: Trainings.headId,
       chiefJudge: Trainings.chiefJudge,
+      title: Trainings.title,
     })
     .from(Trainings)
     .where(eq(Trainings.trainingId, trainingId))
@@ -40,7 +38,7 @@ export async function getTrainingFullData({
     throw new Error("Training not found");
   }
 
-  const { standingView, leaderBoard, headId, chiefJudge } = training;
+  const { standingView, leaderBoard ,title} = training;
   // leaderBoard is expected to be an array of { userId, points }
   const leaderBoardEntry: LeaderBoardEntry[] = Array.isArray(leaderBoard)
     ? leaderBoard
@@ -51,18 +49,52 @@ export async function getTrainingFullData({
     .map((entry) => entry.userId)
     .filter((id) => id !== undefined);
 
-  // Fetch user details for each userId
-  const trainees: Trainee[] = (await db
+  // Fetch blocks as they are needed for the contests query within Promise.all
+  const blocksResult = await db
     .select({
-      ...selectKeysFromObjects(userSelectFields, standingView),
-      userId: Users.userId,
+      id: Blocks.blockNumber,
+      title: Blocks.title,
+      materials: Blocks.material,
+      description: Blocks.description,
     })
-    .from(Users)
-    .leftJoin(UsersFullData, eq(UsersFullData.userId, Users.userId))
-    .leftJoin(Institutes, eq(Institutes.id, UsersFullData.instituteId))
-    .leftJoin(Faculties, eq(Faculties.id, UsersFullData.facultyId))
-    .where(inArray(Users.userId, traineeIds))
-    .execute()) satisfies Trainee[];
+    .from(Blocks)
+    .where(
+      and(
+        eq(Blocks.trainingId, trainingId),
+        eq(Blocks.hidden, false),
+        isNull(Blocks.deleted),
+      ),
+    )
+    .execute();
+
+  const [trainees, constestEntries] = await Promise.all([
+    db
+      .select({
+        ...selectKeysFromObjects(userSelectFields, standingView),
+        userId: Users.userId,
+      })
+      .from(Users)
+      .leftJoin(UsersFullData, eq(UsersFullData.userId, Users.userId))
+      .leftJoin(Institutes, eq(Institutes.id, UsersFullData.instituteId))
+      .leftJoin(Faculties, eq(Faculties.id, UsersFullData.facultyId))
+      .where(inArray(Users.userId, traineeIds))
+      .execute(),
+    db
+      .select({
+        standing: Contests.standing,
+      })
+      .from(Contests)
+      .where(
+        and(
+          eq(Contests.trainingId, trainingId),
+          isNull(Contests.deleted),
+          inArray(
+            Contests.blockNumber,
+            blocksResult.map((x: { id: number }) => x.id),
+          ),
+        ),
+      ),
+  ]);
 
   const traineesMap = new Map(
     trainees.map((trainee) => {
@@ -87,42 +119,9 @@ export async function getTrainingFullData({
       (entry) => entry !== undefined,
     ) satisfies TrainingFullDTO["leaderBoard"];
 
-  // Fetch blocks as before
-  const blocksResult = await db
-    .select({
-      id: Blocks.blockNumber,
-      title: Blocks.title,
-      materials: Blocks.material,
-      description: Blocks.description,
-    })
-    .from(Blocks)
-    .where(
-      and(
-        eq(Blocks.trainingId, trainingId),
-        eq(Blocks.hidden, false),
-        isNull(Blocks.deleted),
-      ),
-    )
-    .execute();
-
   const blocks = blocksResult satisfies TrainingFullDTO["blocks"];
   blocks.sort((a, b) => a.id - b.id);
 
-  const constestEntries = await db
-    .select({
-      standing: Contests.standing,
-    })
-    .from(Contests)
-    .where(
-      and(
-        eq(Contests.trainingId, trainingId),
-        isNull(Contests.deleted),
-        inArray(
-          Contests.blockNumber,
-          blocks.map((x) => x.id),
-        ),
-      ),
-    );
   const contestsStandingWithTrainees: TrainingFullDTO["standing"] = [];
 
   for (const entry of constestEntries) {
@@ -152,43 +151,9 @@ export async function getTrainingFullData({
       });
     });
   }
-  // If userId is provided, fetch staff row and check head/chief judge
-  let userRoles: string[] | undefined = undefined;
-  if (userId) {
-    userRoles = [];
-    // Check staff table
-    const staffRows = await db
-      .select({
-        mentor: Staff.mentor,
-        problemSetter: Staff.problemSetter,
-        instructor: Staff.instructor,
-        coHead: Staff.coHead,
-        manager: Staff.manager,
-      })
-      .from(Staff)
-      .where(
-        and(
-          eq(Staff.userId, userId),
-          eq(Staff.trainingId, trainingId),
-          isNull(Staff.deleted),
-        ),
-      )
-      .execute();
-    if (staffRows.length > 0) {
-      const staff = staffRows[0];
-      if (staff.mentor) userRoles.push("mentor");
-      if (staff.problemSetter) userRoles.push("problem_setter");
-      if (staff.instructor) userRoles.push("instructor");
-      if (staff.coHead) userRoles.push("co_head");
-      if (staff.manager) userRoles.push("manager");
-    }
-    // Check head_id and chief_judge
-    if (userId === headId) userRoles.push("head");
-    if (userId === chiefJudge) userRoles.push("chief_judge");
-  }
 
   // Return as a flat array of user standings (not contest standings)
-  return { leaderBoard: leaderBoardWithTrainees, blocks, standing: contestsStandingWithTrainees, userRoles };
+  return { leaderBoard: leaderBoardWithTrainees, blocks, standing: contestsStandingWithTrainees, title };
 }
 
 const userSelectFields = {

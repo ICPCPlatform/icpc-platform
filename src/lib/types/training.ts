@@ -2,6 +2,7 @@
  * Training Data send to the client
  */
 export type TrainingFullDTO = {
+  title: string;
   standing:
     | {
         ContestInfo: ContestInfo;

@@ -1,13 +1,13 @@
 "use client";
 import { createContext, useContext } from "react";
-import { TrainingFlatLeaderboardDTO } from "@/dao/getTrainingFullData";
-const trainingContext = createContext<TrainingFlatLeaderboardDTO & { userRoles?: string[] } | null>(null);
+import { type TrainingFullDTO } from "@/lib/types/training";
+const trainingContext = createContext<TrainingFullDTO | null>(null);
 export default function TrainingProvider({
   children,
   trainingData,
 }: {
   children: React.ReactNode;
-  trainingData: TrainingFlatLeaderboardDTO & { userRoles?: string[] };
+  trainingData: TrainingFullDTO;
 }) {
   return <trainingContext.Provider value={trainingData}>{children}</trainingContext.Provider>;
 }
