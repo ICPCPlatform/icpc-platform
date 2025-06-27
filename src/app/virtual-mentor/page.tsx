@@ -28,11 +28,28 @@ const messageSchema = z.object({
 // Inline useAction hook for async server action with pending and error state
 const initialState = { reply: null, error: null };
 export default function VirtualMentorPage() {
-  const [allMessages, setAllMessages] = useState<Array<{ message: string } | { response: string }>>([
-    { response: "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!" },
+  const [allMessages, setAllMessages] = useState<
+    Array<{ message: string } | { response: string }>
+  >([
+    {
+      response:
+        "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
+    },
+  ]);
+  const [_messages, setMessages] = useState<
+    Array<{ role: string; content: string }>
+  >([
+    {
+      role: "system",
+      content:
+        "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
+    },
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [actionState, sendMessage, isPending] = useActionState(getVirtualMentorReply, initialState);
+  const [actionState, sendMessage, isPending] = useActionState(
+    getVirtualMentorReply,
+    initialState,
+  );
   const [userResponse, setUserResponse] = useState("");
 
   const form = useForm({
@@ -47,14 +64,12 @@ export default function VirtualMentorPage() {
   // When actionState.reply changes, add the assistant message
   useEffect(() => {
     if (actionState.reply) {
-      setAllMessages((prev) => [
+      setAllMessages((prev) => [...prev, { response: actionState.reply }]);
+      setMessages((prev) => [
         ...prev,
-        { message: userResponse },
-        { response: actionState.reply },
+        { role: "assistant", content: actionState.reply },
       ]);
-      setUserResponse("")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionState.reply]);
 
   return (
@@ -84,9 +99,18 @@ export default function VirtualMentorPage() {
             className="shadow"
             onClick={() => {
               setAllMessages([
-                { response: "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!" },
+                {
+                  response:
+                    "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
+                },
               ]);
-              form.reset();
+              setMessages([
+                {
+                  role: "system",
+                  content:
+                    "Welcome to the Virtual Mentor! Ask your programming questions or share your code. The mentor will give you hints and feedback, but never direct answers or code corrections. Try to solve problems yourself!",
+                },
+              ]);
             }}
           >
             New Chat
@@ -96,7 +120,7 @@ export default function VirtualMentorPage() {
           className={`flex-1 overflow-y-auto px-0 py-4 md:px-8 md:py-6 space-y-2 transition-opacity duration-300 ${isPending ? "opacity-60" : "opacity-100"}`}
         >
           {allMessages.map((msg, idx) => {
-            if ('message' in msg) {
+            if ("message" in msg) {
               // User message
               return (
                 <div key={idx} className="flex justify-end">
@@ -134,7 +158,12 @@ export default function VirtualMentorPage() {
             className="flex gap-2 border-t border-border bg-background px-4 py-3"
             action={sendMessage}
           >
-            {/* Serialize allMessages as a hidden input for the server action */}
+            <input
+              type="hidden"
+              name="messages"
+              value={JSON.stringify(_messages ?? [])}
+              onChange={() => {}}
+            />
             <FormField
               name="message"
               render={() => (
@@ -142,7 +171,7 @@ export default function VirtualMentorPage() {
                   <FormControl>
                     <Textarea
                       value={userResponse}
-                      onChange={e => setUserResponse(e.target.value)}
+                      onChange={(e) => setUserResponse(e.target.value)}
                       className="flex-1 resize-none min-h-[44px] max-h-40"
                       placeholder="Type your question or paste your code..."
                       autoFocus
@@ -152,7 +181,18 @@ export default function VirtualMentorPage() {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
                           if (!isPending && userResponse.trim()) {
-                            (e.target as HTMLTextAreaElement).form?.requestSubmit();
+                            setAllMessages((prev) => [
+                              ...prev,
+                              { message: userResponse },
+                            ]);
+                            setMessages((prev) => [
+                              ...prev,
+                              { role: "user", content: userResponse },
+                            ]);
+                            setUserResponse("");
+                            (
+                              e.target as HTMLTextAreaElement
+                            ).form?.requestSubmit();
                           }
                         }
                       }}
@@ -163,16 +203,33 @@ export default function VirtualMentorPage() {
               )}
             />
             <Button
-              type="submit"
+              type="button"
               variant="default"
               disabled={isPending}
+              onClick={(e) => {
+                if (!isPending && userResponse.trim()) {
+                  setAllMessages((prev) => [
+                    ...prev,
+                    { message: userResponse },
+                  ]);
+                  setMessages((prev) => [
+                    ...prev,
+                    { role: "user", content: userResponse },
+                  ]);
+                  setUserResponse("");
+                  // @ts-expect-error: e.target.form is not typed on Button event target, but is valid in the DOM
+                  e.target.form?.requestSubmit();
+                }
+              }}
             >
               {isPending ? "..." : "Send"}
             </Button>
           </form>
         </Form>
         {actionState.error && (
-          <div className="text-red-600 text-sm px-4 pb-2">{actionState.error}</div>
+          <div className="text-red-600 text-sm px-4 pb-2">
+            {actionState.error}
+          </div>
         )}
       </Card>
       <style jsx global>{`

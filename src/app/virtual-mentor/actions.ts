@@ -3,7 +3,7 @@
 export async function getVirtualMentorReply(_prevState: { reply: string | null; error: string | null }, form: FormData) {
   try {
     const messagesRaw = form.get('messages');
-    const message = form.get('message');
+    const message = form.get('message'); // This is the user message sent as a hidden input
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("Gemini API key not set");
 
