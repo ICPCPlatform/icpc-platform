@@ -7,6 +7,7 @@ import {Users} from "@/lib/db/schema/user/Users";
 import {eq, and } from "drizzle-orm";
 import { z } from 'zod';
 import { revalidatePath } from "next/cache";
+import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 
 const addStaffSchema = z.object({
     trainingId: z.coerce.number().int().positive(),
@@ -53,6 +54,15 @@ export async function addStaffAction({
         return { success: false, error: parseResult.error.errors[0].message };
     }
     try {
+        const user = await getUserData();
+        if (!user) {
+            throw new Error("User not authenticated");
+        }
+        const permissions = await getUserTrainingPermissions(user.userId, Number(trainingId));
+        if (!permissions.includes("Edit:staff")) {
+            throw new Error("User does not have permissions for this training");
+        }
+
         const res = await db.select({userId: Users.userId}).from(Users).where(eq(Users.username, username)).execute()
         if (res.length === 0) throw Error('user not found');
         const insertData = {
@@ -79,9 +89,14 @@ export async function searchByUsername(username: string, trainingId: number) {
     try {
         const userData = await getUserData();
 
-        if (userData == null || userData.role !== "admin") {
+        if (!userData) {
             throw Error("Unauthorized access");
         }
+        const permissions = await getUserTrainingPermissions(userData.userId, trainingId);
+        if (!permissions.includes("Edit:staff")) {
+            throw new Error("User does not have permissions for this training");
+        }
+
         const staff = await db
             .select({
                 username: Users.username,
@@ -118,6 +133,15 @@ export async function deleteStaff({
         return { success: false, error: parseResult.error.errors[0].message };
     }
     try {
+        const user = await getUserData();
+        if (!user) {
+            throw new Error("User not authenticated");
+        }
+        const permissions = await getUserTrainingPermissions(user.userId, Number(trainingId));
+        if (!permissions.includes("Edit:staff")) {
+            throw new Error("User does not have permissions for this training");
+        }
+
         const res = await db.select({userId: Users.userId}).from(Users).where(eq(Users.username, username)).execute()
         if (res.length === 0) throw Error('user not found');
 
@@ -155,6 +179,15 @@ export async function updateStaff({
         return { success: false, error: parseResult.error.errors[0].message };
     }
     try {
+        const user = await getUserData();
+        if (!user) {
+            throw new Error("User not authenticated");
+        }
+        const permissions = await getUserTrainingPermissions(user.userId, Number(trainingId));
+        if (!permissions.includes("Edit:staff")) {
+            throw new Error("User does not have permissions for this training");
+        }
+
         const res = await db.select({userId: Users.userId}).from(Users).where(eq(Users.username, username)).execute();
         if (res.length === 0) throw Error('user not found');
 
