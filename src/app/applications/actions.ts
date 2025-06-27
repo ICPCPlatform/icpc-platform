@@ -4,15 +4,18 @@ import { Applications } from "@/lib/db/schema/training/Applications";
 import { getUserData } from "@/lib/session";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
+import {redirect} from "next/navigation";
 
 const trainingIdSchema = z.object({ trainingId: z.number().int().positive() });
 
 export async function getUserApplications() {
   const user = await getUserData();
-  if (!user) throw new Error("Not authenticated");
+  if (!user) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    redirect("/login");
+  }
   return db.select().from(Applications).where(eq(Applications.userId, user.userId)).execute();
 }
-
 export async function applyToTraining(trainingId: number) {
   const user = await getUserData();
   if (!user) throw new Error("Not authenticated");

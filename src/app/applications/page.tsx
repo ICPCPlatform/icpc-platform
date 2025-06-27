@@ -24,7 +24,7 @@ export default function ApplicationsPage() {
         setLoading(false);
       })
       .catch(() => {
-        setError("Failed to load applications");
+        setError("your applications could not be loaded, please try to login.");
         setLoading(false);
       });
   }, []);
