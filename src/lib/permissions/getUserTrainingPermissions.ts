@@ -27,6 +27,9 @@ async function getUserTrainingPermissionsNotCache(
   if (isNaN(trainingId)) {
     return [];
   }
+  const permissions: Set<TrainingPermissions> = new Set();
+
+  // Head permissions
   const headRes = await db
     .select({})
     .from(Trainings)
@@ -35,7 +38,7 @@ async function getUserTrainingPermissionsNotCache(
     )
     .execute();
   if (headRes.length === 1) {
-    return [
+    ([
       "View:standing",
       "Edit:standing",
       "View:material",
@@ -48,9 +51,10 @@ async function getUserTrainingPermissionsNotCache(
       "Edit:attendance",
       "Edit:staff",
       "View:trainee"
-    ];
+    ] as TrainingPermissions[]).forEach((perm) => permissions.add(perm));
   }
 
+  // Staff permissions
   const staffRes = await db
     .select({
       mentor: Staff.mentor,
@@ -71,8 +75,6 @@ async function getUserTrainingPermissionsNotCache(
 
   if (staffRes.length === 1) {
     const staff = staffRes[0];
-    const permissions: Set<TrainingPermissions> = new Set();
-
     // Base permissions for all staff
     (
       [
@@ -87,26 +89,23 @@ async function getUserTrainingPermissionsNotCache(
 
     // Manager permissions
     if (staff.manager) {
-      // all permissions
-      (
-        [
-          "View:standing",
-          "Edit:standing",
-          "View:material",
-          "Edit:material",
-          "View:practice",
-          "Edit:practice",
-          "View:attendance",
-          "Edit:attendance",
-          "View:contest",
-          "Edit:contest",
-          "View:block",
-          "Edit:block",
-          "Edit:training",
-          "View:training",
-          "View:trainee",
-        ] as const
-      ).forEach((perm) => permissions.add(perm));
+      ([
+        "View:standing",
+        "Edit:standing",
+        "View:material",
+        "Edit:material",
+        "View:practice",
+        "Edit:practice",
+        "View:attendance",
+        "Edit:attendance",
+        "View:contest",
+        "Edit:contest",
+        "View:block",
+        "Edit:block",
+        "Edit:training",
+        "View:training",
+        "View:trainee",
+      ] as TrainingPermissions[]).forEach((perm) => permissions.add(perm));
     }
 
     // Instructor permissions
@@ -120,28 +119,28 @@ async function getUserTrainingPermissionsNotCache(
       permissions.add("Edit:practice");
       permissions.add("View:practice");
     }
-
-    return [...permissions];
   }
 
-  // Check if user is a trainee
-  const studentRes = await db
-    .select({})
-    .from(Trainees)
-    .where(
-      and(
-        eq(Trainees.userId, userId),
-        eq(Trainees.trainingId, trainingId),
-        isNull(Trainees.deleted),
-      ),
-    )
-    .execute();
+  // If not head or staff, check if user is a trainee
+  if (permissions.size === 0) {
+    const studentRes = await db
+      .select({})
+      .from(Trainees)
+      .where(
+        and(
+          eq(Trainees.userId, userId),
+          eq(Trainees.trainingId, trainingId),
+          isNull(Trainees.deleted),
+        ),
+      )
+      .execute();
 
-  if (studentRes.length === 1) {
-    return ["View:trainee"];
+    if (studentRes.length === 1) {
+      permissions.add("View:trainee");
+    }
   }
 
-  return [];
+  return [...permissions];
 }
 
 export const getUserTrainingPermissions = getUserTrainingPermissionsNotCache;
