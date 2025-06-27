@@ -14,10 +14,28 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useTheme } from "next-themes";
 import { useUserContext } from "@/providers/user";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { FaUserCircle, FaSignOutAlt, FaUserEdit } from "react-icons/fa";
+import { signOutAction } from "@/app/actions/signout";
+import { useTransition } from "react";
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
   const user = useUserContext();
+  const startTransition = useTransition()[1];
+
+  function handleSignOut() {
+    startTransition(async () => {
+      await signOutAction();
+      window.location.href = "/";
+    });
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -113,9 +131,30 @@ export function Navbar() {
         </div>
         <div className="flex flex-1 gap-4 items-center justify-end">
           {user && (
-            <Link href="/protected/profile" className="flex items-center gap-2">
-              profile
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 px-3">
+                  <FaUserCircle className="w-5 h-5" />
+                  <span className="font-medium max-w-[120px] truncate">{user.username}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link href="/protected/profile">
+                    <FaUserCircle className="mr-2" /> Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/protected/edit-profile">
+                    <FaUserEdit className="mr-2" /> Edit Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-600 cursor-pointer">
+                  <FaSignOutAlt className="mr-2" /> Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           <Button
             variant="ghost"
@@ -124,7 +163,6 @@ export function Navbar() {
             className="h-9 w-9 rounded-md border border-input hover:bg-accent"
           >
             <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-
             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
