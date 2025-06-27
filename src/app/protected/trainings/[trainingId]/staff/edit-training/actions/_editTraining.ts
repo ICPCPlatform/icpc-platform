@@ -9,7 +9,7 @@ import {TrainingFormData} from "@/lib/validation/training/trainingValidations";
 import {TrainingEdit} from "@/app/protected/trainings/[trainingId]/staff/edit-training/_trainingForm";
 
 
-// I don't know how is this working 
+// This function fetches training data by ID, ensuring the user has the necessary permissions to view the training.
 
 
 /**
