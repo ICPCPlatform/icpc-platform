@@ -36,7 +36,7 @@ export async function getStaffRoles({
       chiefJudgeId: Trainings.chiefJudge,
     })
     .from(Trainings)
-    .where(and(eq(Staff.trainingId, trainingId), isNull(Staff.deleted)))
+    .where(and(eq(Trainings.trainingId, trainingId), isNull(Trainings.deleted)))
     .execute();
 
   const { trainingHeadId, chiefJudgeId } = dbResult[0] || {};
