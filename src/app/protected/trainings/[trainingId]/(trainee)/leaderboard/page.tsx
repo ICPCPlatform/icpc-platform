@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: Promise<{ trainingId: s
   const training = await getTrainingFullData({ trainingId, userId: user.userId });
   const standingView = await getStandingViewConfig(trainingId);
   
-  const leaderboard = training?.leaderboard || [];
+  const leaderboard = training?.leaderBoard || [];
 
   if (!leaderboard.length || !standingView.length) {
     return (

@@ -1,6 +1,6 @@
 "use client";
 import { redirect, useParams } from "next/navigation";
-import { Material } from "@/lib/types/Training";
+import { Material } from "@/lib/types/training";
 import { startTransition, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { updateMaterial } from "../../actions/_updateMaterial";

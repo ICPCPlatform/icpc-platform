@@ -40,17 +40,25 @@ export function BlockForm({ trainingId, blockNumber, initialData }: BlockFormPro
     });
 
     console.log("Update result:", result);
-    if (result.success) {
+    try{
       toast({
         title: "Success",
         description: "Block updated successfully",
       });
-    } else {
-      toast({
-        title: "Error",
-        description: result.error,
-        variant: "destructive",
-      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Error",
+          description: error.message || 'unknown error',
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: 'unknown error',
+          variant: "destructive",
+        });
+      }
     }
   }
 

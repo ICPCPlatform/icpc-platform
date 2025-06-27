@@ -1,6 +1,9 @@
 import BlockForm from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/[blockNumber]/_blockForm";
-import {getBlockByNumber} from "@/app/protected/trainings/[trainingId]/staff/edit-blocks/actions/_editBlock";
 import "@/styles/components/block.css"
+import { Blocks } from "@/lib/db/schema/training/Blocks";
+import { Trainings } from "@/lib/db/schema/training/Trainings";
+import { eq , and} from "drizzle-orm";
+import { db } from "@/lib/db";
 
 
 /**
@@ -21,10 +24,23 @@ export default async function page({params}: { params: Promise<{ blockNumber: st
     if (isNaN(trainingId)) throw new Error("Invalid training ID");
 
     // Fetch the block data
-    const block = await getBlockByNumber(trainingId, blockNumber);
+    const block = await db.select(
+        {
+                trainingId:Trainings.trainingId,
+                title: Blocks.title,
+                description: Trainings.description,
+                hidden: Blocks.hidden,
+                date: Blocks.date, 
+                blockNumber: Blocks.blockNumber
+            
+        })
+        .from(Trainings)
+        .where(and(eq(Trainings.trainingId, trainingId),eq(Blocks.blockNumber, blockNumber)))
+        .innerJoin(Blocks, eq(Blocks.trainingId, Trainings.trainingId))
+        .execute()
 
     // Check if the block data is null
-    if (block === null) {
+    if (block.length === 0) {
         console.error("Block not found");
         return null;
     }

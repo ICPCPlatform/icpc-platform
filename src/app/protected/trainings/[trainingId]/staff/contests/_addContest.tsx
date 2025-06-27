@@ -24,16 +24,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { addContestAction } from "./actions/addContest";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useTransition } from "react";
 
 type AddContestFormProps = {
   trainingId: number;
-  blocks: { title: string; blockNumber: number }[];
+  blocks: Array<{ blockNumber: number; title: string }>;
+  onClose?: () => void;
 };
 
-export function AddContestForm({ trainingId, blocks }: AddContestFormProps) {
+export function AddContestForm({ trainingId, blocks, onClose }: AddContestFormProps) {
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof addContestSchema>>({
     resolver: zodResolver(addContestSchema),
@@ -48,24 +49,28 @@ export function AddContestForm({ trainingId, blocks }: AddContestFormProps) {
   });
 
   async function onSubmit(data: z.infer<typeof addContestSchema>) {
-    try {
-      setIsLoading(true);
-      await addContestAction(data);
-      toast({
-        title: "Success",
-        description: "Contest added successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error instanceof Error ? error.message : "Failed to add contest",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    startTransition(async () => {
+      try {
+        await addContestAction(data);
+        toast({
+          title: "Success",
+          description: "Contest added successfully",
+        });
+        onClose?.();
+      } catch (error) {
+        toast({
+          title: "Error",
+          description:
+            error instanceof Error ? error.message : "Failed to add contest",
+          variant: "destructive",
+        });
+      }
+    });
   }
+
+  const handleCancel = () => {
+    onClose?.();
+  };
 
   return (
     <Form {...form}>
@@ -194,11 +199,11 @@ export function AddContestForm({ trainingId, blocks }: AddContestFormProps) {
         />
 
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" disabled={isLoading}>
+          <Button type="button" variant="outline" disabled={isPending} onClick={handleCancel}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Adding..." : "Add Contest"}
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Adding..." : "Add Contest"}
           </Button>
         </div>
       </form>

@@ -13,6 +13,7 @@ import {
   LeaderBoardEntry,
 } from "@/lib/types/Training";
 import { Contests } from "@/lib/db/schema/training/Contests";
+import camelcaseKeys from "camelcase-keys";
 
 export async function getTrainingFullData({
   trainingId,
@@ -125,30 +126,30 @@ export async function getTrainingFullData({
   const contestsStandingWithTrainees: TrainingFullDTO["standing"] = [];
 
   for (const entry of constestEntries) {
-    const standings = entry.standing;
-    if (!standings) continue;
+    const standing = entry.standing;
+    if (!standing) continue;
 
-    standings.forEach((standing) => {
-      const { ContestInfo, rankings, problems } = standing;
-      const rankingsWithTrainees = rankings
-        .map((ranking) => {
-          const user = traineesMap.get(ranking.userId);
-          if (!user) {
-            return undefined; // Skip if user not found
-          }
-          const { userId: __unneeded, ...rankingWithoutUserId } = ranking;
-          return {
-            ...user,
-            ...rankingWithoutUserId,
-          };
-        })
-        .filter((ranking) => ranking !== undefined);
+    // Convert standing object to camelCase
+    const camelStanding = camelcaseKeys(standing, { deep: true });
+    const { contestInfo, rankings, problems } = camelStanding;
+    const rankingsWithTrainees = rankings
+      .map((ranking) => {
+        const user = traineesMap.get(ranking.userId);
+        if (!user) {
+          return undefined; // Skip if user not found
+        }
+        const { userId: __unneeded, ...rankingWithoutUserId } = ranking;
+        return {
+          ...user,
+          ...rankingWithoutUserId,
+        };
+      })
+      .filter((ranking) => ranking !== undefined);
 
-      contestsStandingWithTrainees.push({
-        problems,
-        ContestInfo,
-        rankings: rankingsWithTrainees,
-      });
+    contestsStandingWithTrainees.push({
+      problems,
+      contestInfo,
+      rankings: rankingsWithTrainees,
     });
   }
 
