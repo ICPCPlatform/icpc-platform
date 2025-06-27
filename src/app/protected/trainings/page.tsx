@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { Trainees } from "@/lib/db/schema/training/Trainees";
 import { getUserData } from "@/lib/session";
-import { eq, isNull } from "drizzle-orm";
+import { eq, isNull, and } from "drizzle-orm";
 import TrainingsTabs from "./TrainingsTabs";
 
 export default async function TrainingsPage() {
@@ -10,7 +10,15 @@ export default async function TrainingsPage() {
   const isAdminOrStaff = userData && (userData.role === 'admin' || userData.role === 'staff');
 
   // My trainings
-  let myTrainings = [];
+  let myTrainings: {
+    trainingId: number,
+    title: string,
+    description: string,
+    startDate: string
+    duration: number,
+    status: string,
+  }[] = [];
+  
   if (userData) {
     myTrainings = await db
       .select({
@@ -28,11 +36,20 @@ export default async function TrainingsPage() {
   }
 
   // All trainings
-  let allTrainings = [];
+  let allTrainings: {
+    trainingId: number,
+    title: string,
+    description: string,
+    startDate: string
+    duration: number,
+    status: string,
+
+  }[] = [];
+  
   if (isAdminOrStaff) {
     allTrainings = await db
       .select({
-        id: Trainings.trainingId,
+        trainingId: Trainings.trainingId,
         title: Trainings.title,
         description: Trainings.description,
         startDate: Trainings.startDate,
@@ -45,7 +62,7 @@ export default async function TrainingsPage() {
   } else {
     allTrainings = await db
       .select({
-        id: Trainings.trainingId,
+        trainingId: Trainings.trainingId,
         title: Trainings.title,
         description: Trainings.description,
         startDate: Trainings.startDate,
@@ -53,19 +70,18 @@ export default async function TrainingsPage() {
         status: Trainings.status,
       })
       .from(Trainings)
-      .where(isNull(Trainings.deleted))
-      .where(eq(Trainings.status, 'active'))
+      .where(and(isNull(Trainings.deleted), eq(Trainings.status, 'active')))
       .execute();
   }
 
   // Get enrolled training IDs for the user
-  const enrolledIds = myTrainings.map((t: any) => t.trainingId);
+  const enrolledIds = myTrainings.map((t) => t.trainingId);
 
   return (
     <TrainingsTabs
       myTrainings={myTrainings}
       allTrainings={allTrainings}
-      isAdminOrStaff={isAdminOrStaff}
+      isAdminOrStaff={isAdminOrStaff || false}
       enrolledIds={enrolledIds}
     />
   );

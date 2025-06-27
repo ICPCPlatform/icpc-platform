@@ -9,6 +9,9 @@ import {TrainingFormData} from "@/lib/validation/training/trainingValidations";
 import {TrainingEdit} from "@/app/protected/trainings/[trainingId]/staff/edit-training/_trainingForm";
 
 
+// This function fetches training data by ID, ensuring the user has the necessary permissions to view the training.
+
+
 /**
  * Fetches a training by ID.
  * @param trainingId - The ID of the training.
@@ -144,6 +147,6 @@ export async function updateTraining({trainingId, ...data}: TrainingFormData & {
             .execute();
     } catch (error) {
         console.error("Error updating training:", error);
-        return null;
+        throw error
     }
 }
