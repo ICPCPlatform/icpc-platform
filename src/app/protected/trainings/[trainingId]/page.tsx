@@ -42,7 +42,7 @@ export default async function TrainingOverviewPage({ params }: { params: Promise
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{trainingData.leaderboard.length}</div>
+            <div className="text-2xl font-bold">{trainingData.leaderBoard.length}</div>
             <p className="text-xs text-muted-foreground">
               Active participants
             </p>
