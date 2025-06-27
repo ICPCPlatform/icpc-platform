@@ -18,7 +18,8 @@ export async function middleware(
       // is not logged in
       return NextResponse.redirect(new URL("/login", req.url));
     }
-    req.headers.append(
+    const response = NextResponse.next();
+    response.headers.set(
       "x-user",
       JSON.stringify({
         username: validation.username,

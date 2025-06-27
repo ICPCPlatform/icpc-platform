@@ -1,70 +1,127 @@
 /**
  * Training Middleware Module
- * 
+ *
  * This module provides middleware functions to handle training-related route protection
  * and permission checks. It ensures that users have the appropriate permissions to access
  * training resources and materials.
  */
 
-import { getUserDataMiddleware } from "@/lib/session";
+import { getUserData } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
-import { extractTrainingId, userTrainingPermissions } from "./utils";
+import { userTrainingPermissions } from "./utils";
 import { TrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { composeMiddlewares, NoAction } from "../utils";
+import UrlPattern from "url-pattern";
+import { z } from "zod";
 
 /**
  * Configuration for training route permissions
  * Maps URL patterns to required permissions
  */
 const permissionNeedToPath: {
-  pathRegex: RegExp;
+  urlPath: UrlPattern;
   permissions: TrainingPermissions[];
 }[] = [
   // Match paths like /protected/trainings/123/materials
-  // {
-  //   pathRegex: /^\/protected\/trainings\/(?<trainingId>\d+)\/.*?$/,
-  //   permissions: ["View:trainee"],
-  // },
-  // // Match paths like /protected/trainings/123/staff/materials
-  // {
-  //   pathRegex:
-  //     /^\/protected\/trainings\/(?<trainingId>\d+)\/staff\/materials\/.*?$/,
-  //   permissions: ["View:material"],
-  // },
-  // // Match paths like /protected/trainings/123/staff/materials/edit-materials/456
-  // {
-  //   pathRegex:
-  //     /^\/protected\/trainings\/(?<trainingId>\d+)\/staff\/materials\/edit-materials\/(?<blockId>\d+)$/,
-  //   permissions: ["Edit:material", "View:material"],
-  // },
+  {
+    urlPath: new UrlPattern("/protected/trainings/:trainingId(/:tail*)"),
+    permissions: ["View:trainee"],
+  },
+  // Match paths like /protected/trainings/123/staff/materials
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/materials",
+    ),
+    permissions: ["View:material"],
+  },
+  // Match paths like /protected/trainings/123/staff/materials/edit-materials/456
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/materials/edit-materials/:materialId",
+    ),
+    permissions: ["Edit:material", "View:material"],
+  },
+  // Match paths like /protected/trainings/123/staff/materials
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/materials",
+    ),
+    permissions: ["View:material"],
+  },
+  // Match paths like /protected/trainings/123/staff/contests
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/contests",
+    ),
+    permissions: ["View:contest"],
+  },
+  // Match paths like /protected/trainings/123/staff/contests/edit-contest
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/contests/:contestId/edit-contest",
+    ),
+    permissions: ["Edit:contest", "View:contest"],
+  },
+  // Match paths like /protected/trainings/123/staff/edit-blocks
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/edit-blocks",
+    ),
+    permissions: ["Edit:block", "View:block"],
+  },
+  // Match paths like /protected/trainings/123/staff/edit-blocks/456
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/edit-blocks/:blockId",
+    ),
+    permissions: ["Edit:block", "View:block"],
+  },
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/edit-standing-view",
+    ),
+    permissions: ["Edit:training"],
+  },
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/edit-training",
+      ),
+    permissions: ["Edit:training"],
+  },
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/staff-management(/:tail*)",
+    ),
+    permissions: ["Edit:staff"],
+  },
 ];
 
 /**
  * Main middleware function that composes all training-related middleware functions
  */
 export const middleware = composeMiddlewares(
-  permissionNeedToPath.map(({ pathRegex, permissions }) =>
-    trainingMiddlewareBuilder({ pathRegex, permissions }),
+  permissionNeedToPath.map(({urlPath, permissions }) =>
+    trainingMiddlewareBuilder({ urlPath, permissions }),
   ),
 );
 
 /**
  * Creates a middleware function for checking training permissions
- * 
- * @param pathRegex - Regular expression to match training-related paths
+ *
+ * @param urlPath - URL pattern to match training paths
  * @param permissions - Array of required permissions for the matched paths
  * @returns Middleware function that checks user permissions for training routes
  */
 function trainingMiddlewareBuilder({
-  pathRegex,
+  urlPath,
   permissions,
 }: {
-  pathRegex: RegExp;
+  urlPath: UrlPattern;
   permissions: TrainingPermissions[];
 }) {
   // Create a copy of permissions to prevent mutation
   const permissionsCopy = [...permissions];
-  
+
   return async function viewTrainingMiddleware(
     req: NextRequest,
   ): Promise<NextResponse | [NoAction, NextRequest]> {
@@ -72,11 +129,17 @@ function trainingMiddlewareBuilder({
     const url = req.nextUrl.pathname;
 
     // Skip if URL doesn't match the pattern
-    if (!url.match(pathRegex)) return [NoAction, req];
+    const match = urlPath.match(url);
+    if (!match) return [NoAction, req];
+    const trainingIdRaw = Number(match.trainingId);
+    let trainingId;
+    if (!isNaN(trainingIdRaw) && z.number().int().safeParse(trainingIdRaw).success) {
+        trainingId = trainingIdRaw;
+    } else {
+        return new NextResponse('/404', { status: 404 });
+    }
 
-    const trainingId = extractTrainingId(url)!;
-    const user = await getUserDataMiddleware(req);
-
+    const user = await getUserData();
 
     // Handle authentication
     if (!user) {

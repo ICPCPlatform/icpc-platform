@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { addStaffAction } from '@/app/protected/trainings/[trainingId]/staff/edit-training/add-staff/actions';
+import { addStaffAction } from '@/app/protected/trainings/[trainingId]/staff/staff-management/actions';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';

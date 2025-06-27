@@ -115,10 +115,13 @@ export async function updateTraining({trainingId, ...data}: TrainingFormData & {
     const { title, description, startDate: startDateStr, duration, status } = data;
 
     try {
-        const userPermissions = await getUserEditTrainingPermissions(trainingId);
-        if (!userPermissions) {
-            console.error("User does not have permission to edit training");
-            return null;
+        const user = await getUserData();
+        if (!user) {
+            throw new Error("User not authenticated");
+        }
+        const permissions = await getUserTrainingPermissions(user.userId, trainingId);
+        if (!permissions.includes("Edit:training")) {
+            throw new Error("User does not have permission to edit training");
         }
 
         const startDate = startDateStr.toISOString().split('T')[0];
