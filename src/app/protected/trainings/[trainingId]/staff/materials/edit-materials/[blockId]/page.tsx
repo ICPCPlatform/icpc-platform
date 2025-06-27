@@ -26,7 +26,7 @@ export default function Page() {
     redirect("not-found");
   }
 
-  if (window === undefined) {
+  if (typeof window === 'undefined') {
     return;
   }
   const materialData = JSON.parse(
@@ -159,7 +159,6 @@ function DynamicForm({
                 trainingId,
                 newMaterials,
               });
-              console.log(res);
               if (res.success) {
                 localStorage.setItem(
                   blockNumber.toString(),
