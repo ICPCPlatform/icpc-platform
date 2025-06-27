@@ -5,7 +5,7 @@ export type TrainingFullDTO = {
   title: string;
   standing:
     | {
-        ContestInfo: ContestInfo;
+        contestInfo: ContestInfo;
         rankings: RankingEntryWithTrainees[];
         problems: string[];
       }[]
@@ -61,10 +61,10 @@ export type ContestInfo = {
  * Standing type from db.training.standing
  */
 export type StandingEntry = {
-  ContestInfo: ContestInfo;
+  contestInfo: ContestInfo;
   rankings: Ranking[];
   problems: string[];
-}[];
+};
 
 /**
  * Ranking Entry

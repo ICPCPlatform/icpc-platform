@@ -139,7 +139,7 @@ function trainingMiddlewareBuilder({
         return new NextResponse('/404', { status: 404 });
     }
 
-    const user = await getUserDataMiddleware(req);
+    const user = await getUserData();
 
     // Handle authentication
     if (!user) {
