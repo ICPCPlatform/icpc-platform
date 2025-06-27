@@ -27,7 +27,7 @@ export default function Page() {
   }
 
   if (typeof window === 'undefined') {
-    return;
+    return null;
   }
   const materialData = JSON.parse(
     localStorage.getItem(blockId.toString()) ?? "[]",
