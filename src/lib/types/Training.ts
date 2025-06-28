@@ -51,10 +51,10 @@ export type Training = {
 export type ContestInfo = {
   id: number;
   title: string;
-  start_time: string;
+  startTime: string;
   duration: string;
-  participant_count: number;
-  problem_count: number;
+  participantCount: number;
+  problemCount: number;
 };
 
 /**

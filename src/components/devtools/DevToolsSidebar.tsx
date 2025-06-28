@@ -88,7 +88,7 @@ export function DevToolsSidebar({ open, onDevLogin }: { open: boolean, onDevLogi
                   variant="secondary"
                   onClick={() => {
                     const admin = status.find(u => u.dbUser?.role === "admin");
-                    if (admin) onDevLogin({ usernameOrGmail: admin.dbUser.gmail, password: admin.password });
+                    if (admin && admin.dbUser?.gmail) onDevLogin({ usernameOrGmail: admin.dbUser.gmail, password: admin.password });
                   }}
                 >
                   Login as Admin
@@ -98,7 +98,7 @@ export function DevToolsSidebar({ open, onDevLogin }: { open: boolean, onDevLogi
                   variant="secondary"
                   onClick={() => {
                     const user = status.find(u => u.dbUser?.role === "user");
-                    if (user) onDevLogin({ usernameOrGmail: user.dbUser.gmail, password: user.password });
+                    if (user && user.dbUser?.gmail) onDevLogin({ usernameOrGmail: user.dbUser.gmail, password: user.password });
                   }}
                 >
                   Login as User

@@ -41,7 +41,6 @@ export default async function ContestsPage({
     .where(and(eq(Contests.trainingId, trainingId), isNull(Contests.deleted)))
     .innerJoin(Blocks, eq(Blocks.trainingId, Contests.trainingId))
     .execute();
-  console.log(contests);
 
   return (
     <div className="container py-8 px-4 md:px-6 space-y-6">

@@ -6,14 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Clock, Users, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
 
 export default function Page() {
   const data = useTrainingContext();
   const tableRef = useRef<HTMLTableElement>(null);
-  const pathname = window.location.pathname;
-
+  const { contestId: contestIdStr } = useParams();
+  const contestId = Number(contestIdStr);
   // Log the data structure to see what we're working with
-  console.log("Training Context Data:", data);
 
   useEffect(() => {
     const setStickyColumnOffsets = () => {
@@ -36,6 +36,20 @@ export default function Page() {
 
     setStickyColumnOffsets();
   }, []);
+
+  if (isNaN(contestId)) {
+    return (
+      <div className="container py-8 px-4 md:px-6">
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-center text-muted-foreground">
+              Invalid contest ID
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   // Check if data and standing exist
   if (!data || !data.standing || data.standing.length === 0) {
     return (
@@ -51,8 +65,7 @@ export default function Page() {
     );
   }
   const contestStanding = data.standing.find(
-    (standing) =>
-      standing.ContestInfo.id === Number(pathname.split("/").at(-2)),
+    (standing) => contestId === standing.contestInfo.id,
   );
   if (!contestStanding) {
     return (
@@ -72,7 +85,7 @@ export default function Page() {
   console.log("Contest Standing:", contestStanding);
 
   // Try to access the contest info with either property name
-  const contestInfo = contestStanding.ContestInfo;
+  const contestInfo = contestStanding.contestInfo;
   const { problems, rankings } = contestStanding;
 
   if (!contestInfo || !problems || !rankings) {
@@ -103,7 +116,7 @@ export default function Page() {
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">
-                Start: {new Date(contestInfo.start_time).toLocaleString()}
+                Start: {new Date(contestInfo.startTime).toLocaleString()}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -113,13 +126,13 @@ export default function Page() {
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">
-                Participants: {contestInfo.participant_count}
+                Participants: {contestInfo.participantCount}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">
-                Problems: {contestInfo.problem_count}
+                Problems: {contestInfo.problemCount}
               </span>
             </div>
           </div>

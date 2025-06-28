@@ -236,8 +236,6 @@ export default function Page() {
     })
       .then(async (response) => {
         const res = await response.json();
-        console.log(res);
-        setLoading(false);
         if ("err" in res) return setError(res.err);
         else if ("msg" in res) {
           setSuccess(res.msg);

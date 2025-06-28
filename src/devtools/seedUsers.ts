@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 export type SeedUserStatus = {
   user: string;
   status: string;
-  dbUser?: any;
+  dbUser?: typeof Users.$inferInsert;
   password: string;
 };
 

@@ -17,7 +17,6 @@ export async function resetPasswordAction(
     console.log("Passwords do not match");
     return;
   }
-  console.log("Token:", token);
   const users = await db
     .select({ userId: ResetPassword.userId })
     .from(ResetPassword)
