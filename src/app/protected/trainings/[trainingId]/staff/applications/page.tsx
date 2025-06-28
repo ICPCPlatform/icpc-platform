@@ -31,24 +31,10 @@ export default async function ApplicationsManagementPage({ params }: { params: P
   async function handleAction(applicationId: number, userId: string, action: "accept" | "reject" | "pending") {
     "use server";
     if (action === "accept") {
-      await db.transaction(async (tx) => {
-        await tx.update(Applications)
-          .set({ status: "accepted" })
-          .where(eq(Applications.applicationId, applicationId))
-          .execute();
-        const exists = await tx.select().from(Trainees)
-          .where(and(eq(Trainees.userId, userId), eq(Trainees.trainingId, Number(trainingId))))
-          .execute();
-        if (exists.length === 0) {
-          // Insert with a placeholder mentorId (headId) until mentor assignment feature is implemented
-          const training = await tx.select({ headId: Trainings.headId })
-            .from(Trainings)
-            .where(eq(Trainings.trainingId, Number(trainingId)))
-            .execute();
-          const mentorId = training[0].headId;
-          await tx.insert(Trainees).values({ userId, trainingId: Number(trainingId), mentorId }).execute();
-        }
-      });
+      await db.update(Applications)
+        .set({ status: "accepted" })
+        .where(eq(Applications.applicationId, applicationId))
+        .execute();
     } else if (action === "reject") {
       await db.update(Applications)
         .set({ status: "rejected" })
