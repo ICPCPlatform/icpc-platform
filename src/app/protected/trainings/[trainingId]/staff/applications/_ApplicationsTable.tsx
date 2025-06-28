@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { handleBulkAction } from "./page";
 
 type Application = {
   applicationId: number;
@@ -32,15 +33,13 @@ export default function ApplicationsTable({ applications, handleAction }: Applic
     setSelected((prev) => checked ? [...prev, id] : prev.filter((x) => x !== id));
   };
 
-  const handleBulkAction = async (action: "accept" | "reject") => {
+  const handleBulkActionClient = async (action: "accept" | "reject") => {
     setBulkLoading(action);
-    for (const app of filteredApplications) {
-      if (selected.includes(app.applicationId) && app.status !== action) {
-        const mappedAction: "accept" | "reject" = action;
-        if (action === "accept" && app.status === "accepted") continue;
-        if (action === "reject" && app.status === "rejected") continue;
-        await handleAction(app.applicationId, app.userId, mappedAction);
-      }
+    const bulk = filteredApplications
+      .filter(app => selected.includes(app.applicationId) && app.status !== action)
+      .map(app => ({ applicationId: app.applicationId, userId: app.userId, action }));
+    if (bulk.length > 0) {
+      await handleBulkAction(bulk, Number(filteredApplications[0]?.trainingId || 0));
     }
     setBulkLoading(null);
     setSelected([]);
@@ -74,7 +73,7 @@ export default function ApplicationsTable({ applications, handleAction }: Applic
           <span className="font-medium">Bulk actions for {selected.length} selected:</span>
           <Button
             size="sm"
-            onClick={() => handleBulkAction("accept")}
+            onClick={() => handleBulkActionClient("accept")}
             disabled={bulkLoading === "accept"}
             className="bg-green-600 hover:bg-green-700 text-white"
           >
@@ -82,7 +81,7 @@ export default function ApplicationsTable({ applications, handleAction }: Applic
           </Button>
           <Button
             size="sm"
-            onClick={() => handleBulkAction("reject")}
+            onClick={() => handleBulkActionClient("reject")}
             disabled={bulkLoading === "reject"}
             className="bg-red-600 hover:bg-red-700 text-white"
           >
