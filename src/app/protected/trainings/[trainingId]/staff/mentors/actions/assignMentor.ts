@@ -127,6 +127,32 @@ export async function assignMentor(
       );
     }
 
+    // Check if trainee is in the trainees table (not deleted)
+    if (
+      (
+        await db
+          .select({})
+          .from(Trainees)
+          .where(
+            and(
+              eq(Trainees.trainingId, trainingId),
+              eq(Trainees.userId, traineeId),
+              isNull(Trainees.deleted),
+            ),
+          )
+      ).length < 1
+    ) {
+      const traineeUsername = await getUsernameById(traineeId);
+      if (traineeUsername) {
+        throw new Error(
+          `Trainee with username ${traineeUsername} is not in this training.`,
+        );
+      }
+      throw new Error(
+        `Trainee with ID ${traineeId} is not found in this training.`,
+      );
+    }
+
     // Check if trainee is already assigned to *any* mentor
     const existingTrainee = await db
       .select({ userId: Trainees.userId })
