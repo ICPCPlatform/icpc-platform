@@ -95,15 +95,13 @@ export default function ApplicationsTable({ applications, handleAction }: Applic
           <thead>
             <tr>
               <th className="px-2 py-2 border w-8 text-center">
-                <input
-                  type="checkbox"
+                <Checkbox
                   ref={masterCheckboxRef}
                   checked={allChecked}
-                  onChange={e => {
-                    if (e.target.checked) setSelected(filteredApplications.map(app => app.applicationId));
+                  onCheckedChange={checked => {
+                    if (checked) setSelected(filteredApplications.map(app => app.applicationId));
                     else setSelected([]);
                   }}
-                  style={{ width: 16, height: 16 }}
                 />
               </th>
               <th className="px-4 py-2 border">Username</th>
