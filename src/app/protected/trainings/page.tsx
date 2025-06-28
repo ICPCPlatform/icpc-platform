@@ -7,7 +7,7 @@ import TrainingsTabs from "./TrainingsTabs";
 
 export default async function TrainingsPage() {
   const userData = await getUserData();
-  const isAdminOrStaff = userData && (userData.role === 'admin' || userData.role === 'staff');
+  const isAdminOrStaff = userData && (userData.role === 'admin' );
 
   // My trainings
   let myTrainings: {

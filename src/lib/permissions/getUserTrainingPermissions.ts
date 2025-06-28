@@ -40,12 +40,17 @@ async function getUserTrainingPermissionsNotCache(
       "Edit:standing",
       "View:material",
       "Edit:material",
+      "View:contest",
       "Edit:contest",
+      "View:training",
+      "Edit:training",
+      "View:block",
       "Edit:block",
       "View:practice",
       "Edit:practice",
       "View:attendance",
       "Edit:attendance",
+      "View:staff",
       "Edit:staff",
       "View:trainee"
     ];
