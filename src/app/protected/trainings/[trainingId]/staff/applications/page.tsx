@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import ApplicationsTable from "./_ApplicationsTable";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
+import { z } from "zod";
 
 export default async function ApplicationsManagementPage({ params }: { params: Promise<{ trainingId: string }> }) {
   const { trainingId } = await params;
@@ -30,6 +31,13 @@ export default async function ApplicationsManagementPage({ params }: { params: P
 
   async function handleAction(applicationId: number, userId: string, action: "accept" | "reject" | "pending") {
     "use server";
+    // Zod validation
+    const schema = z.object({
+      applicationId: z.number().int().positive(),
+      userId: z.string().min(1),
+      action: z.enum(["accept", "reject", "pending"]),
+    });
+    schema.parse({ applicationId, userId, action });
     if (action === "accept") {
       await db.update(Applications)
         .set({ status: "accepted" })
