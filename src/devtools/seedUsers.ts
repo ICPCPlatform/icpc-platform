@@ -14,21 +14,21 @@ export type SeedUserStatus = {
 export async function ensureDefaultUsers(): Promise<SeedUserStatus[]> {
   const defaultUsers = [
     {
-      username: "admin_icpc",
-      gmail: "admin_icpc@gmail.com",
+      username: "IcpcPlatform",
+      gmail: "icpcplatform@gmail.com",
       password: "Admin@123",
       role: "admin",
-      cfHandle: "admin_cf",
-      vjHandle: "admin_vj",
+      cfHandle: "IcpcPlatform",
+      vjHandle: "icpcPlatform",
       phoneNumber: "+2010000000000",
     },
     {
-      username: "user_icpc",
-      gmail: "user_icpc@gmail.com",
+      username: "AmeerJoy",
+      gmail: "AmeerJoy@gmail.com",
       password: "User@1234",
       role: "user",
-      cfHandle: "user_cf",
-      vjHandle: "user_vj",
+      cfHandle: "AmeerJoy",
+      vjHandle: "AmeerJoy",
       phoneNumber: "+2010000000001",
     },
   ];
