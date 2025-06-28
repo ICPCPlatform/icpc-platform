@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { handleBulkAction } from "./page";
+import { handleBulkAction } from "./actions";
 
 type Application = {
   applicationId: number;
@@ -17,9 +17,10 @@ type Application = {
 type ApplicationsTableProps = {
   applications: Application[];
   handleAction: (applicationId: number, userId: string, action: "accept" | "reject" | "pending") => Promise<void>;
+  trainingId: number;
 };
 
-export default function ApplicationsTable({ applications, handleAction }: ApplicationsTableProps) {
+export default function ApplicationsTable({ applications, handleAction, trainingId }: ApplicationsTableProps) {
   const [filter, setFilter] = useState<string>("all");
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
@@ -39,7 +40,7 @@ export default function ApplicationsTable({ applications, handleAction }: Applic
       .filter(app => selected.includes(app.applicationId) && app.status !== action)
       .map(app => ({ applicationId: app.applicationId, userId: app.userId, action }));
     if (bulk.length > 0) {
-      await handleBulkAction(bulk, Number(filteredApplications[0]?.trainingId || 0));
+      await handleBulkAction(bulk, trainingId);
     }
     setBulkLoading(null);
     setSelected([]);
@@ -95,7 +96,6 @@ export default function ApplicationsTable({ applications, handleAction }: Applic
             <tr>
               <th className="px-2 py-2 border w-8 text-center">
                 <Checkbox
-                  ref={masterCheckboxRef}
                   checked={allChecked}
                   onCheckedChange={checked => {
                     if (checked) setSelected(filteredApplications.map(app => app.applicationId));

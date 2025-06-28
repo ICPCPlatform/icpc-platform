@@ -6,7 +6,6 @@ import { eq, and } from "drizzle-orm";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import ApplicationsTable from "./_ApplicationsTable";
-import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { z } from "zod";
 
 export default async function ApplicationsManagementPage({ params }: { params: Promise<{ trainingId: string }> }) {
@@ -65,42 +64,6 @@ export default async function ApplicationsManagementPage({ params }: { params: P
     redirect(`/protected/trainings/${trainingId}/staff/applications`);
   }
 
-  export async function handleBulkAction(bulk: { applicationId: number; userId: string; action: "accept" | "reject" | "pending" }[], trainingId: number) {
-    "use server";
-    const schema = z.array(z.object({
-      applicationId: z.number().int().positive(),
-      userId: z.string().min(1),
-      action: z.enum(["accept", "reject", "pending"]),
-    }));
-    schema.parse(bulk);
-    await db.transaction(async (tx) => {
-      for (const { applicationId, userId, action } of bulk) {
-        if (action === "accept") {
-          await tx.update(Applications)
-            .set({ status: "accepted" })
-            .where(eq(Applications.applicationId, applicationId))
-            .execute();
-        } else if (action === "reject") {
-          await tx.update(Applications)
-            .set({ status: "rejected" })
-            .where(eq(Applications.applicationId, applicationId))
-            .execute();
-          await tx.delete(Trainees)
-            .where(and(eq(Trainees.userId, userId), eq(Trainees.trainingId, Number(trainingId))))
-            .execute();
-        } else if (action === "pending") {
-          await tx.update(Applications)
-            .set({ status: "pending" })
-            .where(eq(Applications.applicationId, applicationId))
-            .execute();
-          await tx.delete(Trainees)
-            .where(and(eq(Trainees.userId, userId), eq(Trainees.trainingId, Number(trainingId))))
-            .execute();
-        }
-      }
-    });
-  }
-
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-5xl mx-auto px-4">
@@ -109,7 +72,7 @@ export default async function ApplicationsManagementPage({ params }: { params: P
             <CardTitle className="text-center text-2xl font-bold">Trainee Applications</CardTitle>
           </CardHeader>
           <CardContent>
-            <ApplicationsTable applications={applications} handleAction={handleAction} />
+            <ApplicationsTable applications={applications.map(app => ({ ...app, status: app.status ?? "pending", appliedAt: typeof app.appliedAt === 'string' ? app.appliedAt : app.appliedAt.toISOString() }))} handleAction={handleAction} trainingId={Number(trainingId)} />
           </CardContent>
         </Card>
       </div>
