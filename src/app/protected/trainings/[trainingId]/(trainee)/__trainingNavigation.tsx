@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Trophy } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 
 // Type for contest standing data
 interface ContestStanding {
@@ -22,18 +22,10 @@ interface ExtendedTrainingContext {
   standing?: ContestStanding[];
 }
 
-export default function TrainingNavigation({
-  trainingId,
-}: {
-  trainingId: number;
-}) {
+export default function TrainingNavigation() {
   const training = useTrainingContext() as ExtendedTrainingContext | null;
-  const pathname = usePathname();
-  
-  // If on leaderboard page, do not render the sidebar at all
-  if (pathname.includes("/leaderboard")) {
-    return <></>;
-  }
+  const { trainingId: trainingIdStr } = useParams();
+  const trainingId = Number(trainingIdStr);
 
   return (
     <div className="flex gap-6">
@@ -45,32 +37,35 @@ export default function TrainingNavigation({
           <CardContent>
             <nav className="space-y-2">
               {/* Contest standings section - only show if standing data exists */}
-              {training?.standing && Array.isArray(training.standing) && training.standing.length > 0 && (
-                <>
-                  <div className="text-sm font-medium text-muted-foreground mb-2">
-                    Contest Standings
-                  </div>
-                  {training.standing.map((context: ContestStanding, i: number) =>
-                    context?.contestInfo ? (
-                      <Button
-                        key={i}
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="w-full justify-start"
-                      >
-                        <Link
-                          href={`/protected/trainings/${trainingId}/contests/${context.contestInfo.id}/standing`}
-                        >
-                          <Trophy className="h-4 w-4 mr-2" />
-                          {context.contestInfo.title}
-                        </Link>
-                      </Button>
-                    ) : null
-                  )}
-                </>
-              )}
-              
+              {training?.standing &&
+                Array.isArray(training.standing) &&
+                training.standing.length > 0 && (
+                  <>
+                    <div className="text-sm font-medium text-muted-foreground mb-2">
+                      Contest Standings
+                    </div>
+                    {training.standing.map(
+                      (context: ContestStanding, i: number) =>
+                        context?.contestInfo ? (
+                          <Button
+                            key={i}
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="w-full justify-start"
+                          >
+                            <Link
+                              href={`/protected/trainings/${trainingId}/contests/${context.contestInfo.id}/standing`}
+                            >
+                              <Trophy className="h-4 w-4 mr-2" />
+                              {context.contestInfo.title}
+                            </Link>
+                          </Button>
+                        ) : null,
+                    )}
+                  </>
+                )}
+
               <div className="pt-2">
                 <Button
                   variant="outline"

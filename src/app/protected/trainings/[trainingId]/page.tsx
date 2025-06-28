@@ -1,14 +1,21 @@
-import { getTrainingFullData } from "@/dao/getTrainingFullData";
-import React from "react";
+"use client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Users, Trophy, Bell } from "lucide-react";
 import { TypographyH1 } from "@/components/ui/typography";
+import { useTrainingContext } from "@/providers/training";
+import { useParams } from "next/navigation";
 
-export default async function TrainingOverviewPage({ params }: { params: Promise<{ trainingId: string }> }) {
-  const { trainingId } = await params;
+export default function TrainingOverviewPage() {
+  const { trainingId } =  useParams();
+  const trainingData = useTrainingContext();
+  if(!trainingId || isNaN(Number(trainingId))) {
+    return <div>Invalid training ID</div>;
+  }
   const trainingIdNumber = Number(trainingId);
-  const trainingData = await getTrainingFullData({ trainingId: trainingIdNumber });
+  if (!trainingData) {
+    return <div>Loading...</div>; 
+  }
 
   return (
     <div className="container mx-auto py-6 space-y-6">

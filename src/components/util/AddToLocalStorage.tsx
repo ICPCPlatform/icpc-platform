@@ -9,7 +9,6 @@ export default function AddToLocalStorage({
   key_: string;
   value: string;
 }) {
-  console.log(key_, value);
   return (
     <NoSSR>
       <AddToLocalStorageComp key_={key_} value={value} />

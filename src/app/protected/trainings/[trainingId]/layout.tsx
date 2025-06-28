@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { TrainingNavigation } from "@/components/training/TrainingNavigation";
 import { getStaffRoles } from "@/dao/getStaffRoles";
+import TrainingProvider from "@/providers/training";
 
 function Breadcrumb({
   trainingName,
@@ -33,6 +34,7 @@ export default async function TrainingLayout({
   const trainingIdNumber = Number(trainingId);
   const user = await getUserData();
   const userId = user?.userId;
+
   // Fetch training data with userId to get userRoles
   const trainingData = await getTrainingFullData({
     trainingId: trainingIdNumber,
@@ -59,7 +61,11 @@ export default async function TrainingLayout({
         </h1>
       </header>
       <TrainingNavigation trainingId={trainingIdNumber} userId={userId} />
-      <main>{children}</main>
+      <main>
+        <TrainingProvider trainingData={trainingData}>
+          {children}
+        </TrainingProvider>
+      </main>
     </div>
   );
 }

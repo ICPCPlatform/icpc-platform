@@ -54,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ trainingId: s
           </thead>
           <tbody>
             {leaderboard.map((user, idx) => (
-              <tr key={user.userId || idx}>
+              <tr key={idx}>
                 {standingView.map((field: StandingView) => (
                   <td key={field} className="border px-4 py-2">
                     {user[field] !== undefined && user[field] !== null && user[field] !== "" ? user[field] : "-"}

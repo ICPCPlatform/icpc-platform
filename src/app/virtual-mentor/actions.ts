@@ -14,7 +14,7 @@ export async function getVirtualMentorReply(_prevState: { reply: string | null; 
         messages = JSON.parse(messagesRaw);
       } catch (__unused) {
         // ignore, fallback to empty
-        console.log(__unused)
+        console.error(__unused)
       }
     }
 
