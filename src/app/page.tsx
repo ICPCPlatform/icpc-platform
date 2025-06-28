@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 import { FaUserPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { signOutAction } from "@/app/actions/signout";
 
 const iconSize = "text-xl";
 
@@ -27,19 +27,16 @@ export default async function Home() {
               </Button>
             </Link>
             {isLoggedIn ? (
-              <Button
-                variant="secondary"
-                className="flex items-center space-x-1 ml-4"
-                onClick={async () => {
-                  "use server";
-                  const cookie = await cookies();
-                  cookie.delete("session");
-                  redirect("/");
-                }}
-              >
-                <FaSignOutAlt className={iconSize} />
-                <span>Sign Out</span>
-              </Button>
+              <form action={signOutAction}>
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="flex items-center space-x-1 ml-4"
+                >
+                  <FaSignOutAlt className={iconSize} />
+                  <span>Sign Out</span>
+                </Button>
+              </form>
             ) : (
               <Link href="/login">
                 <Button
