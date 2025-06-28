@@ -172,11 +172,11 @@ export async function assignMentor(
       );
     } else {
       // If trainee exists but no mentor, or if trainee does not exist in Trainees table
-      await db.insert(Trainees).values({
+    await db.insert(Trainees).values({
         userId: traineeId,
-        trainingId,
+      trainingId,
         mentorId: mentorId,
-      });
+    });
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
