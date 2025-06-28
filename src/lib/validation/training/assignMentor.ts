@@ -1,12 +1,11 @@
 import { z } from "zod";
-import { username } from "../util";
 
 export const assignMentorSchema = z
   .object({
-    mentorUsername: username.describe(
+    mentorId: z.string().uuid().describe(
       "The username of the mentor to be assigned to the trainee",
     ),
-    traineeUsername: username.describe(
+    traineeId: z.string().uuid().describe(
       "The username of the trainee to whom the mentor is being assigned",
     ),
     trainingId: z.coerce

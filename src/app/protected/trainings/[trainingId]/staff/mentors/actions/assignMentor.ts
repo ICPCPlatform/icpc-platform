@@ -7,8 +7,23 @@ import { and, eq, isNull } from "drizzle-orm";
 import { Users } from "@/lib/db/schema/user/Users";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { Trainees } from "@/lib/db/schema/training/Trainees";
+import { Applications } from "@/lib/db/schema/training/Applications";
+import { getUserData } from "@/lib/session";
+import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 
-async function assignMentor(
+/**
+ * Assigns a mentor to a trainee in a training session.
+ * @param input - The input data containing mentorId, traineeId, and trainingId.
+ * @returns A promise that resolves when the mentor is successfully assigned.
+ * @throws {Error} If validation fails.
+ * @throws {Error} If the trainee is not accepted in the training.
+ * @throws {Error} If the mentor is not a staff member or not assigned to the training.
+ * @throws {Error} If the trainee is already assigned to the given mentor in the training.
+ * @throws {Error} If the trainee is already assigned to a different mentor in the training.
+ * @throws {Error} If the caller doesn't have the write permissions
+ * @description This function assigns a mentor to a trainee within a specific training session.
+ */
+export async function assignMentor(
   input: z.infer<typeof assignMentorSchema>,
 ): Promise<void> {
   console.log("assignMentor called with:", input);
@@ -16,31 +31,45 @@ async function assignMentor(
     // check if the validation is valid
     assignMentorSchema.parse(input);
 
-    const { mentorUsername, traineeUsername, trainingId } = input;
-    // get userId from the database
-    const mentorUserId = (
-      await db
-        .select({ userId: Users.userId })
-        .from(Users)
-        .where(eq(Users.username, mentorUsername))
-    ).at(0)?.userId;
+    const { mentorId, traineeId, trainingId } = input;
 
-    const traineeUserId = (
-      await db
-        .select({ userId: Users.userId })
-        .from(Users)
-        .where(eq(Users.username, traineeUsername))
-    ).at(0)?.userId;
-
-    console.log("Resolved mentorUserId:", mentorUserId, "traineeUserId:", traineeUserId);
-
-    if (!mentorUserId) {
-      console.error(`Mentor with username ${mentorUsername} not found.`);
-      throw new Error(`Mentor with username ${mentorUsername} not found.`);
+    const user = await getUserData();
+    if (!user) {
+      throw new Error("You must be logged in to perform this action.");
     }
-    if (!traineeUserId) {
-      console.error(`Trainee with username ${traineeUsername} not found.`);
-      throw new Error(`Trainee with username ${traineeUsername} not found.`);
+
+    const permissions = await getUserTrainingPermissions(
+      user.userId,
+      trainingId,
+    );
+
+    if (!permissions.includes("Edit:staff")) {
+      throw new Error("You do not have permission to assign mentors.");
+    }
+
+    if (
+      (
+        await db
+          .select({})
+          .from(Applications)
+          .where(
+            and(
+              eq(Applications.trainingId, trainingId),
+              eq(Applications.userId, traineeId),
+              eq(Applications.status, "accepted"),
+            ),
+          )
+      ).length < 1
+    ) {
+      const traineeUsername = await getUsernameById(traineeId);
+      if (traineeUsername) {
+        throw new Error(
+          `Trainee with username ${traineeUsername} is not accepted in this training.`,
+        );
+      }
+      throw new Error(
+        `Trainee with ID ${traineeId} is not found in this training or not accepted.`,
+      );
     }
 
     if (
@@ -51,18 +80,25 @@ async function assignMentor(
           .where(
             and(
               eq(Staff.trainingId, trainingId),
-              eq(Staff.userId, mentorUserId),
+              eq(Staff.userId, mentorId),
               isNull(Staff.deleted),
               eq(Staff.mentor, true),
             ),
           )
       ).length < 1
     ) {
+      const mentorUsername = await getUsernameById(mentorId);
+      if (mentorUsername) {
+        throw new Error(
+          `Mentor with username ${mentorUsername} is not assigned to this training or is not a mentor.`,
+        );
+      }
       throw new Error(
-        `Mentor with username ${mentorUsername} is not assigned to this training.`,
+        `Mentor with ID ${mentorId} is not found or not assigned to this training.`,
       );
     }
 
+    // Check if trainee is already assigned to this specific mentor
     if (
       (
         await db
@@ -71,71 +107,52 @@ async function assignMentor(
           .where(
             and(
               eq(Trainees.trainingId, trainingId),
-              eq(Trainees.userId, traineeUserId),
-              eq(Trainees.mentorId, mentorUserId),
-            ),
-          )
-      ).length >= 1
-    ) {
-      throw new Error(
-        `Trainee with username ${traineeUsername} is already assigned to mentor with username ${mentorUsername} in this training. or was assigned and deleted`,
-      );
-    }
-
-    if (
-      (
-        await db
-          .select({})
-          .from(Trainees)
-          .where(
-            and(
-              eq(Trainees.trainingId, trainingId),
-              eq(Trainees.userId, traineeUserId),
+              eq(Trainees.userId, traineeId),
+              eq(Trainees.mentorId, mentorId),
               isNull(Trainees.deleted),
             ),
           )
       ).length >= 1
     ) {
+      const mentorUsername = await getUsernameById(mentorId);
+      const traineeUsername = await getUsernameById(traineeId);
+
+      if (!mentorUsername || !traineeUsername) {
+        throw new Error(
+          `Mentor or trainee with ID ${mentorId} or ${traineeId} not found.`,
+        );
+      }
       throw new Error(
-        `Trainee with username ${traineeUsername} is already assigned to a mentor in this training`,
+        `Trainee with username ${traineeUsername} is already assigned to mentor with username ${mentorUsername} in this training.`,
       );
     }
 
-    // Check if trainee already exists for this training
+    // Check if trainee is already assigned to *any* mentor
     const existingTrainee = await db
       .select({ userId: Trainees.userId })
       .from(Trainees)
       .where(
         and(
           eq(Trainees.trainingId, trainingId),
-          eq(Trainees.userId, traineeUserId),
+          eq(Trainees.userId, traineeId),
           isNull(Trainees.deleted),
-        )
-      )
-      .then(rows => rows[0]);
+        ),
+      );
 
-    if (existingTrainee) {
-      console.log("Updating mentor for existing trainee:", traineeUserId, "to", mentorUserId);
-      await db.update(Trainees)
-        .set({ mentorId: mentorUserId })
-        .where(
-          and(
-            eq(Trainees.trainingId, trainingId),
-            eq(Trainees.userId, traineeUserId),
-            isNull(Trainees.deleted),
-          )
-        );
+    if (existingTrainee.length > 0) {
+      // If trainee exists and is assigned to a *different* mentor
+      throw new Error(
+        `Trainee with ID ${traineeId} is already assigned to a different mentor in this training.`,
+      );
     } else {
-      console.log("Inserting new trainee with mentor:", traineeUserId, mentorUserId);
+      // If trainee exists but no mentor, or if trainee does not exist in Trainees table
       await db.insert(Trainees).values({
-        userId: traineeUserId,
+        userId: traineeId,
         trainingId,
-        mentorId: mentorUserId,
+        mentorId: mentorId,
       });
     }
-
   } catch (error) {
-    console.error("assignMentor error:", error);
     if (error instanceof z.ZodError) {
       throw new Error(
         `Validation error: ${error.errors.map((e) => e.message).join(", ")}`,
@@ -145,4 +162,13 @@ async function assignMentor(
   }
 }
 
-export { assignMentor };
+async function getUsernameById(userId: string): Promise<string | null> {
+  const user = await db
+    .select({ username: Users.username })
+    .from(Users)
+    .where(eq(Users.userId, userId))
+    .then((rows) => rows[0]);
+
+  return user ? user.username : null;
+}
+
