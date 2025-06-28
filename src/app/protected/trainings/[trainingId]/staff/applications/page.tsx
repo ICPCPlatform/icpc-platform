@@ -46,7 +46,7 @@ export default async function ApplicationsManagementPage({ params }: { params: P
             .where(eq(Trainings.trainingId, Number(trainingId)))
             .execute();
           const mentorId = training[0].headId;
-          await tx.insert(Trainees).values({ userId, trainingId: Number(trainingId), mentorId }).execute();
+          await tx.insert(Trainees).values({ userId, trainingId: Number(trainingId), mentorId: null }).execute();
         }
       });
     } else if (action === "reject") {
