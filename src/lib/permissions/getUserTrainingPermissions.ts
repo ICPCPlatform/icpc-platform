@@ -14,7 +14,8 @@ type PermissionTarget =
   | "practice"
   | "attendance"
   | "contest"
-  | "staff";
+  | "staff"
+  | "applications";
 
 export type TrainingPermissions =
   | `${PermissionAction}:${PermissionTarget}`
@@ -52,6 +53,7 @@ async function getUserTrainingPermissionsNotCache(
       "Edit:attendance",
       "View:staff",
       "Edit:staff",
+      "Edit:applications",
       "View:trainee"
     ];
   }
@@ -110,6 +112,7 @@ async function getUserTrainingPermissionsNotCache(
           "Edit:training",
           "View:training",
           "View:trainee",
+          "Edit:applications",
         ] as const
       ).forEach((perm) => permissions.add(perm));
     }
