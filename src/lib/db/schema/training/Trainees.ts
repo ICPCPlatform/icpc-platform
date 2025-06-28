@@ -32,7 +32,7 @@ export const Trainees = pgTable(
       })
       .notNull(),
 
-    mentorId: uuid().notNull(),
+    mentorId: uuid(),
     mentor_assigned_date: timestamp().defaultNow().notNull(),
     deleted: timestamp(),
   },
