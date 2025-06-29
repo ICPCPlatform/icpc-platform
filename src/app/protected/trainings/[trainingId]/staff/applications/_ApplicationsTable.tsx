@@ -129,6 +129,7 @@ export default function ApplicationsTable({
             <TableRow>
               <TableHead className="w-8 text-center">
                 <Checkbox
+                  aria-label="Select all applications"
                   checked={allChecked}
                   onCheckedChange={(checked) => {
                     if (checked)
