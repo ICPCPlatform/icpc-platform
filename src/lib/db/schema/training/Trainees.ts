@@ -32,12 +32,16 @@ export const Trainees = pgTable(
       })
       .notNull(),
 
-    mentorId: uuid(),
+    mentorId: uuid().references(() => Staff.userId, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }).notNull(),
+
     mentor_assigned_date: timestamp().defaultNow().notNull(),
     deleted: timestamp(),
   },
   (table) => [
-    primaryKey({ columns: [table.userId, table.trainingId] }),
+    primaryKey({ columns: [table.userId, table.trainingId, table.mentorId] }),
     foreignKey({
       columns: [table.mentorId, table.trainingId],
       foreignColumns: [Staff.userId, Staff.trainingId],
