@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import { Applications } from "@/lib/db/schema/training/Applications";
 import { Users } from "@/lib/db/schema/user/Users";
-import { eq } from "drizzle-orm";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import ApplicationsTable from "./_ApplicationsTable";
 
