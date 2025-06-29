@@ -1,9 +1,22 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { handleBulkAction } from "./actions";
+import {
+  Table,
+  TableRow,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+} from "@/components/ui/table";
 
 type Application = {
   applicationId: number;
@@ -16,38 +29,52 @@ type Application = {
 
 type ApplicationsTableProps = {
   applications: Application[];
-  handleAction: (applicationId: number, userId: string, action: "accept" | "reject" | "pending") => Promise<void>;
-  trainingId: number;
 };
 
-export default function ApplicationsTable({ applications, handleAction, trainingId }: ApplicationsTableProps) {
+export default function ApplicationsTable({
+  applications,
+}: ApplicationsTableProps) {
   const [filter, setFilter] = useState<string>("all");
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
-  const [bulkLoading, setBulkLoading] = useState<"accept"|"reject"|null>(null);
+  const [bulkLoading, setBulkLoading] = useState<"accept" | "reject" | null>(
+    null,
+  );
 
-  const filteredApplications = filter === "all"
-    ? applications
-    : applications.filter((app) => app.status === filter);
+  const filteredApplications =
+    filter === "all"
+      ? applications
+      : applications.filter((app) => app.status === filter);
 
   const handleSelect = (id: number, checked: boolean) => {
-    setSelected((prev) => checked ? [...prev, id] : prev.filter((x) => x !== id));
+    setSelected((prev) =>
+      checked ? [...prev, id] : prev.filter((x) => x !== id),
+    );
   };
 
   const handleBulkActionClient = async (action: "accept" | "reject") => {
     setBulkLoading(action);
     const bulk = filteredApplications
-      .filter(app => selected.includes(app.applicationId) && app.status !== action)
-      .map(app => ({ applicationId: app.applicationId, userId: app.userId, action }));
+      .filter(
+        (app) => selected.includes(app.applicationId) && app.status !== action,
+      )
+      .map((app) => ({
+        applicationId: app.applicationId,
+        userId: app.userId,
+        action,
+      }));
     if (bulk.length > 0) {
-      await handleBulkAction(bulk, trainingId);
+      await handleBulkAction(bulk);
     }
     setBulkLoading(null);
     setSelected([]);
   };
 
-  const allChecked = selected.length === filteredApplications.length && filteredApplications.length > 0;
-  const someChecked = selected.length > 0 && selected.length < filteredApplications.length;
+  const allChecked =
+    selected.length === filteredApplications.length &&
+    filteredApplications.length > 0;
+  const someChecked =
+    selected.length > 0 && selected.length < filteredApplications.length;
   const masterCheckboxRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (masterCheckboxRef.current) {
@@ -69,9 +96,13 @@ export default function ApplicationsTable({ applications, handleAction, training
           </Button>
         ))}
       </div>
+
+      {/* Bulk Actions */}
       {selected.length > 0 && (
         <div className="mb-4 flex gap-2 items-center bg-muted p-2 rounded">
-          <span className="font-medium">Bulk actions for {selected.length} selected:</span>
+          <span className="font-medium">
+            Bulk actions for {selected.length} selected:
+          </span>
           <Button
             size="sm"
             onClick={() => handleBulkActionClient("accept")}
@@ -90,60 +121,90 @@ export default function ApplicationsTable({ applications, handleAction, training
           </Button>
         </div>
       )}
+
+      {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full border">
-          <thead>
-            <tr>
-              <th className="px-2 py-2 border w-8 text-center">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-8 text-center">
                 <Checkbox
                   checked={allChecked}
-                  onCheckedChange={checked => {
-                    if (checked) setSelected(filteredApplications.map(app => app.applicationId));
+                  onCheckedChange={(checked) => {
+                    if (checked)
+                      setSelected(
+                        filteredApplications.map((app) => app.applicationId),
+                      );
                     else setSelected([]);
                   }}
                 />
-              </th>
-              <th className="px-4 py-2 border">Username</th>
-              <th className="px-4 py-2 border">Email</th>
-              <th className="px-4 py-2 border">Applied At</th>
-              <th className="px-4 py-2 border">Status</th>
-            </tr>
-          </thead>
-          <tbody>
+              </TableHead>
+              <TableHead>Username</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Applied At</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {filteredApplications.map((app) => (
-              <tr key={app.applicationId}>
-                <td className="px-2 py-2 border text-center">
+              <TableRow key={app.applicationId}>
+                <TableCell className="text-center">
                   <Checkbox
                     checked={selected.includes(app.applicationId)}
-                    onCheckedChange={checked => handleSelect(app.applicationId, Boolean(checked))}
+                    onCheckedChange={(checked) =>
+                      handleSelect(app.applicationId, Boolean(checked))
+                    }
                   />
-                </td>
-                <td className="px-4 py-2 border">{app.username}</td>
-                <td className="px-4 py-2 border">{app.gmail}</td>
-                <td className="px-4 py-2 border">{new Date(app.appliedAt).toLocaleString()}</td>
-                <td className="px-4 py-2 border">
+                </TableCell>
+                <TableCell>{app.username}</TableCell>
+                <TableCell>{app.gmail}</TableCell>
+                <TableCell>
+                  {new Date(app.appliedAt).toLocaleString()}
+                </TableCell>
+                <TableCell>
                   <Select
                     value={app.status}
-                    onValueChange={async (value: "pending" | "accepted" | "rejected") => {
+                    onValueChange={async (
+                      value: "pending" | "accepted" | "rejected",
+                    ) => {
                       setLoadingId(app.applicationId);
-                      let action: "accept" | "reject" | "pending";
-                      if (value === "accepted") action = "accept";
-                      else if (value === "rejected") action = "reject";
-                      else action = value;
-                      await handleAction(app.applicationId, app.userId, action);
+                      const action =
+                        value === "accepted"
+                          ? "accept"
+                          : value === "rejected"
+                            ? "reject"
+                            : "pending";
+                      await handleBulkAction([
+                        {
+                          applicationId: app.applicationId,
+                          userId: app.userId,
+                          action,
+                        },
+                      ]);
                       setLoadingId(null);
                     }}
                     disabled={loadingId === app.applicationId}
                   >
-                    <SelectTrigger className={`w-32 ${app.status === "accepted" ? "border-green-500" : app.status === "rejected" ? "border-red-500" : "border-yellow-500"}`}>
-                      <span className={
+                    <SelectTrigger
+                      className={`w-32 ${
                         app.status === "accepted"
-                          ? "text-green-600 font-semibold"
+                          ? "border-green-500"
                           : app.status === "rejected"
-                          ? "text-red-600 font-semibold"
-                          : "text-yellow-600 font-semibold"
-                      }>
-                        {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                            ? "border-red-500"
+                            : "border-yellow-500"
+                      }`}
+                    >
+                      <span
+                        className={
+                          app.status === "accepted"
+                            ? "text-green-600 font-semibold"
+                            : app.status === "rejected"
+                              ? "text-red-600 font-semibold"
+                              : "text-yellow-600 font-semibold"
+                        }
+                      >
+                        {app.status.charAt(0).toUpperCase() +
+                          app.status.slice(1)}
                       </span>
                     </SelectTrigger>
                     <SelectContent>
@@ -152,12 +213,12 @@ export default function ApplicationsTable({ applications, handleAction, training
                       <SelectItem value="rejected">Rejected</SelectItem>
                     </SelectContent>
                   </Select>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </>
   );
-} 
+}
