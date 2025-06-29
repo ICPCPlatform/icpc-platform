@@ -3,7 +3,7 @@ import "server-only";
 import { assignMentorSchema } from "@/lib/validation/training/assignMentor";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { Users } from "@/lib/db/schema/user/Users";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { Trainees } from "@/lib/db/schema/training/Trainees";
@@ -156,7 +156,7 @@ export async function assignMentor(
 
     // Check if trainee is already assigned to *any* mentor
     const existingTrainee = await db
-      .select({ userId: Trainees.userId })
+      .select({})
       .from(Trainees)
       .where(
         and(
@@ -173,10 +173,40 @@ export async function assignMentor(
       );
     } else {
       // If trainee exists but no mentor, or if trainee does not exist in Trainees table
+
+      if (
+        (
+          await db
+            .select({})
+            .from(Trainees)
+            .where(
+              and(
+                eq(Trainees.trainingId, trainingId),
+                eq(Trainees.userId, traineeId),
+                isNotNull(Trainees.deleted),
+              ),
+            )
+        ).length > 0
+      ) {
+        // If trainee exists but is marked as deleted, we can reassign them
+        await db
+          .update(Trainees)
+          .set({ deleted: null, mentorId })
+          .where(
+            and(
+              eq(Trainees.trainingId, trainingId),
+              eq(Trainees.userId, traineeId),
+              eq(Trainees.mentorId, mentorId),
+            ),
+          );
+        return;
+      }
+      // If trainee does not exist in Trainees table, insert them
       await db.insert(Trainees).values({
         userId: traineeId,
         trainingId,
         mentorId: mentorId,
+        deleted: null,
       });
     }
 
