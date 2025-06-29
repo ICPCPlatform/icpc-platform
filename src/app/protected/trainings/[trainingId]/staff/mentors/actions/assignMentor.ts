@@ -10,6 +10,7 @@ import { Trainees } from "@/lib/db/schema/training/Trainees";
 import { Applications } from "@/lib/db/schema/training/Applications";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
+import { revalidatePath } from "next/cache";
 
 /**
  * Assigns a mentor to a trainee in a training session.
@@ -50,7 +51,7 @@ export async function assignMentor(
     if (
       (
         await db
-          .select({})
+          .select()
           .from(Applications)
           .where(
             and(
@@ -140,7 +141,7 @@ export async function assignMentor(
               isNull(Trainees.deleted),
             ),
           )
-      ).length < 1
+      ).length >= 1
     ) {
       const traineeUsername = await getUsernameById(traineeId);
       if (traineeUsername) {
@@ -172,12 +173,14 @@ export async function assignMentor(
       );
     } else {
       // If trainee exists but no mentor, or if trainee does not exist in Trainees table
-    await db.insert(Trainees).values({
+      await db.insert(Trainees).values({
         userId: traineeId,
-      trainingId,
+        trainingId,
         mentorId: mentorId,
-    });
+      });
     }
+
+    revalidatePath(`/protected/trainings/${trainingId}/staff/assign-mentors`);
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new Error(
@@ -197,4 +200,3 @@ async function getUsernameById(userId: string): Promise<string | null> {
 
   return user ? user.username : null;
 }
-

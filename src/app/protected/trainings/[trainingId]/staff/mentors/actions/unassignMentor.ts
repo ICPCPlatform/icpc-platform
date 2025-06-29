@@ -8,6 +8,7 @@ import { Users } from "@/lib/db/schema/user/Users";
 import { Trainees } from "@/lib/db/schema/training/Trainees";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
+import { revalidatePath } from "next/cache";
 
 /**
  * Unassigns a mentor from a trainee in a training session.
@@ -109,6 +110,8 @@ export async function unassignMentor(
           eq(Trainees.mentorId, effectiveMentorId),
         ),
       );
+
+    revalidatePath(`/protected/trainings/${trainingId}/staff/assign-mentors`);
   } catch (error) {
     if (error instanceof z.ZodError) {
       throw new Error(
