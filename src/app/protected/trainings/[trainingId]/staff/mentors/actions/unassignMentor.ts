@@ -55,7 +55,7 @@ async function unassignMentor(
       ).length < 1
     ) {
       throw new Error(
-        `Trainee with username ${traineeUsername} is assigned to mentor ${mentorUsername} in this training.`,
+        `Trainee with username ${traineeUsername} is not assigned to mentor ${mentorUsername} in this training.`,
       );
     }
 
