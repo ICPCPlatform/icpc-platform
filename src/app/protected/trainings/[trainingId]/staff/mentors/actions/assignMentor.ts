@@ -171,36 +171,36 @@ export async function assignMentor(
       throw new Error(
         `Trainee with ID ${traineeId} is already assigned to a different mentor in this training.`,
       );
-    } else {
-      // If trainee exists but no mentor, or if trainee does not exist in Trainees table
+    }
+    // If trainee exists but no mentor, or if trainee does not exist in Trainees table
 
-      if (
-        (
-          await db
-            .select({})
-            .from(Trainees)
-            .where(
-              and(
-                eq(Trainees.trainingId, trainingId),
-                eq(Trainees.userId, traineeId),
-                isNotNull(Trainees.deleted),
-              ),
-            )
-        ).length > 0
-      ) {
-        // If trainee exists but is marked as deleted, we can reassign them
+    if (
+      (
         await db
-          .update(Trainees)
-          .set({ deleted: null, mentorId })
+          .select({})
+          .from(Trainees)
           .where(
             and(
               eq(Trainees.trainingId, trainingId),
               eq(Trainees.userId, traineeId),
-              eq(Trainees.mentorId, mentorId),
+              isNotNull(Trainees.deleted),
             ),
-          );
-        return;
-      }
+          )
+      ).length > 0
+    ) {
+      // If trainee exists but is marked as deleted, we can reassign them
+      await db
+        .update(Trainees)
+        .set({ deleted: null, mentorId })
+        .where(
+          and(
+            eq(Trainees.trainingId, trainingId),
+            eq(Trainees.userId, traineeId),
+            eq(Trainees.mentorId, mentorId),
+          ),
+        );
+    }
+    else {
       // If trainee does not exist in Trainees table, insert them
       await db.insert(Trainees).values({
         userId: traineeId,
@@ -209,7 +209,6 @@ export async function assignMentor(
         deleted: null,
       });
     }
-
     revalidatePath(`/protected/trainings/${trainingId}/staff/assign-mentors`);
   } catch (error) {
     if (error instanceof z.ZodError) {
