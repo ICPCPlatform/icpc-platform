@@ -1,20 +1,35 @@
 "use client";
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { updateStandingView } from "./actions";
 import type { StandingView } from "@/lib/db/schema/training/Trainings";
 import { redirect, useRouter } from "next/navigation";
 import { z } from "zod";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
 
 // Zod schema (same as in actions.ts)
 const standingViewSchema = z.object({
   trainingId: z.number().positive(),
-  standingView: z.array(z.enum(["name", "cfHandle", "vjudge", "gmail", "level", "university", "faculty"])),
+  standingView: z.array(
+    z.enum([
+      "name",
+      "cfHandle",
+      "vjudge",
+      "gmail",
+      "level",
+      "university",
+      "faculty",
+    ]),
+  ),
 });
 
 type StandingViewFormValues = z.infer<typeof standingViewSchema>;
@@ -37,7 +52,13 @@ function reorder<T>(arr: T[], from: number, to: number): T[] {
   return copy;
 }
 
-export default function EditStandingViewForm({ initial, trainingId }: { initial: string[]; trainingId: number }) {
+export default function EditStandingViewForm({
+  initial,
+  trainingId,
+}: {
+  initial: string[];
+  trainingId: number;
+}) {
   const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
 
@@ -49,24 +70,36 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
     },
   });
 
-  const { handleSubmit, setValue, watch, formState: { errors, isSubmitting } } = methods;
+  const {
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = methods;
   const selected = watch("standingView");
 
   const onSubmit = async (data: StandingViewFormValues) => {
     setMessage(null);
-    const res = await updateStandingView(data);
-    if (res.success) {
+    try {
+      await updateStandingView(data);
       setMessage("Standing view updated.");
       router.push(`/protected/trainings/${trainingId}/leaderboard`);
-    } else {
-      setMessage(res.error || "Failed to update.");
+    } catch (error) {
+      if (error) {
+        setMessage(
+          error instanceof Error ? error.message : "Failed to update.",
+        );
+      }
     }
   };
 
   const handleToggle = (key: StandingView) => {
     const current = methods.getValues("standingView");
     if (current.includes(key)) {
-      setValue("standingView", current.filter(k => k !== key));
+      setValue(
+        "standingView",
+        current.filter((k) => k !== key),
+      );
     } else {
       setValue("standingView", [...current, key]);
     }
@@ -87,23 +120,43 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
           <CardTitle>Edit Standing View</CardTitle>
         </CardHeader>
         <CardContent>
-          {message && <div className="mb-4 text-sm text-green-600">{message}</div>}
-          <FormProvider {...methods}>
-            <Form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-4 font-semibold">Selected Columns (drag to reorder):</div>
+          {message && (
+            <div className="mb-4 text-sm text-green-600">{message}</div>
+          )}
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-4 font-semibold">
+                Selected Columns (drag to reorder):
+              </div>
               <ul className="mb-6">
                 {selected.map((key, idx) => {
-                  const col = ALL_COLUMNS.find(c => c.key === key);
+                  const col = ALL_COLUMNS.find((c) => c.key === key);
                   return (
                     <li key={key} className="flex items-center gap-2 mb-2">
                       <span className="w-40">{col?.label || key}</span>
-                      <Button type="button" size="sm" variant="outline" disabled={idx === 0} onClick={() => move(idx, idx - 1)}>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={idx === 0}
+                        onClick={() => move(idx, idx - 1)}
+                      >
                         ↑
                       </Button>
-                      <Button type="button" size="sm" variant="outline" disabled={idx === selected.length - 1} onClick={() => move(idx, idx + 1)}>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={idx === selected.length - 1}
+                        onClick={() => move(idx, idx + 1)}
+                      >
                         ↓
                       </Button>
-                      <Button type="button" size="sm" variant="destructive" onClick={() => handleToggle(key as StandingView)}>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleToggle(key as StandingView)}
+                      >
                         Remove
                       </Button>
                     </li>
@@ -112,30 +165,46 @@ export default function EditStandingViewForm({ initial, trainingId }: { initial:
               </ul>
               <div className="mb-2 font-semibold">Available Columns:</div>
               <div className="grid grid-cols-2 gap-4">
-                {ALL_COLUMNS.filter(col => !selected.includes(col.key)).map((col) => (
-                  <label key={col.key} className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox
-                      checked={false}
-                      onCheckedChange={() => handleToggle(col.key)}
-                      disabled={isSubmitting}
-                    />
-                    <span>{col.label}</span>
-                  </label>
-                ))}
+                {ALL_COLUMNS.filter((col) => !selected.includes(col.key)).map(
+                  (col) => (
+                    <label
+                      key={col.key}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <Checkbox
+                        checked={false}
+                        onCheckedChange={() => handleToggle(col.key)}
+                        disabled={isSubmitting}
+                      />
+                      <span>{col.label}</span>
+                    </label>
+                  ),
+                )}
               </div>
-              {errors.standingView && <div className="text-red-500">{errors.standingView.message as string}</div>}
+              {errors.standingView && (
+                <div className="text-red-500">
+                  {errors.standingView.message as string}
+                </div>
+              )}
               <CardFooter className="flex gap-2 justify-end">
-                <Button variant="ghost" type="button" onClick={handleCancel} disabled={isSubmitting}>
+                <Button
+                  variant="ghost"
+                  type="button"
+                  onClick={handleCancel}
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting || selected.length === 0}>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || selected.length === 0}
+                >
                   Save
                 </Button>
               </CardFooter>
-            </Form>
-          </FormProvider>
+            </form>
         </CardContent>
       </Card>
     </div>
   );
-} 
+}

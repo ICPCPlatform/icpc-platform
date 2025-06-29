@@ -50,6 +50,13 @@
       "when": 1750939831832,
       "tag": "0006_salty_fantastic_four",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1751114534154,
+      "tag": "0007_colorful_swordsman",
+      "breakpoints": true
     }
   ]
 }
