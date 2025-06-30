@@ -21,7 +21,8 @@ export type StandingView =
   | "gmail"
   | "level"
   | "university"
-  | "faculty";
+  | "faculty"
+  | "username";
 
 /**
  * Trainings is the table that holds the training information
@@ -48,7 +49,7 @@ export const Trainings = pgTable("trainings", {
   /// saves which attributes of standing are visible to trainees
   standingView: jsonb()
     .notNull()
-    .default(["name", "handle", "numberofsolved", "mentor", "level"])
+    .default(["username","name", "handle", "numberofsolved", "mentor", "level"])
     .$type<StandingView[]>(),
   startDate: date().notNull(),
   duration: integer().notNull().default(1), // number of weeks/days
