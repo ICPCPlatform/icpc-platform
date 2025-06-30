@@ -27,13 +27,13 @@ export default function Page() {
         `.slider-container { position: relative; overflow-x: auto; }`,
       );
       styleSheet.insertRule(
-        `.slider-container::-webkit-scrollbar { height: 8px; }`,
+        `.slider-container::-webkit-scrollbar { height: 8px; width: 8px; }`,
       );
       styleSheet.insertRule(
         `.slider-container::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }`,
       );
       styleSheet.insertRule(
-        `.slider-container::-webkit-scrollbar-track { background: #f1f1f1; }`,
+        `.slider-container::-webkit-scrollbar-track { background: #e1e1e1; }`,
       );
 
       stickyColumns.forEach((col, idx) => {
@@ -41,6 +41,8 @@ export default function Page() {
           `#standingTable  td:nth-child(${idx + 1}) , #standingTable th:nth-child(${idx + 1}) {
             left: ${offset}px;
             position: sticky;
+            z-index: 10;
+            opacity: 1;
           }`,
         );
         rules.push(ruleIdx);
@@ -166,7 +168,7 @@ export default function Page() {
           <CardTitle>Standings</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto h-max overflow-y-auto slider-container">
+          <div className="overflow-x-auto max-h-[calc(100vh-100px)] overflow-y-auto slider-container">
             <table
               className="w-full border-collapse relative"
               id="standingTable"
@@ -210,9 +212,7 @@ export default function Page() {
                       key={index}
                       className={cn(
                         "border-b",
-                        rank === 1 && "bg-amber-500/10",
-                        rank === 2 && "bg-slate-400/10",
-                        rank === 3 && "bg-amber-700/10",
+                        "bg-background hover:bg-accent/50",
                       )}
                     >
                       <td className="sticky bg-inherit px-4 py-3 font-medium">
