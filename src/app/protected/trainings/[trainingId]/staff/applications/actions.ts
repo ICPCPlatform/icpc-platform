@@ -10,7 +10,7 @@ const schema = z.object({
     z.object({
       applicationId: z.number().int().positive(),
       userId: z.string().min(1),
-      action: z.enum(["accept", "reject", "pending"]),
+      action: z.enum(["accepted", "rejected", "pending"]),
     }),
   ),
   trainingId: z.number().int().positive(),
