@@ -158,6 +158,7 @@ export async function getTrainingFullData({
 }
 
 const userSelectFields = {
+  username: Users.username,
   name: UsersFullData.firstNameEn,
   cfHandle: Users.cfHandle,
   vjudge: Users.vjHandle,
