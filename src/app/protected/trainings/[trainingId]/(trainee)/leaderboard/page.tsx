@@ -57,7 +57,17 @@ export default async function Page({ params }: { params: Promise<{ trainingId: s
               <tr key={idx}>
                 {standingView.map((field: StandingView) => (
                   <td key={field} className="border px-4 py-2">
-                    {user[field] !== undefined && user[field] !== null && user[field] !== "" ? user[field] : "-"}
+                    {(() => {
+                      if (field === "username") return user.username ?? "-";
+                      if (field === "name") return user.name ?? "-";
+                      if (field === "cfHandle") return user.cfHandle ?? "-";
+                      if (field === "vjudge") return user.vjudge ?? "-";
+                      if (field === "gmail") return user.gmail ?? "-";
+                      if (field === "level") return user.level ?? "-";
+                      if (field === "university") return user.university ?? "-";
+                      if (field === "faculty") return user.faculty ?? "-";
+                      return "-";
+                    })()}
                   </td>
                 ))}
                 <td className="border px-4 py-2 font-bold">{user.points}</td>
