@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { updateStandingView } from "./actions";
+import { updateStandingView } from "./actions/_updateStandingView";
 import type { StandingView } from "@/lib/db/schema/training/Trainings";
 import { redirect, useRouter } from "next/navigation";
 import { z } from "zod";
@@ -21,6 +21,7 @@ const standingViewSchema = z.object({
   trainingId: z.number().positive(),
   standingView: z.array(
     z.enum([
+      "username",
       "name",
       "cfHandle",
       "vjudge",
@@ -43,6 +44,7 @@ const ALL_COLUMNS: Array<{ key: StandingView; label: string }> = [
   { key: "level", label: "Level" },
   { key: "university", label: "University" },
   { key: "faculty", label: "Faculty" },
+  { key: "username", label: "Username" },
 ];
 
 function reorder<T>(arr: T[], from: number, to: number): T[] {
