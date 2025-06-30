@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1742104753021,
-      "tag": "0000_confused_ser_duncan",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1743403593678,
-      "tag": "0001_past_viper",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1743460100374,
-      "tag": "0002_lush_spirit",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1745691100075,
-      "tag": "0003_fearless_sunset_bain",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1750782366260,
-      "tag": "0004_slippery_star_brand",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1750782549318,
-      "tag": "0005_foamy_doctor_faustus",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1750939831832,
-      "tag": "0006_salty_fantastic_four",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1751114534154,
-      "tag": "0007_colorful_swordsman",
+      "when": 1751264300822,
+      "tag": "0000_soft_thaddeus_ross",
       "breakpoints": true
     }
   ]
