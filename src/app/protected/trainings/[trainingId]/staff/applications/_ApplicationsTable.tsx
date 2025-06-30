@@ -39,7 +39,7 @@ export default function ApplicationsTable({
   const [filter, setFilter] = useState<string>("all");
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
-  const [bulkLoading, setBulkLoading] = useState<"accept" | "reject" | null>(
+  const [bulkLoading, setBulkLoading] = useState<"accepted" | "rejected" | null>(
     null,
   );
 
@@ -73,7 +73,7 @@ export default function ApplicationsTable({
     );
   };
 
-  const handleBulkActionClient = async (action: "accept" | "reject") => {
+  const handleBulkActionClient = async (action: "accepted" | "rejected") => {
     setBulkLoading(action);
     const bulk = filteredApplications
       .filter(
@@ -118,19 +118,19 @@ export default function ApplicationsTable({
           </span>
           <Button
             size="sm"
-            onClick={() => handleBulkActionClient("accept")}
-            disabled={bulkLoading === "accept"}
+            onClick={() => handleBulkActionClient("accepted")}
+            disabled={bulkLoading === "accepted"}
             className="bg-green-600 hover:bg-green-700 text-white"
           >
-            {bulkLoading === "accept" ? "Accepting..." : "Accept All"}
+            {bulkLoading === "accepted" ? "Accepting..." : "Accept All"}
           </Button>
           <Button
             size="sm"
-            onClick={() => handleBulkActionClient("reject")}
-            disabled={bulkLoading === "reject"}
+            onClick={() => handleBulkActionClient("rejected")}
+            disabled={bulkLoading === "rejected"}
             className="bg-red-600 hover:bg-red-700 text-white"
           >
-            {bulkLoading === "reject" ? "Rejecting..." : "Reject All"}
+            {bulkLoading === "rejected" ? "Rejecting..." : "Reject All"}
           </Button>
         </div>
       )}
@@ -184,17 +184,17 @@ export default function ApplicationsTable({
                       setLoadingId(app.applicationId);
                       const action =
                         value === "accepted"
-                          ? "accept"
+                          ? "accepted"
                           : value === "rejected"
-                            ? "reject"
+                            ? "rejected"
                             : "pending";
-                      await handleBulkAction([
+                      await handleBulkAction({bulk:[
                         {
                           applicationId: app.applicationId,
                           userId: app.userId,
                           action,
                         },
-                      ], Number(trainingId));
+                      ], trainingId: Number(trainingId)});
                       setLoadingId(null);
                     }}
                     disabled={loadingId === app.applicationId}

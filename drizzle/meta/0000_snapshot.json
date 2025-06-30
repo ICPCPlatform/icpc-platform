@@ -1,9 +1,102 @@
 {
-  "id": "79f43182-ec86-4a7e-af52-fad1b06a651b",
+  "id": "1f02e5de-b672-4664-a40c-2441cbf2054a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.applications": {
+      "name": "applications",
+      "schema": "",
+      "columns": {
+        "application_id": {
+          "name": "application_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "training_id": {
+          "name": "training_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "applied_at": {
+          "name": "applied_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "applications_user_id_users_user_id_fk": {
+          "name": "applications_user_id_users_user_id_fk",
+          "tableFrom": "applications",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "applications_training_id_trainings_training_id_fk": {
+          "name": "applications_training_id_trainings_training_id_fk",
+          "tableFrom": "applications",
+          "tableTo": "trainings",
+          "columnsFrom": [
+            "training_id"
+          ],
+          "columnsTo": [
+            "training_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "applications_userId_trainingId_unique": {
+          "name": "applications_userId_trainingId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id",
+            "training_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.blocks": {
       "name": "blocks",
       "schema": "",
@@ -45,6 +138,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "material": {
+          "name": "material",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
         },
         "deleted": {
           "name": "deleted",
@@ -101,25 +201,25 @@
         },
         "contest_id": {
           "name": "contest_id",
-          "type": "varchar(128)",
+          "type": "varchar(32)",
           "primaryKey": false,
           "notNull": true
         },
         "group_id": {
           "name": "group_id",
-          "type": "varchar(128)",
+          "type": "varchar(32)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "judge": {
           "name": "judge",
-          "type": "varchar(128)",
+          "type": "varchar(2)",
           "primaryKey": false,
           "notNull": true
         },
         "type": {
           "name": "type",
-          "type": "varchar(128)",
+          "type": "varchar(32)",
           "primaryKey": false,
           "notNull": true
         },
@@ -133,25 +233,35 @@
           "name": "description",
           "type": "varchar(512)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "''"
+        },
+        "standing": {
+          "name": "standing",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
         },
         "point_per_problem": {
           "name": "point_per_problem",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": 20
         },
         "first_points": {
           "name": "first_points",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": 1000
         },
         "calc_sys": {
           "name": "calc_sys",
-          "type": "varchar(128)",
+          "type": "varchar(32)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'90%'"
         },
         "date": {
           "name": "date",
@@ -199,102 +309,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.mentor_trainee_history": {
-      "name": "mentor_trainee_history",
-      "schema": "",
-      "columns": {
-        "mentor_id": {
-          "name": "mentor_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "trainee_id": {
-          "name": "trainee_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "training_id": {
-          "name": "training_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "start_date": {
-          "name": "start_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "end_date": {
-          "name": "end_date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "mentor_trainee_history_training_id_trainings_training_id_fk": {
-          "name": "mentor_trainee_history_training_id_trainings_training_id_fk",
-          "tableFrom": "mentor_trainee_history",
-          "tableTo": "trainings",
-          "columnsFrom": [
-            "training_id"
-          ],
-          "columnsTo": [
-            "training_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        },
-        "mentor_trainee_history_mentor_id_training_id_staff_user_id_training_id_fk": {
-          "name": "mentor_trainee_history_mentor_id_training_id_staff_user_id_training_id_fk",
-          "tableFrom": "mentor_trainee_history",
-          "tableTo": "staff",
-          "columnsFrom": [
-            "mentor_id",
-            "training_id"
-          ],
-          "columnsTo": [
-            "user_id",
-            "training_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "mentor_trainee_history_trainee_id_training_id_trainees_user_id_training_id_fk": {
-          "name": "mentor_trainee_history_trainee_id_training_id_trainees_user_id_training_id_fk",
-          "tableFrom": "mentor_trainee_history",
-          "tableTo": "trainees",
-          "columnsFrom": [
-            "trainee_id",
-            "training_id"
-          ],
-          "columnsTo": [
-            "user_id",
-            "training_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "mentor_trainee_history_training_id_mentor_id_trainee_id_pk": {
-          "name": "mentor_trainee_history_training_id_mentor_id_trainee_id_pk",
-          "columns": [
-            "training_id",
-            "mentor_id",
-            "trainee_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.staff": {
       "name": "staff",
       "schema": "",
@@ -315,35 +329,35 @@
           "name": "mentor",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "problem_setter": {
           "name": "problem_setter",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "instructor": {
           "name": "instructor",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "co_head": {
           "name": "co_head",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "manager": {
           "name": "manager",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "deleted": {
@@ -353,7 +367,23 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "mentor_idx": {
+          "name": "mentor_idx",
+          "columns": [
+            {
+              "expression": "mentor",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "staff_user_id_users_user_id_fk": {
           "name": "staff_user_id_users_user_id_fk",
@@ -422,7 +452,7 @@
           "name": "mentor_assigned_date",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         },
         "deleted": {
@@ -477,11 +507,12 @@
         }
       },
       "compositePrimaryKeys": {
-        "trainees_user_id_training_id_pk": {
-          "name": "trainees_user_id_training_id_pk",
+        "trainees_user_id_training_id_mentor_id_pk": {
+          "name": "trainees_user_id_training_id_mentor_id_pk",
           "columns": [
             "user_id",
-            "training_id"
+            "training_id",
+            "mentor_id"
           ]
         }
       },
@@ -524,24 +555,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "material": {
-          "name": "material",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "standing": {
-          "name": "standing",
-          "type": "json",
+        "leader_board": {
+          "name": "leader_board",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
         "standing_view": {
           "name": "standing_view",
-          "type": "json",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true,
-          "default": "'[\"name\",\"handle\",\"numberofsolved\",\"mentor\",\"level\"]'::json"
+          "default": "'[\"name\",\"handle\",\"numberofsolved\",\"mentor\",\"level\"]'::jsonb"
         },
         "start_date": {
           "name": "start_date",
@@ -749,16 +774,16 @@
       "name": "email_auth",
       "schema": "",
       "columns": {
-        "token": {
-          "name": "token",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "user_id": {
           "name": "user_id",
           "type": "uuid",
           "primaryKey": true,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "varchar",
+          "primaryKey": false,
           "notNull": true
         },
         "expires_at": {
@@ -970,6 +995,13 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        },
         "users_gmail_unique": {
           "name": "users_gmail_unique",
           "nullsNotDistinct": false,

@@ -39,7 +39,7 @@ export default async function ContestsPage({
     })
     .from(Contests)
     .where(and(eq(Contests.trainingId, trainingId), isNull(Contests.deleted)))
-    .innerJoin(Blocks, eq(Blocks.trainingId, Contests.trainingId))
+    .innerJoin(Blocks, and(eq(Blocks.trainingId, Contests.trainingId), eq(Blocks.blockNumber, Contests.blockNumber)))
     .execute();
 
   return (

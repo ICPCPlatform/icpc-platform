@@ -1,1 +1,0 @@
-ALTER TABLE "trainees" ALTER COLUMN "mentor_id" DROP NOT NULL;

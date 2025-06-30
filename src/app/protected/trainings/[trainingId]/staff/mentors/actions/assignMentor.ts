@@ -128,32 +128,18 @@ export async function assignMentor(
       );
     }
 
-    // Check if trainee is in the trainees table (not deleted)
-    if (
-      (
-        await db
-          .select({})
-          .from(Trainees)
-          .where(
-            and(
-              eq(Trainees.trainingId, trainingId),
-              eq(Trainees.userId, traineeId),
-              isNull(Trainees.deleted),
-            ),
-          )
-      ).length >= 1
-    ) {
-      const traineeUsername = await getUsernameById(traineeId);
-      if (traineeUsername) {
-        throw new Error(
-          `Trainee with username ${traineeUsername} is not in this training.`,
-        );
-      }
-      throw new Error(
-        `Trainee with ID ${traineeId} is not found in this training.`,
+    // delete the trainee is in the trainees table (not deleted)
+    await db
+      .update(Trainees)
+      .set({ deleted: new Date() })
+      .where(
+        and(
+          eq(Trainees.trainingId, trainingId),
+          eq(Trainees.userId, traineeId),
+          isNull(Trainees.deleted),
+        ),
       );
-    }
-
+    
     // Check if trainee is already assigned to *any* mentor
     const existingTrainee = await db
       .select({})
@@ -183,7 +169,7 @@ export async function assignMentor(
             and(
               eq(Trainees.trainingId, trainingId),
               eq(Trainees.userId, traineeId),
-              isNotNull(Trainees.deleted),
+              eq(Trainees.mentorId, mentorId),
             ),
           )
       ).length > 0
@@ -191,7 +177,7 @@ export async function assignMentor(
       // If trainee exists but is marked as deleted, we can reassign them
       await db
         .update(Trainees)
-        .set({ deleted: null, mentorId })
+        .set({ deleted: null })
         .where(
           and(
             eq(Trainees.trainingId, trainingId),
@@ -199,8 +185,7 @@ export async function assignMentor(
             eq(Trainees.mentorId, mentorId),
           ),
         );
-    }
-    else {
+    } else {
       // If trainee does not exist in Trainees table, insert them
       await db.insert(Trainees).values({
         userId: traineeId,

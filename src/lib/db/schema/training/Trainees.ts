@@ -31,11 +31,8 @@ export const Trainees = pgTable(
         onUpdate: "cascade",
       })
       .notNull(),
-
-    mentorId: uuid().references(() => Staff.userId, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }).notNull(),
+    
+    mentorId: uuid().notNull(),
 
     mentor_assigned_date: timestamp().defaultNow().notNull(),
     deleted: timestamp(),
