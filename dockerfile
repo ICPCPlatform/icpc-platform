@@ -1,5 +1,5 @@
 # Use official Node.js image as a base
-FROM node:18-alpine AS builder
+FROM node:23-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -20,7 +20,7 @@ RUN npm run build
 RUN npm ci --omit=dev
 
 # Use a lightweight image for production
-FROM node:18-alpine AS runner
+FROM node:23-alpine AS runner
 
 # Set working directory
 WORKDIR /app
