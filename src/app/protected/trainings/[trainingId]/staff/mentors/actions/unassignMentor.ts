@@ -1,6 +1,6 @@
 "use server";
 import "server-only";
-import { unassignMentorSchema } from "@/lib/validation/training/unassignMentor";
+import { unassignMentorSchema } from "@/lib/validation/training/unassignMentorSchema";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";

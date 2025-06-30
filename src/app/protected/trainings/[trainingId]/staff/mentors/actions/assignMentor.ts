@@ -1,9 +1,9 @@
 "use server";
 import "server-only";
-import { assignMentorSchema } from "@/lib/validation/training/assignMentor";
+import { assignMentorSchema } from "@/lib/validation/training/assignMentorSchema";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { and, eq, isNotNull, isNull } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { Users } from "@/lib/db/schema/user/Users";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { Trainees } from "@/lib/db/schema/training/Trainees";

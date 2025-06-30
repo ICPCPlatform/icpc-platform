@@ -81,6 +81,7 @@ export type Ranking = {
  * this type is used from the database
  */
 export type Trainee = {
+  username?: string;
   userId?: string;
   name?: string | null;
   cfHandle?: string;
