@@ -9,7 +9,7 @@ import {
 import { assignMentor } from "../mentors/actions/assignMentor";
 import { unassignMentor } from "../mentors/actions/unassignMentor";
 import { useState, useTransition } from "react";
-import { assignMentorSchema } from "@/lib/validation/training/assignMentor";
+import { assignMentorSchema } from "@/lib/validation/training/assignMentorSchema";
 import { TableCell, TableRow } from "@/components/ui/table";
 
 export function AssignMentorRow({
