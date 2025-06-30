@@ -28,8 +28,9 @@ export async function TrainingNavigation({
   const links: TrainingNavLink[] = [
     { perm: "View:trainee", href: `/protected/trainings/${trainingId}`, label: "Overview" },
     { perm: "View:material", href: `/protected/trainings/${trainingId}/materials`, label: "Materials" },
-    { perm: "View:contest", href: `/protected/trainings/${trainingId}/contests`, label: "Contests" },
-    { perm: "View:standing", href: `/protected/trainings/${trainingId}/leaderboard`, label: "Leaderboard" },
+    { perm: "View:trainee", href: `/protected/trainings/${trainingId}/contests`, label: "Contests" },
+    { perm: "View:trainee", href: `/protected/trainings/${trainingId}/leaderboard`, label: "Leaderboard" },
+    { perm: "Edit:contest", href: `/protected/trainings/${trainingId}/staff/contests`, label: "Contests Management" },
     { perm: "Edit:staff", href: `/protected/trainings/${trainingId}/staff/staff-management`, label: "Staff Management" },
     { perm: "Edit:staff", href: `/protected/trainings/${trainingId}/staff/assign-mentors`, label: "Assign Mentors" },
     { perm: "Edit:applications", href: `/protected/trainings/${trainingId}/staff/applications`, label: "Applications" },
