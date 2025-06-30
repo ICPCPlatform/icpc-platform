@@ -17,6 +17,7 @@ import {
   TableHead,
   TableHeader,
 } from "@/components/ui/table";
+import { useParams } from "next/navigation";
 
 type Application = {
   applicationId: number;
@@ -34,6 +35,7 @@ type ApplicationsTableProps = {
 export default function ApplicationsTable({
   applications,
 }: ApplicationsTableProps) {
+  const { trainingId } = useParams();
   const [filter, setFilter] = useState<string>("all");
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
@@ -41,10 +43,29 @@ export default function ApplicationsTable({
     null,
   );
 
+  
   const filteredApplications =
     filter === "all"
       ? applications
       : applications.filter((app) => app.status === filter);
+  const someChecked =
+    selected.length > 0 && selected.length < filteredApplications.length;
+  const masterCheckboxRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (masterCheckboxRef.current) {
+      masterCheckboxRef.current.indeterminate = someChecked;
+    }
+  }, [someChecked]);
+
+  if (!trainingId) {
+    return <div>Error: Training ID is required</div>;
+  }
+
+  if (isNaN(Number(trainingId))) {
+    return <div>Error: Invalid Training ID</div>;
+  }
+
 
   const handleSelect = (id: number, checked: boolean) => {
     setSelected((prev) =>
@@ -64,7 +85,7 @@ export default function ApplicationsTable({
         action,
       }));
     if (bulk.length > 0) {
-      await handleBulkAction(bulk);
+      await handleBulkAction(bulk, Number(trainingId));
     }
     setBulkLoading(null);
     setSelected([]);
@@ -73,14 +94,6 @@ export default function ApplicationsTable({
   const allChecked =
     selected.length === filteredApplications.length &&
     filteredApplications.length > 0;
-  const someChecked =
-    selected.length > 0 && selected.length < filteredApplications.length;
-  const masterCheckboxRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (masterCheckboxRef.current) {
-      masterCheckboxRef.current.indeterminate = someChecked;
-    }
-  }, [someChecked]);
 
   return (
     <>
@@ -181,7 +194,7 @@ export default function ApplicationsTable({
                           userId: app.userId,
                           action,
                         },
-                      ]);
+                      ], Number(trainingId));
                       setLoadingId(null);
                     }}
                     disabled={loadingId === app.applicationId}
