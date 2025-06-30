@@ -25,7 +25,7 @@ export async function handleBulkAction(input: z.infer<typeof schema>) {
     }
     const { bulk, trainingId } = schema.parse(input);
     const permissions = await getUserTrainingPermissions(user.userId, input.trainingId);
-    if(permissions.includes('Edit:applications')){
+    if(!permissions.includes('Edit:applications')){
       throw new Error("User does not have permission to edit applications");
     }
     await db.transaction(async (tx) => {
