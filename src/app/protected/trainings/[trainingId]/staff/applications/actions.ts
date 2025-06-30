@@ -24,7 +24,7 @@ export async function handleBulkAction(input: z.infer<typeof schema>) {
       throw new Error("User not authenticated");
     }
     const { bulk, trainingId } = schema.parse(input);
-    const permissions = await getUserTrainingPermissions(user.userId, input.trainingId);
+    const permissions = await getUserTrainingPermissions(user.userId, trainingId);
     if(!permissions.includes('Edit:applications')){
       throw new Error("User does not have permission to edit applications");
     }
