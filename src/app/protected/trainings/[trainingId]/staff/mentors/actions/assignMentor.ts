@@ -139,7 +139,7 @@ export async function assignMentor(
           isNull(Trainees.deleted),
         ),
       );
-
+    
     // Check if trainee is already assigned to *any* mentor
     const existingTrainee = await db
       .select({})
@@ -163,7 +163,7 @@ export async function assignMentor(
     if (
       (
         await db
-          .select({ trainingId: Trainees.trainingId })
+          .select({})
           .from(Trainees)
           .where(
             and(

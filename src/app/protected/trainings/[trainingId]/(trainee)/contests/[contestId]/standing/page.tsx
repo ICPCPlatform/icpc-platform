@@ -16,25 +16,48 @@ export default function Page() {
   // Log the data structure to see what we're working with
 
   useEffect(() => {
+    const styleSheet = document.styleSheets[0];
+    const rules: number[] = [];
     const setStickyColumnOffsets = () => {
       if (!tableRef.current) return;
 
       const stickyColumns = tableRef.current.querySelectorAll(".sticky-col");
       let offset = 0;
-      const styleSheet = document.styleSheets[0];
+      styleSheet.insertRule(
+        `.slider-container { position: relative; overflow-x: auto; }`,
+      );
+      styleSheet.insertRule(
+        `.slider-container::-webkit-scrollbar { height: 8px; width: 8px; }`,
+      );
+      styleSheet.insertRule(
+        `.slider-container::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }`,
+      );
+      styleSheet.insertRule(
+        `.slider-container::-webkit-scrollbar-track { background: #e1e1e1; }`,
+      );
 
       stickyColumns.forEach((col, idx) => {
-        styleSheet.insertRule(
+        const ruleIdx = styleSheet.insertRule(
           `#standingTable  td:nth-child(${idx + 1}) , #standingTable th:nth-child(${idx + 1}) {
             left: ${offset}px;
             position: sticky;
+            z-index: 10;
+            opacity: 1;
           }`,
         );
+        rules.push(ruleIdx);
         offset += col.getBoundingClientRect().width; // Add current column width for the next one
       });
     };
 
     setStickyColumnOffsets();
+    return () => {
+      rules.forEach((ruleIdx) => {
+        if (styleSheet.cssRules[ruleIdx]) {
+          styleSheet.deleteRule(ruleIdx);
+        }
+      });
+    };
   }, []);
 
   if (isNaN(contestId)) {
@@ -103,7 +126,7 @@ export default function Page() {
   }
 
   return (
-    <div className="container py-8 px-4 md:px-6 space-y-6">
+    <div className="container py-8 px-4 md:px-6 space-y-6 ">
       {/* Contest Info Card */}
       <Card className="shadow-md">
         <CardHeader className="pb-2">
@@ -145,7 +168,7 @@ export default function Page() {
           <CardTitle>Standings</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[calc(100vh-100px)] overflow-y-auto slider-container">
             <table
               className="w-full border-collapse relative"
               id="standingTable"
@@ -189,9 +212,7 @@ export default function Page() {
                       key={index}
                       className={cn(
                         "border-b",
-                        rank === 1 && "bg-amber-500/10",
-                        rank === 2 && "bg-slate-400/10",
-                        rank === 3 && "bg-amber-700/10",
+                        "bg-background hover:bg-accent/50",
                       )}
                     >
                       <td className="sticky bg-inherit px-4 py-3 font-medium">

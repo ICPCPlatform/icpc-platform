@@ -31,7 +31,7 @@ export const Trainees = pgTable(
         onUpdate: "cascade",
       })
       .notNull(),
-
+    
     mentorId: uuid().notNull(),
 
     mentor_assigned_date: timestamp().defaultNow().notNull(),
