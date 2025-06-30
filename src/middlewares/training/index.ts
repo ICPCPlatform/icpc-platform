@@ -90,7 +90,7 @@ const permissionNeedToPath: {
   },
   {
     urlPath: new UrlPattern(
-      "/protected/trainings/:trainingId/staff/assign-mentor(/:tail*)",
+      "/protected/trainings/:trainingId/staff/assign-mentors(/:tail*)",
     ),
     permissions: ["View:staff"],
   },
