@@ -29,9 +29,7 @@ const permissionNeedToPath: {
   },
   // Match paths like /protected/trainings/123/staff/materials
   {
-    urlPath: new UrlPattern(
-      "/protected/trainings/:trainingId/staff/materials",
-    ),
+    urlPath: new UrlPattern("/protected/trainings/:trainingId/staff/materials"),
     permissions: ["View:material"],
   },
   // Match paths like /protected/trainings/123/staff/materials/edit-materials/456
@@ -43,16 +41,12 @@ const permissionNeedToPath: {
   },
   // Match paths like /protected/trainings/123/staff/materials
   {
-    urlPath: new UrlPattern(
-      "/protected/trainings/:trainingId/staff/materials",
-    ),
+    urlPath: new UrlPattern("/protected/trainings/:trainingId/staff/materials"),
     permissions: ["View:material"],
   },
   // Match paths like /protected/trainings/123/staff/contests
   {
-    urlPath: new UrlPattern(
-      "/protected/trainings/:trainingId/staff/contests",
-    ),
+    urlPath: new UrlPattern("/protected/trainings/:trainingId/staff/contests"),
     permissions: ["View:contest"],
   },
   // Match paths like /protected/trainings/123/staff/contests/edit-contest
@@ -85,7 +79,7 @@ const permissionNeedToPath: {
   {
     urlPath: new UrlPattern(
       "/protected/trainings/:trainingId/staff/edit-training",
-      ),
+    ),
     permissions: ["Edit:training"],
   },
   {
@@ -94,13 +88,19 @@ const permissionNeedToPath: {
     ),
     permissions: ["Edit:staff"],
   },
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/applications",
+    ),
+    permissions: ["Edit:applications"],
+  },
 ];
 
 /**
  * Main middleware function that composes all training-related middleware functions
  */
 export const middleware = composeMiddlewares(
-  permissionNeedToPath.map(({urlPath, permissions }) =>
+  permissionNeedToPath.map(({ urlPath, permissions }) =>
     trainingMiddlewareBuilder({ urlPath, permissions }),
   ),
 );
@@ -133,10 +133,13 @@ function trainingMiddlewareBuilder({
     if (!match) return [NoAction, req];
     const trainingIdRaw = Number(match.trainingId);
     let trainingId;
-    if (!isNaN(trainingIdRaw) && z.number().int().safeParse(trainingIdRaw).success) {
-        trainingId = trainingIdRaw;
+    if (
+      !isNaN(trainingIdRaw) &&
+      z.number().int().safeParse(trainingIdRaw).success
+    ) {
+      trainingId = trainingIdRaw;
     } else {
-        return new NextResponse('/404', { status: 404 });
+      return new NextResponse("/404", { status: 404 });
     }
 
     const user = await getUserData();
