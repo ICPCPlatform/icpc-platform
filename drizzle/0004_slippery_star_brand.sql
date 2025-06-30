@@ -1,1 +1,0 @@
-ALTER TABLE "contests" ADD COLUMN "standing" jsonb;

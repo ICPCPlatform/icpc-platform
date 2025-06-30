@@ -1,10 +1,22 @@
-CREATE TABLE "Blocks" (
+CREATE TABLE "applications" (
+	"application_id" serial PRIMARY KEY NOT NULL,
+	"user_id" uuid NOT NULL,
+	"training_id" integer NOT NULL,
+	"status" varchar(20),
+	"applied_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"description" varchar(512) NOT NULL,
+	CONSTRAINT "applications_userId_trainingId_unique" UNIQUE("user_id","training_id")
+);
+--> statement-breakpoint
+CREATE TABLE "blocks" (
 	"training_id" integer NOT NULL,
 	"block_number" integer NOT NULL,
 	"title" varchar(128) NOT NULL,
 	"description" varchar(512) NOT NULL,
 	"hidden" boolean DEFAULT false NOT NULL,
 	"date" timestamp DEFAULT now() NOT NULL,
+	"material" jsonb DEFAULT '[]'::jsonb NOT NULL,
 	"deleted" timestamp,
 	CONSTRAINT "block_pkey" PRIMARY KEY("block_number","training_id")
 );
@@ -12,37 +24,29 @@ CREATE TABLE "Blocks" (
 CREATE TABLE "contests" (
 	"training_id" integer NOT NULL,
 	"block_number" integer NOT NULL,
-	"contest_id" varchar(128) NOT NULL,
-	"group_id" varchar(128) NOT NULL,
-	"judge" varchar(128) NOT NULL,
-	"type" varchar(128) NOT NULL,
+	"contest_id" varchar(32) NOT NULL,
+	"group_id" varchar(32),
+	"judge" varchar(2) NOT NULL,
+	"type" varchar(32) NOT NULL,
 	"title" varchar(128) NOT NULL,
-	"description" varchar(512) NOT NULL,
-	"point_per_problem" integer NOT NULL,
-	"first_points" integer NOT NULL,
-	"calc_sys" varchar(128) NOT NULL,
+	"description" varchar(512) DEFAULT '' NOT NULL,
+	"standing" jsonb,
+	"point_per_problem" integer DEFAULT 20 NOT NULL,
+	"first_points" integer DEFAULT 1000 NOT NULL,
+	"calc_sys" varchar(32) DEFAULT '90%' NOT NULL,
 	"date" timestamp NOT NULL,
 	"deleted" timestamp,
 	CONSTRAINT "Contest_pkey" PRIMARY KEY("block_number","training_id","contest_id")
 );
 --> statement-breakpoint
-CREATE TABLE "mentorTraineeHistory" (
-	"mentor_id" uuid NOT NULL,
-	"trainee_id" uuid NOT NULL,
-	"training_id" integer NOT NULL,
-	"start_date" timestamp,
-	"end_date" timestamp,
-	CONSTRAINT "mentorTraineeHistory_training_id_mentor_id_trainee_id_pk" PRIMARY KEY("training_id","mentor_id","trainee_id")
-);
---> statement-breakpoint
 CREATE TABLE "staff" (
 	"user_id" uuid NOT NULL,
 	"training_id" integer NOT NULL,
-	"mentor" boolean DEFAULT false,
-	"problem_setter" boolean DEFAULT false,
-	"instructor" boolean DEFAULT false,
-	"co_head" boolean DEFAULT false,
-	"manager" boolean DEFAULT false,
+	"mentor" boolean DEFAULT false NOT NULL,
+	"problem_setter" boolean DEFAULT false NOT NULL,
+	"instructor" boolean DEFAULT false NOT NULL,
+	"co_head" boolean DEFAULT false NOT NULL,
+	"manager" boolean DEFAULT false NOT NULL,
 	"deleted" timestamp,
 	CONSTRAINT "staff_pk" PRIMARY KEY("user_id","training_id")
 );
@@ -51,14 +55,9 @@ CREATE TABLE "trainees" (
 	"user_id" uuid NOT NULL,
 	"training_id" integer NOT NULL,
 	"mentor_id" uuid NOT NULL,
-	"mentor_assigned_date" timestamp DEFAULT now(),
+	"mentor_assigned_date" timestamp DEFAULT now() NOT NULL,
 	"deleted" timestamp,
-	CONSTRAINT "trainees_user_id_training_id_pk" PRIMARY KEY("user_id","training_id")
-);
---> statement-breakpoint
-CREATE TABLE "training_view" (
-	"training_id" integer PRIMARY KEY NOT NULL,
-	"data" jsonb   NOT NULL
+	CONSTRAINT "trainees_user_id_training_id_mentor_id_pk" PRIMARY KEY("user_id","training_id","mentor_id")
 );
 --> statement-breakpoint
 CREATE TABLE "trainings" (
@@ -67,12 +66,11 @@ CREATE TABLE "trainings" (
 	"chief_judge" uuid NOT NULL,
 	"title" "citext" NOT NULL,
 	"description" varchar(512) NOT NULL,
-	"material" json,
-	"standing" json,
-	"standing_view" json,
+	"leader_board" jsonb,
+	"standing_view" jsonb DEFAULT '["name","handle","numberofsolved","mentor","level"]'::jsonb NOT NULL,
 	"start_date" date NOT NULL,
 	"duration" integer DEFAULT 1 NOT NULL,
-	"status" varchar(20) DEFAULT '' NOT NULL,
+	"status" varchar(20) DEFAULT 'private' NOT NULL,
 	"deleted" timestamp,
 	CONSTRAINT "trainings_title_unique" UNIQUE("title")
 );
@@ -102,8 +100,8 @@ CREATE TABLE "departments" (
 );
 --> statement-breakpoint
 CREATE TABLE "email_auth" (
-	"token" varchar NOT NULL,
 	"user_id" uuid PRIMARY KEY NOT NULL,
+	"token" varchar NOT NULL,
 	"expires_at" date DEFAULT now() + interval '7 day' NOT NULL
 );
 --> statement-breakpoint
@@ -135,6 +133,7 @@ CREATE TABLE "users" (
 	"phone_number" varchar(15) NOT NULL,
 	"role" varchar(40) DEFAULT 'user' NOT NULL,
 	"deleted" timestamp,
+	CONSTRAINT "users_username_unique" UNIQUE("username"),
 	CONSTRAINT "users_gmail_unique" UNIQUE("gmail"),
 	CONSTRAINT "users_cfHandle_unique" UNIQUE("cf_handle"),
 	CONSTRAINT "users_vjHandle_unique" UNIQUE("vj_handle")
@@ -174,11 +173,10 @@ CREATE TABLE "users_full_data" (
 	CONSTRAINT "users_full_data_nationalId_unique" UNIQUE("national_id")
 );
 --> statement-breakpoint
-ALTER TABLE "Blocks" ADD CONSTRAINT "Blocks_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "contests" ADD CONSTRAINT "contests_training_id_block_number_Blocks_training_id_block_number_fk" FOREIGN KEY ("training_id","block_number") REFERENCES "public"."Blocks"("training_id","block_number") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "mentorTraineeHistory" ADD CONSTRAINT "mentorTraineeHistory_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "mentorTraineeHistory" ADD CONSTRAINT "mentorTraineeHistory_mentor_id_training_id_staff_user_id_training_id_fk" FOREIGN KEY ("mentor_id","training_id") REFERENCES "public"."staff"("user_id","training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "mentorTraineeHistory" ADD CONSTRAINT "mentorTraineeHistory_trainee_id_training_id_trainees_user_id_training_id_fk" FOREIGN KEY ("trainee_id","training_id") REFERENCES "public"."trainees"("user_id","training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "applications" ADD CONSTRAINT "applications_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "applications" ADD CONSTRAINT "applications_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+ALTER TABLE "blocks" ADD CONSTRAINT "blocks_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "contests" ADD CONSTRAINT "contests_training_id_block_number_blocks_training_id_block_number_fk" FOREIGN KEY ("training_id","block_number") REFERENCES "public"."blocks"("training_id","block_number") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "staff" ADD CONSTRAINT "staff_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "staff" ADD CONSTRAINT "staff_training_id_trainings_training_id_fk" FOREIGN KEY ("training_id") REFERENCES "public"."trainings"("training_id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "trainees" ADD CONSTRAINT "trainees_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
@@ -194,7 +192,5 @@ ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_department_id_depa
 ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_community_id_communities_id_fk" FOREIGN KEY ("community_id") REFERENCES "public"."communities"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_country_id_countries_id_fk" FOREIGN KEY ("country_id") REFERENCES "public"."countries"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "users_full_data" ADD CONSTRAINT "users_full_data_city_id_cities_id_fk" FOREIGN KEY ("city_id") REFERENCES "public"."cities"("id") ON DELETE set null ON UPDATE cascade;--> statement-breakpoint
+CREATE INDEX "mentor_idx" ON "staff" USING btree ("mentor");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_username_idx" ON "users" USING btree ("username");
-
-ALTER SEQUENCE trainings_training_id_seq RESTART WITH 1001;
-
