@@ -94,6 +94,12 @@ const permissionNeedToPath: {
     ),
     permissions: ["View:staff"],
   },
+  {
+    urlPath: new UrlPattern(
+      "/protected/trainings/:trainingId/staff/applications",
+    ),
+    permissions: ["Edit:applications"],
+  },
 ];
 
 /**
