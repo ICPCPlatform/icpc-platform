@@ -1,7 +1,6 @@
 import { getTrainingFullData } from "@/dao/getTrainingFullData";
 import TrainingProvider from "@/providers/training";
 import NoSSR from "@/components/util/NoSSR";
-import TrainingNavigation from "./__trainingNavigation";
 
 export default async function Layout({
   children,
@@ -19,7 +18,6 @@ export default async function Layout({
       <div className="flex flex-col lg:flex-row gap-4 md:gap-6 w-max max-w-full ">
         <TrainingProvider trainingData={trainingData}>
           <NoSSR>
-            <TrainingNavigation />
             {children}
           </NoSSR>
         </TrainingProvider>
