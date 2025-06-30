@@ -86,13 +86,13 @@ const permissionNeedToPath: {
     urlPath: new UrlPattern(
       "/protected/trainings/:trainingId/staff/staff-management(/:tail*)",
     ),
-    permissions: ["Edit:staff", "View:staff"],
+    permissions: ["View:staff"],
   },
   {
     urlPath: new UrlPattern(
       "/protected/trainings/:trainingId/staff/assign-mentor(/:tail*)",
     ),
-    permissions: ["Edit:staff", "View:staff"],
+    permissions: ["View:staff"],
   },
 ];
 
