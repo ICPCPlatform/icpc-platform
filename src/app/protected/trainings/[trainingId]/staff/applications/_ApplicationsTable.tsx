@@ -85,7 +85,7 @@ export default function ApplicationsTable({
         action,
       }));
     if (bulk.length > 0) {
-      await handleBulkAction(bulk, Number(trainingId));
+      await handleBulkAction({bulk: bulk, trainingId : Number(trainingId)});
     }
     setBulkLoading(null);
     setSelected([]);
