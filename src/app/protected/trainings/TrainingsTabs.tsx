@@ -53,7 +53,6 @@ interface Training {
 }
 
 interface Application {
-  applicationId: number;
   trainingId: number;
   status: string;
 }

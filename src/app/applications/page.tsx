@@ -51,7 +51,7 @@ export default function ApplicationsPage() {
         <div className="space-y-4">
           {applications.map((app) => (
             <div
-              key={app.applicationId}
+              key={app.userId}
               className="border rounded-lg p-4 flex items-center justify-between"
             >
               <div>
