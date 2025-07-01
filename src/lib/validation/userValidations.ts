@@ -1,7 +1,13 @@
 import { z } from "zod";
 import { username, password, gmail, type EnforceKeys } from "./util";
 import { Users } from "@/lib/db/schema/user/Users";
-import { usernameTooShort, usernameInvalidFormat, phoneNumberTooShort, phoneNumberTooLong, phoneNumberInvalid, termsNotAccepted, passwordMustMatch, invalidPassword } from "../const/error-messages";
+import {
+  usernameTooShort,
+  usernameInvalidFormat,
+  termsNotAccepted,
+  passwordMustMatch,
+  invalidPassword,
+} from "../const/error-messages";
 
 // TODO CF Handle
 const cfHandle = z
@@ -15,32 +21,32 @@ const cfHandle = z
 const phoneNumber = z
   .string()
   .trim()
-  .min(13, { message: phoneNumberTooShort })
-  .max(15, { message: phoneNumberTooLong })
-  .regex(
-    /^\+201[0-9]{9}$/,
-    phoneNumberInvalid,
-  );
+  .min(13, { message: "invalid phone number" })
+  .max(15, { message: "invalid phone number" })
+  .regex(/^\+201[0-9]{9}$/, "invalid phone number");
 const confirmPassword = z.string().min(8, { message: invalidPassword });
 const termsAccepted = z.boolean().refine((val) => val === true, {
-  message: termsNotAccepted
+  message: termsNotAccepted,
 });
 
-export const userRegisterValid = z.object({
-  username,
-  password,
-  gmail,
-  cfHandle,
-  vjHandle: cfHandle.optional(),
-  phoneNumber,
-  confirmPassword,
-  termsAccepted,
-}).refine((data) => data.password === data.confirmPassword, {
-  message: passwordMustMatch,
-  path: ['confirmPassword'],
-});
+export const userRegisterValid = z
+  .object({
+    username,
+    password,
+    gmail,
+    cfHandle,
+    vjHandle: cfHandle.optional(),
+    phoneNumber,
+    confirmPassword,
+    termsAccepted,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: passwordMustMatch,
+    path: ["confirmPassword"],
+  });
 
-const _: EnforceKeys<typeof userRegisterValid, typeof Users> = {} as EnforceKeys<typeof userRegisterValid, typeof Users>; // Ensure validation matches Users schema
+const _: EnforceKeys<typeof userRegisterValid, typeof Users> =
+  {} as EnforceKeys<typeof userRegisterValid, typeof Users>; // Ensure validation matches Users schema
 
 // Type checking is handled by TypeScript compiler
 // Usage example:

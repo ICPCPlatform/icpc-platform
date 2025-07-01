@@ -21,7 +21,8 @@ export async function createTrainingAction(
     if (!userData) {
       return { success: false, error: "User not authenticated" };
     }
-
+    validatedData.chiefJudgeUsername = validatedData.chiefJudgeUsername === ''? userData.username : validatedData.chiefJudgeUsername; 
+    validatedData.headUsername = validatedData.headUsername === ''? userData.username : validatedData.headUsername; 
     // Check if user has admin permissions
     if (userData.role !== "admin") {
       return { success: false, error: "Unauthorized: Admin access required" };

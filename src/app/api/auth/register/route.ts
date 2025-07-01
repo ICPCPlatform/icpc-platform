@@ -9,7 +9,7 @@ import sendEmail from "@/lib/email/sendEmail";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 import { type DefaultResponse } from "@/lib/types/DefaultResponse";
 
-export async function POST(request: NextRequest) : Promise<DefaultResponse> {
+export async function POST(request: NextRequest): Promise<DefaultResponse> {
   try {
     const { success, data: registerData } = userRegisterValid.safeParse(
       await request.json(),
@@ -25,16 +25,25 @@ export async function POST(request: NextRequest) : Promise<DefaultResponse> {
           eq(Users.username, registerData.username),
           eq(Users.gmail, registerData.gmail),
           eq(Users.cfHandle, registerData.cfHandle),
-          eq(Users.vjHandle, registerData.vjHandle ?? ""),
           eq(Users.phoneNumber, registerData.phoneNumber),
         ),
       )
       .execute();
-    if (dbResult.length > 0)
-      return NextResponse.json(
-        { err: "User already exists" },
-        { status: 400 },
-      );
+    if (dbResult.length > 0) {
+      let err = "";
+      dbResult.forEach((user) => {
+        if (user.username === registerData.username) {
+          err = "Username already exists\n";
+        } else if (user.gmail === registerData.gmail) {
+          err = "Email already exists\n";
+        } else if (user.cfHandle === registerData.cfHandle) {
+          err = "Codeforces handle already exists\n";
+        } else if (user.phoneNumber === registerData.phoneNumber) {
+          err = "Phone number already exists\n";
+        }
+      });
+      return NextResponse.json({ err }, { status: 400 });
+    }
 
     // check codeforces handle
     const handleRes = await fetch(
@@ -91,10 +100,7 @@ export async function POST(request: NextRequest) : Promise<DefaultResponse> {
     );
   } catch (error) {
     console.error("Error registering:", error);
-    return NextResponse.json(
-      { err: "Something went wrong" },
-      { status: 500 },
-    );
+    return NextResponse.json({ err: "Something went wrong" }, { status: 500 });
   }
 }
 

@@ -11,7 +11,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getUserApplications, applyToTraining } from "@/app/applications/actions";
+import {
+  getUserApplications,
+  applyToTraining,
+} from "@/app/applications/actions";
 
 function formatDate(date: Date | string) {
   return new Date(date).toLocaleDateString("en-US", {
@@ -46,6 +49,7 @@ interface Training {
   headId?: number;
   chiefJudge?: number;
   standingView?: string[];
+  isStaff?: boolean;
 }
 
 interface Application {
@@ -61,17 +65,26 @@ interface TrainingsTabsProps {
   enrolledIds: number[];
 }
 
-export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaff, enrolledIds }: TrainingsTabsProps) {
-  const [tab, setTab] = useState<'all' | 'my'>('all');
+export default function TrainingsTabs({
+  myTrainings,
+  allTrainings,
+  isAdminOrStaff,
+  enrolledIds,
+}: TrainingsTabsProps) {
+  const [tab, setTab] = useState<"all" | "my">("all");
   const [modalTraining, setModalTraining] = useState<Training | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
   const [applying, setApplying] = useState<number | null>(null);
 
   useEffect(() => {
-    getUserApplications().then((apps) => setApplications((apps || []).map(app => ({
-      ...app,
-      status: app.status || ""
-    }))));
+    getUserApplications().then((apps) =>
+      setApplications(
+        (apps || []).map((app) => ({
+          ...app,
+          status: app.status || "",
+        })),
+      ),
+    );
   }, []);
 
   const getAppStatus = (trainingId: number) => {
@@ -93,7 +106,10 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
 
   const renderDetailsModal = () => {
     if (!modalTraining) return null;
-    const statusText = modalTraining.status ? modalTraining.status.charAt(0).toUpperCase() + modalTraining.status.slice(1) : 'Unknown';
+    const statusText = modalTraining.status
+      ? modalTraining.status.charAt(0).toUpperCase() +
+        modalTraining.status.slice(1)
+      : "Unknown";
     // For now, show headId and chiefJudge as IDs (username fetch can be added later)
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/70">
@@ -105,32 +121,49 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
           >
             ×
           </button>
-          <h2 className="text-2xl font-bold mb-2 text-zinc-900 dark:text-zinc-100">{modalTraining.title}</h2>
+          <h2 className="text-2xl font-bold mb-2 text-zinc-900 dark:text-zinc-100">
+            {modalTraining.title}
+          </h2>
           <div className="mb-2">
-            <Badge className={getStatusColor(modalTraining.status ?? '')}>{statusText}</Badge>
+            <Badge className={getStatusColor(modalTraining.status ?? "")}>
+              {statusText}
+            </Badge>
           </div>
           <div className="mb-2 text-muted-foreground">
-            <span className="font-medium">Start:</span> {formatDate(modalTraining.startDate)}
-            {modalTraining.duration && <span> • <span className="font-medium">Duration:</span> {modalTraining.duration} days</span>}
+            <span className="font-medium">Start:</span>{" "}
+            {formatDate(modalTraining.startDate)}
+            {modalTraining.duration && (
+              <span>
+                {" "}
+                • <span className="font-medium">Duration:</span>{" "}
+                {modalTraining.duration} days
+              </span>
+            )}
           </div>
           <div className="mb-4">
-            <p className="text-zinc-800 dark:text-zinc-200 whitespace-pre-line">{modalTraining.description}</p>
+            <p className="text-zinc-800 dark:text-zinc-200 whitespace-pre-line">
+              {modalTraining.description}
+            </p>
           </div>
           {modalTraining.headId && (
             <div className="mb-1 text-sm text-zinc-700 dark:text-zinc-300">
-              <span className="font-medium">Head:</span> <span className="font-mono">{modalTraining.headId}</span>
+              <span className="font-medium">Head:</span>{" "}
+              <span className="font-mono">{modalTraining.headId}</span>
             </div>
           )}
           {modalTraining.chiefJudge && (
             <div className="mb-1 text-sm text-zinc-700 dark:text-zinc-300">
-              <span className="font-medium">Chief Judge:</span> <span className="font-mono">{modalTraining.chiefJudge}</span>
+              <span className="font-medium">Chief Judge:</span>{" "}
+              <span className="font-mono">{modalTraining.chiefJudge}</span>
             </div>
           )}
-          {modalTraining.standingView && Array.isArray(modalTraining.standingView) && (
-            <div className="mb-1 text-sm text-zinc-700 dark:text-zinc-300">
-              <span className="font-medium">Standing View:</span> {modalTraining.standingView.join(", ")}
-            </div>
-          )}
+          {modalTraining.standingView &&
+            Array.isArray(modalTraining.standingView) && (
+              <div className="mb-1 text-sm text-zinc-700 dark:text-zinc-300">
+                <span className="font-medium">Standing View:</span>{" "}
+                {modalTraining.standingView.join(", ")}
+              </div>
+            )}
         </div>
       </div>
     );
@@ -143,7 +176,7 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Trainings</h1>
           <p className="text-muted-foreground mt-2">
-            Manage and join ICPC programming training sessions
+            ICPC programming training sessions
           </p>
         </div>
         <div className="flex gap-4">
@@ -157,41 +190,52 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
       {/* Tabs */}
       <div className="mb-6 flex gap-2 border-b">
         <button
-          className={`px-4 py-2 font-medium border-b-2 ${tab === 'all' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
-          onClick={() => setTab('all')}
+          className={`px-4 py-2 font-medium border-b-2 ${tab === "all" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
+          onClick={() => setTab("all")}
         >
           All Trainings
         </button>
         <button
-          className={`px-4 py-2 font-medium border-b-2 ${tab === 'my' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
-          onClick={() => setTab('my')}
+          className={`px-4 py-2 font-medium border-b-2 ${tab === "my" ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}
+          onClick={() => setTab("my")}
         >
           My Trainings
         </button>
       </div>
       {/* Tab Content */}
-      {tab === 'all' && (
+      {tab === "all" && (
         <div>
           {allTrainings.length === 0 ? (
             <div className="text-center p-12 border rounded-lg">
-              <h3 className="text-xl font-semibold mb-2">No Trainings Available</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                No Trainings Available
+              </h3>
               <p className="text-muted-foreground">
-                There are no training sessions available at the moment. Please check back later.
+                There are no training sessions available at the moment. Please
+                check back later.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {allTrainings.map((training) => {
-                const statusText = training.status ? training.status.charAt(0).toUpperCase() + training.status.slice(1) : 'Unknown';
+                const statusText = training.status
+                  ? training.status.charAt(0).toUpperCase() +
+                    training.status.slice(1)
+                  : "Unknown";
                 const id = training.id ?? training.trainingId;
                 const isEnrolled = enrolledIds.includes(id!);
                 if (typeof id !== "number") return null;
                 return (
-                  <Card key={id} className="overflow-hidden hover:shadow-md transition-shadow">
+                  <Card
+                    key={id}
+                    className="overflow-hidden hover:shadow-md transition-shadow"
+                  >
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <CardTitle>{training.title}</CardTitle>
-                        <Badge className={getStatusColor(training.status ?? '')}>
+                        <Badge
+                          className={getStatusColor(training.status ?? "")}
+                        >
                           {statusText}
                         </Badge>
                       </div>
@@ -212,54 +256,67 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
                         Details
                       </Button>
                       {isEnrolled ? (
-                        <Button
-                          asChild
-                          className="min-w-[140px] font-semibold"
-                        >
+                        <Button asChild className="min-w-[140px] font-semibold">
                           <Link href={`/protected/trainings/${id}`}>
                             Go to Dashboard
                           </Link>
                         </Button>
-                      ) : (() => {
-                        const status = getAppStatus(id) || "";
-                        switch (status) {
-                          case "pending":
-                          case "applied":
-                            return (
-                              <Button disabled className="min-w-[90px] font-semibold">
-                                Pending
-                              </Button>
-                            );
-                          case "withdrawn":
-                            return (
-                              <Button disabled className="min-w-[90px] font-semibold">
-                                Withdrawn
-                              </Button>
-                            );
-                          case "accepted":
-                            return (
-                              <Button disabled className="min-w-[90px] font-semibold">
-                                Accepted
-                              </Button>
-                            );
-                          case "rejected":
-                            return (
-                              <Button disabled className="min-w-[90px] font-semibold">
-                                Rejected
-                              </Button>
-                            );
-                          default:
-                            return (
-                              <Button
-                                onClick={() => handleApply(id)}
-                                className="min-w-[90px] font-semibold"
-                                disabled={applying === id}
-                              >
-                                {applying === id ? "Applying..." : "Apply"}
-                              </Button>
-                            );
-                        }
-                      })()}
+                      ) : (
+                        (() => {
+                          const status = getAppStatus(id) || "";
+                          switch (status) {
+                            case "pending":
+                            case "applied":
+                              return (
+                                <Button
+                                  disabled
+                                  className="min-w-[90px] font-semibold"
+                                >
+                                  Pending
+                                </Button>
+                              );
+                            case "withdrawn":
+                              return (
+                                <Button
+                                  disabled
+                                  className="min-w-[90px] font-semibold"
+                                >
+                                  Withdrawn
+                                </Button>
+                              );
+                            case "accepted":
+                              return (
+                                <Button
+                                  className="min-w-[90px] font-semibold"
+                                  asChild
+                                >
+                                  <Link href={`/protected/trainings/${id}`}>
+                                    Go to Dashboard
+                                  </Link>
+                                </Button>
+                              );
+                            case "rejected":
+                              return (
+                                <Button
+                                  disabled
+                                  className="min-w-[90px] font-semibold"
+                                >
+                                  Rejected
+                                </Button>
+                              );
+                            default:
+                              return (
+                                <Button
+                                  onClick={() => handleApply(id)}
+                                  className="min-w-[90px] font-semibold"
+                                  disabled={applying === id}
+                                >
+                                  {applying === id ? "Applying..." : "Apply"}
+                                </Button>
+                              );
+                          }
+                        })()
+                      )}
                     </CardFooter>
                   </Card>
                 );
@@ -268,11 +325,13 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
           )}
         </div>
       )}
-      {tab === 'my' && (
+      {tab === "my" && (
         <div>
           {myTrainings.length === 0 ? (
             <div className="text-center p-12 border rounded-lg">
-              <h3 className="text-xl font-semibold mb-2">No Enrolled Trainings</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                No Enrolled Trainings
+              </h3>
               <p className="text-muted-foreground mb-4">
                 You haven't joined any training sessions yet.
               </p>
@@ -280,15 +339,23 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {myTrainings.map((training) => {
-                const statusText = training.status ? training.status.charAt(0).toUpperCase() + training.status.slice(1) : 'Unknown';
+                const statusText = training.status
+                  ? training.status.charAt(0).toUpperCase() +
+                    training.status.slice(1)
+                  : "Unknown";
                 const id = training.id ?? training.trainingId;
                 if (typeof id !== "number") return null;
                 return (
-                  <Card key={training.trainingId} className="overflow-hidden hover:shadow-md transition-shadow">
+                  <Card
+                    key={training.trainingId}
+                    className="overflow-hidden hover:shadow-md transition-shadow"
+                  >
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <CardTitle>{training.title}</CardTitle>
-                        <Badge className={getStatusColor(training.status ?? '')}>
+                        <Badge
+                          className={getStatusColor(training.status ?? "")}
+                        >
                           {statusText}
                         </Badge>
                       </div>
@@ -308,10 +375,7 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
                       >
                         Details
                       </Button>
-                      <Button
-                        asChild
-                        className="min-w-[140px] font-semibold"
-                      >
+                      <Button asChild className="min-w-[140px] font-semibold">
                         <Link href={`/protected/trainings/${id}`}>
                           Go to Dashboard
                         </Link>
@@ -326,4 +390,4 @@ export default function TrainingsTabs({ myTrainings, allTrainings, isAdminOrStaf
       )}
     </div>
   );
-} 
+}

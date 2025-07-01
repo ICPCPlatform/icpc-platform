@@ -43,20 +43,8 @@ export default function PersonList() {
   const [isCountryPublic, setIsCountryPublic] = useState(false);
   const [isCityPublic, setIsCityPublic] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    form.handleSubmit(
-      () => {
-        toast.success("Changes saved successfully!");
-      },
-      () => {
-        toast.error("Please fix the errors before saving.");
-      }
-    )();
-  };
 
   return (
-    <form onSubmit={handleSubmit} className="profile-form-container">
       <div className="profile-form-section">
         <div className="profile-form-row">
           {personalFields.slice(0, 2).map((field) => (
@@ -225,6 +213,5 @@ export default function PersonList() {
           )}
         />
       </div>
-    </form>
   );
 }

@@ -10,8 +10,8 @@ export const createTrainingSchema = z.object({
     .string()
     .min(10, "Description must be at least 10 characters")
     .max(512, "Description must be less than 512 characters"),
-  headUsername: username,
-  chiefJudgeUsername: username,
+  headUsername: username.or(z.literal("")),
+  chiefJudgeUsername: username.or(z.literal("")),
   startDate: z.date({ required_error: "Start date is required" }),
   duration: z
     .coerce

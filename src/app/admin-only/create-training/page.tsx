@@ -23,13 +23,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { CheckCircle, XCircle } from "lucide-react";
 import { createTrainingAction } from "./actions";
 import { createTrainingSchema } from "@/lib/validation/training/createTraining";
@@ -47,8 +40,10 @@ export default function CreateTrainingPage() {
     defaultValues: {
       title: "",
       description: "",
-      duration: 1,
+      duration: 8,
       status: "private",
+      headUsername: "",
+      chiefJudgeUsername: "",
     },
   });
 
@@ -95,8 +90,8 @@ export default function CreateTrainingPage() {
                     <FormLabel>Training Title</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="e.g., ICPC Training 2023"
                         {...field}
+                        placeholder="e.g., ICPC Training 2023"
                       />
                     </FormControl>
                     <FormDescription>
@@ -114,10 +109,7 @@ export default function CreateTrainingPage() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Describe the purpose and content of this training"
-                        {...field}
-                      />
+                      <Textarea {...field} />
                     </FormControl>
                     <FormDescription>
                       A brief description of what the training covers
@@ -135,8 +127,8 @@ export default function CreateTrainingPage() {
                     <FormLabel>Training Head</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Username of the training head"
                         {...field}
+                        placeholder="Leave blank to assign yourself as training head."
                       />
                     </FormControl>
                     <FormDescription>The username of the Head</FormDescription>
@@ -150,9 +142,12 @@ export default function CreateTrainingPage() {
                 name="chiefJudgeUsername"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Chief Judge ID</FormLabel>
+                    <FormLabel>Chief Judge</FormLabel>
                     <FormControl>
-                      <Input placeholder="Username of the chief judge" {...field} />
+                      <Input
+                        {...field}
+                        placeholder="Leave blank to assign yourself as training chief judge."
+                      />
                     </FormControl>
                     <FormDescription>
                       The username of the Chief Judge
@@ -212,39 +207,6 @@ export default function CreateTrainingPage() {
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {createTrainingSchema.shape.status._def.innerType._def.values.map(
-                          (option) => (
-                            <SelectItem key={option} value={option}>
-                              {option.charAt(0).toUpperCase() + option.slice(1)}
-                            </SelectItem>
-                          ),
-                        )}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      The visibility status of this training
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <div className="flex justify-end">
                 <Button type="submit" disabled={loading}>

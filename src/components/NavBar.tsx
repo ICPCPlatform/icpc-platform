@@ -68,7 +68,7 @@ export function Navbar() {
           <NavigationMenu className="hidden sm:flex">
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium" onClick={(e) => e.preventDefault()}>
                   Training
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
