@@ -4,6 +4,7 @@ import { Staff } from "../db/schema/training/Staff";
 import { eq, and, isNull } from "drizzle-orm";
 import { Trainings } from "../db/schema/training/Trainings";
 import { Trainees } from "../db/schema/training/Trainees";
+import { Users } from "../db/schema/user/Users";
 
 type PermissionAction = "View" | "Edit";
 type PermissionTarget =
@@ -21,12 +22,41 @@ export type TrainingPermissions =
   | `${PermissionAction}:${PermissionTarget}`
   | "View:trainee";
 
+const allPermissions: TrainingPermissions[] = [
+  "View:standing",
+  "Edit:standing",
+  "View:material",
+  "Edit:material",
+  "View:block",
+  "Edit:block",
+  "View:training",
+  "Edit:training",
+  "View:practice",
+  "Edit:practice",
+  "View:attendance",
+  "Edit:attendance",
+  "View:contest",
+  "Edit:contest",
+  "View:staff",
+  "Edit:staff",
+  "Edit:applications",
+  "View:trainee",
+];
+
 async function getUserTrainingPermissionsNotCache(
   userId: string,
   trainingId: number,
 ): Promise<TrainingPermissions[]> {
   if (isNaN(trainingId)) {
     return [];
+  }
+  const userRes = await db
+    .select({ role: Users.role })
+    .from(Users)
+    .where(and(eq(Users.userId, userId), isNull(Users.deleted)))
+    .execute();
+  if (userRes.length == 1 && userRes[0].role == "admin") {
+    return allPermissions;
   }
   const headRes = await db
     .select({})
@@ -36,26 +66,7 @@ async function getUserTrainingPermissionsNotCache(
     )
     .execute();
   if (headRes.length === 1) {
-    return [
-      "View:standing",
-      "Edit:standing",
-      "View:material",
-      "Edit:material",
-      "View:contest",
-      "Edit:contest",
-      "View:training",
-      "Edit:training",
-      "View:block",
-      "Edit:block",
-      "View:practice",
-      "Edit:practice",
-      "View:attendance",
-      "Edit:attendance",
-      "View:staff",
-      "Edit:staff",
-      "Edit:applications",
-      "View:trainee",
-    ];
+    return allPermissions;
   }
 
   const staffRes = await db

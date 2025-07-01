@@ -79,7 +79,7 @@ export async function searchByUsername(username: string, trainingId: number) {
     try {
         const userData = await getUserData();
 
-        if (userData == null || userData.role !== "admin") {
+        if (userData == null) {
             throw Error("Unauthorized access");
         }
         const staff = await db

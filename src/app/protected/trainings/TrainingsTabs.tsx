@@ -263,7 +263,10 @@ export default function TrainingsTabs({
                         </Button>
                       ) : (
                         (() => {
-                          const status = getAppStatus(id) || "";
+                          const status =
+                            training.isStaff || isAdminOrStaff
+                              ? "staff"
+                              : getAppStatus(id) || "";
                           switch (status) {
                             case "pending":
                             case "applied":
@@ -284,6 +287,7 @@ export default function TrainingsTabs({
                                   Withdrawn
                                 </Button>
                               );
+                            case "staff":
                             case "accepted":
                               return (
                                 <Button
