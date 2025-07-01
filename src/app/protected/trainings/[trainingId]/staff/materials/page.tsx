@@ -22,6 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PencilIcon } from "lucide-react";
 
 export default async function Page({
   params,
@@ -99,7 +100,7 @@ export default async function Page({
                   <TableCell className="text-right">
                     <Button asChild variant="outline">
                       <Link href={`./materials/edit-materials/${blockNumber}`}>
-                        Update Material Block
+                        <PencilIcon className="h-4 w-4" />
                       </Link>
                     </Button>
                   </TableCell>
