@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { updateMaterialSchema } from "@/lib/validation/training/updateMaterial";
+import { z } from "zod";
 
 export default function Page() {
   const urlparams = useParams();
@@ -29,7 +30,7 @@ export default function Page() {
   const [materialData, setMaterialData] = useState<Material[] | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const data = JSON.parse(localStorage.getItem(blockId.toString()) ?? "[]");
       setMaterialData(data);
     }
@@ -60,7 +61,9 @@ function DynamicForm({
   blockNumber: number;
 }) {
   const { toast } = useToast();
-  const [entries, setEntries] = useState<Material[]>(materialData ?? []);
+  const [entries, setEntries] = useState<
+    (Material & { error?: { link?: string[]; title?: string[]; des?: string[] } })[]
+  >(materialData ?? []);
   const [isSaving, setIsSaving] = useState(false);
 
   const addEntry = () => {
@@ -74,6 +77,14 @@ function DynamicForm({
   ) => {
     const newEntries = [...entries];
     newEntries[index][field] = value;
+    const res = z
+      .object({
+        title: z.string().trim().min(5, { message: "Title min length 5" }),
+        des: z.string().min(1, { message: "Description is required" }),
+        link: z.string().url({ message: "Link must be a valid URL" }),
+      })
+      .safeParse(newEntries[index]);
+    newEntries[index].error = res.error?.formErrors.fieldErrors; // Clear error if valid
     setEntries(newEntries);
   };
 
@@ -87,7 +98,9 @@ function DynamicForm({
     <Card>
       <CardHeader>
         <CardTitle>Edit Training Materials</CardTitle>
-        <CardDescription>Add or modify materials for this training block</CardDescription>
+        <CardDescription>
+          Add or modify materials for this training block
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {entries.map((entry, index) => (
@@ -110,8 +123,13 @@ function DynamicForm({
                   <Input
                     placeholder="Enter material title"
                     value={entry.title}
-                    onChange={(e) => updateEntry(index, "title", e.target.value)}
+                    onChange={(e) =>
+                      updateEntry(index, "title", e.target.value)
+                    }
                   />
+                  <div className="text-red-500 text-sm">
+                    {entry.error?.title}
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Link</label>
@@ -120,6 +138,9 @@ function DynamicForm({
                     value={entry.link}
                     onChange={(e) => updateEntry(index, "link", e.target.value)}
                   />
+                  <div className="text-red-500 text-sm">
+                    {entry.error?.link}
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Description</label>
@@ -128,6 +149,9 @@ function DynamicForm({
                     value={entry.des}
                     onChange={(e) => updateEntry(index, "des", e.target.value)}
                   />
+                  <div className="text-red-500 text-sm">
+                    {entry.error?.des}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -135,11 +159,7 @@ function DynamicForm({
         ))}
 
         <div className="flex gap-4">
-          <Button
-            onClick={addEntry}
-            variant="outline"
-            className="w-full"
-          >
+          <Button onClick={addEntry} variant="outline" className="w-full">
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Material
           </Button>
