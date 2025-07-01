@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Home, BookOpen, Trophy, Users } from "lucide-react";
 
-export async function TrainingNavigation({
+export function TrainingNavigation({
   trainingId,
   className = "",
 }: {
