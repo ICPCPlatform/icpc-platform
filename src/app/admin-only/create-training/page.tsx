@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,13 +26,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, XCircle } from "lucide-react";
 import { createTrainingAction } from "./actions";
 import { createTrainingSchema } from "@/lib/validation/training/createTraining";
+import { useRouter } from "next/navigation";
 
 // Create a client-side version of the schema
 
 export default function CreateTrainingPage() {
-  const [loading, setLoading] = useState(false);
+  const [loading, startTransaction] = useTransition();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const router = useRouter();
 
   // Setup form
   const form = useForm<z.infer<typeof createTrainingSchema>>({
@@ -47,8 +49,8 @@ export default function CreateTrainingPage() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof createTrainingSchema>) => {
-    setLoading(true);
+  const onSubmit = (values: z.infer<typeof createTrainingSchema>) => {
+    startTransaction(async () => {
     setError("");
     setSuccess("");
 
@@ -58,16 +60,15 @@ export default function CreateTrainingPage() {
       if (result.success) {
         setSuccess("Training created successfully!");
 
-        // Redirect to the training page if we have a training ID
+        // Redirect to the training page
+        router.push(`/protected/trainings`);
       } else {
         setError(result.error || "Failed to create training");
       }
     } catch (err) {
       console.error("Error submitting form:", err);
       setError("An unexpected error occurred");
-    } finally {
-      setLoading(false);
-    }
+    }})
   };
 
   return (

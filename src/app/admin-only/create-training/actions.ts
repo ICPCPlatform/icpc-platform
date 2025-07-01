@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { Blocks } from "@/lib/db/schema/training/Blocks";
 import { Users } from "@/lib/db/schema/user/Users";
 import { like, eq } from "drizzle-orm";
+import { Staff } from "@/lib/db/schema/training/Staff";
 
 export async function createTrainingAction(
   formData: z.infer<typeof createTrainingSchema>,
@@ -21,8 +22,14 @@ export async function createTrainingAction(
     if (!userData) {
       return { success: false, error: "User not authenticated" };
     }
-    validatedData.chiefJudgeUsername = validatedData.chiefJudgeUsername === ''? userData.username : validatedData.chiefJudgeUsername; 
-    validatedData.headUsername = validatedData.headUsername === ''? userData.username : validatedData.headUsername; 
+    validatedData.chiefJudgeUsername =
+      validatedData.chiefJudgeUsername === ""
+        ? userData.username
+        : validatedData.chiefJudgeUsername;
+    validatedData.headUsername =
+      validatedData.headUsername === ""
+        ? userData.username
+        : validatedData.headUsername;
     // Check if user has admin permissions
     if (userData.role !== "admin") {
       return { success: false, error: "Unauthorized: Admin access required" };
@@ -77,6 +84,13 @@ export async function createTrainingAction(
           .returning({ trainingId: Trainings.trainingId })
           .execute();
       }
+      tx.insert(Staff)
+        .values({
+          userId: headId,
+          trainingId: trainingId,
+          deleted: null,
+        } satisfies typeof Staff.$inferInsert)
+        .execute();
     });
 
     // Revalidate the trainings path to update the UI
