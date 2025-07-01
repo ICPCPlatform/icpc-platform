@@ -47,6 +47,10 @@ function TrainingNavigation({
   if (!trainingData) {
     return <div>Loading...</div>;
   }
+  const hasContests = Array.isArray(trainingData.standing) && trainingData.standing.length > 0;
+  if (!hasContests) {
+    return null;
+  }
   return (
     <div className={`flex gap-6 ${className}`}>
       <aside>
@@ -56,37 +60,33 @@ function TrainingNavigation({
           </CardHeader>
           <CardContent>
             <nav className="space-y-2 gap-2 flex flex-col">
-              {/* Contest standings section - only show if standing data exists */}
-              {trainingData?.standing &&
-                Array.isArray(trainingData.standing) &&
-                trainingData.standing.length > 0 && (
-                  <>
-                    <div className="text-sm font-medium text-muted-foreground mb-2">
-                      Contest Standings
-                    </div>
-                    {trainingData.standing.map((context, i: number) =>
-                      context.contestInfo ? (
-                        <Button
-                          key={i}
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="w-full justify-start"
-                        >
-                          <Link
-                            href={`/protected/trainings/${trainingId}/contests/${context.contestInfo.id}/standing`}
-                            className="flex items-start break-words whitespace-normal w-full h-fit min-h-[2.1rem] pb-2 pt-2"
-                          >
-                            <Trophy className="h-4 w-4 mr-2 shrink-0" />
-                            <span className="break-words whitespace-normal">
-                              {context.contestInfo.title}
-                            </span>
-                          </Link>
-                        </Button>
-                      ) : null,
-                    )}
-                  </>
+              {/* Only show Contest Standings if there are contests */}
+              <>
+                <div className="text-sm font-medium text-muted-foreground mb-2">
+                  Contest Standings
+                </div>
+                {trainingData.standing?.map((context, i: number) =>
+                  context.contestInfo ? (
+                    <Button
+                      key={i}
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      className="w-full justify-start"
+                    >
+                      <Link
+                        href={`/protected/trainings/${trainingId}/contests/${context.contestInfo.id}/standing`}
+                        className="flex items-start break-words whitespace-normal w-full h-fit min-h-[2.1rem] pb-2 pt-2"
+                      >
+                        <Trophy className="h-4 w-4 mr-2 shrink-0" />
+                        <span className="break-words whitespace-normal">
+                          {context.contestInfo.title}
+                        </span>
+                      </Link>
+                    </Button>
+                  ) : null,
                 )}
+              </>
             </nav>
           </CardContent>
         </Card>
