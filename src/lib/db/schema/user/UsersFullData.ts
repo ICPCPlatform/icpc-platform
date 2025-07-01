@@ -16,7 +16,7 @@ import { Faculties } from "./Faculties";
 import { Institutes } from "./Institutes";
 import { Countries } from "./Countries";
 import { Communities } from "./Communities";
-import { citext } from "@/lib/db/util";
+import { citext } from "@/lib/db/schema/util";
 
 export const UsersFullData = pgTable("users_full_data", {
   userId: uuid()

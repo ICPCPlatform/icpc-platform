@@ -1,47 +1,10 @@
-import {
-  integer,
-  pgTable,
-  primaryKey,
-  uuid,
-  timestamp,
-  foreignKey,
-} from "drizzle-orm/pg-core";
+import { pgView, uuid, integer} from "drizzle-orm/pg-core";
+import {  sql } from "drizzle-orm";
 
-import { Users } from "../user/Users";
-import { Trainings } from "./Trainings";
-import { Staff } from "./Staff";
-
-
-/**
- * Trainees is the table that holds the trainees for a training
- */
-export const Trainees = pgTable(
-  "trainees",
-  {
-    userId: uuid()
-      .references(() => Users.userId, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      })
-      .notNull(),
-
-    trainingId: integer()
-      .references(() => Trainings.trainingId, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      })
-      .notNull(),
-    
-    mentorId: uuid().notNull(),
-
-    mentor_assigned_date: timestamp().defaultNow().notNull(),
-    deleted: timestamp(),
-  },
-  (table) => [
-    primaryKey({ columns: [table.userId, table.trainingId, table.mentorId] }),
-    foreignKey({
-      columns: [table.mentorId, table.trainingId],
-      foreignColumns: [Staff.userId, Staff.trainingId],
-    }),
-  ],
-);
+export const Trainees = pgView("trainees", {
+  userId: uuid('user_id'),
+  trainingId: integer('training_id').notNull(),
+  updateAt: integer('updated_at').notNull(),
+}).as(sql`
+  select "user_id", "training_id", "updated_at"
+  from "applications" where "applications"."status" = 'accepted'`)

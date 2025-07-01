@@ -1,11 +1,10 @@
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
-import { Trainees } from "@/lib/db/schema/training/Trainees";
+import { MentorTrainees } from "@/lib/db/schema/training/MentorTrainees";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { eq, and, isNull } from "drizzle-orm";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { AssignMentorRow } from "./AssignMentorRow";
-import { Applications } from "@/lib/db/schema/training/Applications";
 import {
   TableBody,
   TableHead,
@@ -13,6 +12,7 @@ import {
   TableRow,
   Table,
 } from "@/components/ui/table";
+import { Trainees } from "@/lib/db/schema/training/Trainees";
 
 export default async function AssignMentorsPage({
   params,
@@ -29,24 +29,19 @@ export default async function AssignMentorsPage({
       .select({
         userId: Users.userId,
         username: Users.username,
-        mentorId: Trainees.mentorId,
+        mentorId: MentorTrainees.mentorId,
       })
-      .from(Applications)
-      .where(
-        and(
-          eq(Applications.trainingId, Number(trainingId)),
-          eq(Applications.status, "accepted"),
-        ),
-      )
+      .from(Trainees)
+      .where(and(eq(Trainees.trainingId, Number(trainingId))))
       .leftJoin(
-        Trainees,
+        MentorTrainees,
         and(
-          eq(Applications.userId, Trainees.userId),
-          eq(Trainees.trainingId, Number(trainingId)),
-          isNull(Trainees.deleted),
+          eq(Trainees.userId, MentorTrainees.userId),
+          eq(MentorTrainees.trainingId, Number(trainingId)),
+          isNull(MentorTrainees.deleted),
         ),
       )
-      .innerJoin(Users, eq(Applications.userId, Users.userId))
+      .innerJoin(Users, eq(Trainees.userId, Users.userId))
 
       .execute(),
     // get all mentors for the training

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";
 import { Users } from "@/lib/db/schema/user/Users";
-import { Trainees } from "@/lib/db/schema/training/Trainees";
+import { MentorTrainees } from "@/lib/db/schema/training/MentorTrainees";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { revalidatePath } from "next/cache";
@@ -47,13 +47,13 @@ export async function unassignMentor(
 
     if (!effectiveMentorId) {
       const assignedTrainee = await db
-        .select({ mentorId: Trainees.mentorId })
-        .from(Trainees)
+        .select({ mentorId: MentorTrainees.mentorId })
+        .from(MentorTrainees)
         .where(
           and(
-            eq(Trainees.trainingId, trainingId),
-            eq(Trainees.userId, traineeId),
-            isNull(Trainees.deleted),
+            eq(MentorTrainees.trainingId, trainingId),
+            eq(MentorTrainees.userId, traineeId),
+            isNull(MentorTrainees.deleted),
           ),
         );
 
@@ -77,13 +77,13 @@ export async function unassignMentor(
       (
         await db
           .select({})
-          .from(Trainees)
+          .from(MentorTrainees)
           .where(
             and(
-              eq(Trainees.trainingId, trainingId),
-              eq(Trainees.userId, traineeId),
-              eq(Trainees.mentorId, effectiveMentorId),
-              isNull(Trainees.deleted),
+              eq(MentorTrainees.trainingId, trainingId),
+              eq(MentorTrainees.userId, traineeId),
+              eq(MentorTrainees.mentorId, effectiveMentorId),
+              isNull(MentorTrainees.deleted),
             ),
           )
       ).length < 1
@@ -99,15 +99,15 @@ export async function unassignMentor(
 
     // insert the trainee into the trainees table
     await db
-      .update(Trainees)
+      .update(MentorTrainees)
       .set({
         deleted: new Date(),
       })
       .where(
         and(
-          eq(Trainees.trainingId, trainingId),
-          eq(Trainees.userId, traineeId),
-          eq(Trainees.mentorId, effectiveMentorId),
+          eq(MentorTrainees.trainingId, trainingId),
+          eq(MentorTrainees.userId, traineeId),
+          eq(MentorTrainees.mentorId, effectiveMentorId),
         ),
       );
 

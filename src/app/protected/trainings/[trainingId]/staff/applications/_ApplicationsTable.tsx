@@ -20,7 +20,6 @@ import {
 import { useParams } from "next/navigation";
 
 type Application = {
-  applicationId: number;
   userId: string;
   status: string;
   appliedAt: string;
@@ -37,8 +36,8 @@ export default function ApplicationsTable({
 }: ApplicationsTableProps) {
   const { trainingId } = useParams();
   const [filter, setFilter] = useState<string>("all");
-  const [loadingId, setLoadingId] = useState<number | null>(null);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string[]>([]);
   const [bulkLoading, setBulkLoading] = useState<"accepted" | "rejected" | null>(
     null,
   );
@@ -67,9 +66,9 @@ export default function ApplicationsTable({
   }
 
 
-  const handleSelect = (id: number, checked: boolean) => {
+  const handleSelect = (userId: string, checked: boolean) => {
     setSelected((prev) =>
-      checked ? [...prev, id] : prev.filter((x) => x !== id),
+      checked ? [...prev, userId] : prev.filter((x) => x !== userId),
     );
   };
 
@@ -77,10 +76,9 @@ export default function ApplicationsTable({
     setBulkLoading(action);
     const bulk = filteredApplications
       .filter(
-        (app) => selected.includes(app.applicationId) && app.status !== action,
+        (app) => selected.includes(app.userId) && app.status !== action,
       )
       .map((app) => ({
-        applicationId: app.applicationId,
         userId: app.userId,
         action,
       }));
@@ -147,7 +145,7 @@ export default function ApplicationsTable({
                   onCheckedChange={(checked) => {
                     if (checked)
                       setSelected(
-                        filteredApplications.map((app) => app.applicationId),
+                        filteredApplications.map((app) => app.userId),
                       );
                     else setSelected([]);
                   }}
@@ -161,12 +159,12 @@ export default function ApplicationsTable({
           </TableHeader>
           <TableBody>
             {filteredApplications.map((app) => (
-              <TableRow key={app.applicationId}>
+              <TableRow key={app.userId}>
                 <TableCell className="text-center">
                   <Checkbox
-                    checked={selected.includes(app.applicationId)}
+                    checked={selected.includes(app.userId)}
                     onCheckedChange={(checked) =>
-                      handleSelect(app.applicationId, Boolean(checked))
+                      handleSelect(app.userId, Boolean(checked))
                     }
                   />
                 </TableCell>
@@ -181,7 +179,7 @@ export default function ApplicationsTable({
                     onValueChange={async (
                       value: "pending" | "accepted" | "rejected",
                     ) => {
-                      setLoadingId(app.applicationId);
+                      setLoadingId(app.userId);
                       const action =
                         value === "accepted"
                           ? "accepted"
@@ -190,14 +188,13 @@ export default function ApplicationsTable({
                             : "pending";
                       await handleBulkAction({bulk:[
                         {
-                          applicationId: app.applicationId,
                           userId: app.userId,
                           action,
                         },
                       ], trainingId: Number(trainingId)});
                       setLoadingId(null);
                     }}
-                    disabled={loadingId === app.applicationId}
+                    disabled={loadingId === app.userId}
                   >
                     <SelectTrigger
                       className={`w-32 ${

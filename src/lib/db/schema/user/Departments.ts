@@ -1,5 +1,5 @@
 import { pgTable, serial } from "drizzle-orm/pg-core";
-import { citext } from "@/lib/db/util";
+import { citext } from "@/lib/db/schema/util";
 
 export const Departments = pgTable("departments", {
   id: serial().primaryKey(),

@@ -3,9 +3,8 @@ import {
   pgTable,
   uuid,
   timestamp,
-  serial,
   varchar,
-  unique,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 
 import { Users } from "../user/Users";
@@ -17,7 +16,6 @@ import { Trainings } from "./Trainings";
 export const Applications = pgTable(
   "applications",
   {
-    applicationId: serial().primaryKey(),
     userId: uuid()
       .references(() => Users.userId, {
         onDelete: "cascade",
@@ -36,5 +34,5 @@ export const Applications = pgTable(
     updatedAt: timestamp().notNull().defaultNow(),
     description: varchar({ length: 512 }).notNull(),
   },
-  (table) => [unique().on(table.userId, table.trainingId)]
+  (table) => [primaryKey({ columns: [table.userId, table.trainingId] })],
 );

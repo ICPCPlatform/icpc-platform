@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { Staff } from "../db/schema/training/Staff";
 import { eq, and, isNull } from "drizzle-orm";
 import { Trainings } from "../db/schema/training/Trainings";
-import { Applications } from "../db/schema/training/Applications";
+import { Trainees } from "../db/schema/training/Trainees";
 
 type PermissionAction = "View" | "Edit";
 type PermissionTarget =
@@ -54,7 +54,7 @@ async function getUserTrainingPermissionsNotCache(
       "View:staff",
       "Edit:staff",
       "Edit:applications",
-      "View:trainee"
+      "View:trainee",
     ];
   }
 
@@ -135,13 +135,9 @@ async function getUserTrainingPermissionsNotCache(
   // Check if user is a trainee
   const studentRes = await db
     .select({})
-    .from(Applications)
+    .from(Trainees)
     .where(
-      and(
-        eq(Applications.userId, userId),
-        eq(Applications.trainingId, trainingId),
-        eq(Applications.status, "accepted"),
-      ),
+      and(eq(Trainees.userId, userId), eq(Trainees.trainingId, trainingId)),
     )
     .execute();
 

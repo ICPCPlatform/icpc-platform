@@ -1,10 +1,10 @@
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
-import { Trainees } from "@/lib/db/schema/training/Trainees";
 import { getUserData } from "@/lib/session";
-import {  eq, isNull, and, or, desc, isNotNull} from "drizzle-orm";
+import { eq, isNull, and, or, desc, isNotNull } from "drizzle-orm";
 import TrainingsTabs from "./TrainingsTabs";
 import { Staff } from "@/lib/db/schema/training/Staff";
+import { Trainees } from "@/lib/db/schema/training/Trainees";
 
 export default async function TrainingsPage() {
   const userData = await getUserData();
