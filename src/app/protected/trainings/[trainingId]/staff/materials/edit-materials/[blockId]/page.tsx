@@ -1,7 +1,7 @@
 "use client";
 import { redirect, useParams } from "next/navigation";
 import { Material } from "@/lib/types/Training";
-import { startTransition, useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { updateMaterial } from "../../actions/_updateMaterial";
 import {
@@ -26,13 +26,18 @@ export default function Page() {
     redirect("not-found");
   }
 
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  const materialData = JSON.parse(
-    localStorage.getItem(blockId.toString()) ?? "[]",
-  ) as Material[];
+  const [materialData, setMaterialData] = useState<Material[] | null>(null);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const data = JSON.parse(localStorage.getItem(blockId.toString()) ?? "[]");
+      setMaterialData(data);
+    }
+  }, [blockId]);
+
+  if (materialData === null) {
+    return null; // or a loading spinner
+  }
 
   return (
     <div className="container mx-auto py-6">
@@ -56,6 +61,8 @@ function DynamicForm({
 }) {
   const { toast } = useToast();
   const [entries, setEntries] = useState<Material[]>(materialData ?? []);
+  const [isSaving, setIsSaving] = useState(false);
+
   const addEntry = () => {
     setEntries([...entries, { title: "", link: "", des: "" }]);
   };
@@ -139,7 +146,7 @@ function DynamicForm({
         </div>
 
         <Button
-          onClick={() => {
+          onClick={async () => {
             const {
               data: newMaterials,
               success,
@@ -153,7 +160,8 @@ function DynamicForm({
               });
               return;
             }
-            startTransition(async () => {
+            setIsSaving(true);
+            try {
               const res = await updateMaterial({
                 blockNumber,
                 trainingId,
@@ -175,11 +183,20 @@ function DynamicForm({
                   description: res.error,
                 });
               }
-            });
+            } catch {
+              toast({
+                variant: "destructive",
+                title: "Error",
+                description: "An unexpected error occurred.",
+              });
+            } finally {
+              setIsSaving(false);
+            }
           }}
           className="w-full"
+          disabled={isSaving}
         >
-          Save Changes
+          {isSaving ? "Saving..." : "Save Changes"}
         </Button>
       </CardContent>
     </Card>
