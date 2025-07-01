@@ -21,7 +21,7 @@ export const username = z
   .trim()
   .min(3, { message: usernameTooShort })
   .max(20, { message: usernameTooLong })
-  .regex(/^[a-zA-Z_][a-zA-Z0-9_]+$/, {
+  .regex(/^[a-zA-Z0-9_]+$/, {
     message: usernameInvalidFormat,
   });
 

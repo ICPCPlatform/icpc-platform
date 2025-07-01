@@ -72,7 +72,6 @@ function Login() {
                   <FormLabel>Username or Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="username or email"
                       {...field}
                       className="auth-input"
                     />
@@ -90,7 +89,6 @@ function Login() {
                   <FormControl>
                     <div className="auth-input-wrapper">
                       <Input
-                        placeholder="strongpassword123"
                         {...field}
                         type={isPasswordVisible ? 'text' : 'password'}
                         className="auth-input"
@@ -163,6 +161,7 @@ function Login() {
         if ("err" in res) return setError(res.err);
         else if ("msg" in res) {
           router.push("/protected/profile");
+          router.refresh();
         }
       })
       .catch(async (err) => {

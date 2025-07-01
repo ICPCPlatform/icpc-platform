@@ -1,6 +1,6 @@
 "use client";
 import { userRegisterValid } from "@/lib/validation/userValidations";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +26,7 @@ export default function Page() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, startTransition] = useTransition();
   const form = useForm<z.infer<typeof userRegisterValid>>({
     resolver: zodResolver(userRegisterValid),
     defaultValues: {
@@ -56,14 +56,11 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="username123"
-                      {...field}
-                      className="auth-input"
-                    />
+                    <Input {...field} className="auth-input" />
                   </FormControl>
                   <FormDescription className="auth-form-description">
-                    This is your public display name.
+                    Your public display name (letters, numbers, and underscores
+                    only).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -76,14 +73,10 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Gmail</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="example@gmail.com"
-                      {...field}
-                      className="auth-input"
-                    />
+                    <Input {...field} className="auth-input" />
                   </FormControl>
                   <FormDescription className="auth-form-description">
-                    This is your email address. Only Gmail is allowed.
+                    Use a valid Gmail address (e.g. you@gmail.com).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -96,14 +89,10 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Codeforces Handle</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="mohamed_reda"
-                      {...field}
-                      className="auth-input"
-                    />
+                    <Input {...field} className="auth-input" />
                   </FormControl>
                   <FormDescription className="auth-form-description">
-                    This is your Codeforces handle.
+                    Enter your Codeforces username.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -116,14 +105,10 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="01001001000"
-                      {...field}
-                      className="auth-input"
-                    />
+                    <Input {...field} className="auth-input" />
                   </FormControl>
                   <FormDescription className="auth-form-description">
-                    This is your phone number.
+                    Egyptian number format (e.g. +201xxxxxxxxx).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -136,15 +121,11 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="*****"
-                      {...field}
-                      className="auth-input"
-                    />
+                    <Input type="password" {...field} className="auth-input" />
                   </FormControl>
                   <FormDescription className="auth-form-description">
-                    At least 8 characters with a mix of letters, numbers, and symbols.
+                    Minimum 8 characters, including letters, numbers, and
+                    symbols.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -157,12 +138,7 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="*****"
-                      {...field}
-                      className="auth-input"
-                    />
+                    <Input type="password" {...field} className="auth-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -225,16 +201,16 @@ export default function Page() {
     </div>
   );
 
-  async function onSubmit(data: z.infer<typeof userRegisterValid>) {
-    setLoading(true);
-    fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then(async (response) => {
+  function onSubmit(data: z.infer<typeof userRegisterValid>) {
+    startTransition(async () => {
+      try {
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
         const res = await response.json();
         if ("err" in res) return setError(res.err);
         else if ("msg" in res) {
@@ -243,13 +219,14 @@ export default function Page() {
             router.push("/login");
           }, 2000);
         }
-      })
-      .catch(async (err) => {
-        const res = await err.json();
-        console.log(res);
-        setLoading(false);
-        if ("err" in res) return setError(res.err);
-        else if ("msg" in res) return setSuccess(res.msg);
-      });
+      } catch (err) {
+        console.error(err);
+        if (err instanceof Response) {
+          const res = await err.json();
+          if ("err" in res) return setError(res.err);
+          else if ("msg" in res) return setSuccess(res.msg);
+        }
+      }
+    });
   }
 }

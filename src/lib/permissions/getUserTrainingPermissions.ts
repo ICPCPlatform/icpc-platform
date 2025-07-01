@@ -1,9 +1,9 @@
 "use server";
 import { db } from "@/lib/db";
 import { Staff } from "../db/schema/training/Staff";
-import { Trainees } from "../db/schema/training/Trainees";
 import { eq, and, isNull } from "drizzle-orm";
 import { Trainings } from "../db/schema/training/Trainings";
+import { Applications } from "../db/schema/training/Applications";
 
 type PermissionAction = "View" | "Edit";
 type PermissionTarget =
@@ -135,12 +135,12 @@ async function getUserTrainingPermissionsNotCache(
   // Check if user is a trainee
   const studentRes = await db
     .select({})
-    .from(Trainees)
+    .from(Applications)
     .where(
       and(
-        eq(Trainees.userId, userId),
-        eq(Trainees.trainingId, trainingId),
-        isNull(Trainees.deleted),
+        eq(Applications.userId, userId),
+        eq(Applications.trainingId, trainingId),
+        eq(Applications.status, "accepted"),
       ),
     )
     .execute();

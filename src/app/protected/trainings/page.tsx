@@ -2,23 +2,31 @@ import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { Trainees } from "@/lib/db/schema/training/Trainees";
 import { getUserData } from "@/lib/session";
-import { eq, isNull, and } from "drizzle-orm";
+import {  eq, isNull, and, or, desc, isNotNull} from "drizzle-orm";
 import TrainingsTabs from "./TrainingsTabs";
+import { Staff } from "@/lib/db/schema/training/Staff";
 
 export default async function TrainingsPage() {
   const userData = await getUserData();
-  const isAdminOrStaff = userData && (userData.role === 'admin' );
+  if (!userData) {
+    return (
+      <div className="text-center text-2xl">
+        Please log in to view trainings.
+      </div>
+    );
+  }
+  const isAdminOrStaff = userData && userData.role === "admin";
 
   // My trainings
   let myTrainings: {
-    trainingId: number,
-    title: string,
-    description: string,
-    startDate: string
-    duration: number,
-    status: string,
+    trainingId: number;
+    title: string;
+    description: string;
+    startDate: string;
+    duration: number;
+    status: string;
   }[] = [];
-  
+
   if (userData) {
     myTrainings = await db
       .select({
@@ -37,15 +45,14 @@ export default async function TrainingsPage() {
 
   // All trainings
   let allTrainings: {
-    trainingId: number,
-    title: string,
-    description: string,
-    startDate: string
-    duration: number,
-    status: string,
-
+    trainingId: number;
+    title: string;
+    description: string;
+    startDate: string;
+    duration: number;
+    status: string;
   }[] = [];
-  
+
   if (isAdminOrStaff) {
     allTrainings = await db
       .select({
@@ -57,7 +64,8 @@ export default async function TrainingsPage() {
         status: Trainings.status,
       })
       .from(Trainings)
-      .where(isNull(Trainings.deleted))
+      .orderBy(desc(Trainings.startDate))
+      .limit(20)
       .execute();
   } else {
     allTrainings = await db
@@ -68,9 +76,27 @@ export default async function TrainingsPage() {
         startDate: Trainings.startDate,
         duration: Trainings.duration,
         status: Trainings.status,
+        isStaff: isNotNull(Staff.userId),
       })
       .from(Trainings)
-      .where(and(isNull(Trainings.deleted), eq(Trainings.status, 'active')))
+      .where(
+        or(
+          eq(Trainings.headId, userData.userId),
+          eq(Trainings.chiefJudge, userData.userId),
+          and(isNull(Trainings.deleted), eq(Trainings.status, "active")),
+          eq(Staff.userId, userData.userId),
+        ),
+      )
+      .leftJoin(
+        Staff,
+        and(
+          eq(Staff.trainingId, Trainings.trainingId),
+          eq(Staff.userId, userData.userId),
+          isNull(Staff.deleted),
+        ),
+      )
+      .orderBy(desc(Trainings.startDate))
+      .limit(10)
       .execute();
   }
 
