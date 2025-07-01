@@ -1,10 +1,10 @@
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
-import { MentorTrainees } from "@/lib/db/schema/training/MentorTrainees";
 import { getUserData } from "@/lib/session";
-import {  eq, isNull, and, or, desc, isNotNull} from "drizzle-orm";
+import { eq, isNull, and, or, desc, isNotNull } from "drizzle-orm";
 import TrainingsTabs from "./TrainingsTabs";
 import { Staff } from "@/lib/db/schema/training/Staff";
+import { Trainees } from "@/lib/db/schema/training/Trainees";
 
 export default async function TrainingsPage() {
   const userData = await getUserData();
@@ -38,8 +38,8 @@ export default async function TrainingsPage() {
         status: Trainings.status,
       })
       .from(Trainings)
-      .innerJoin(MentorTrainees, eq(Trainings.trainingId, MentorTrainees.trainingId))
-      .where(eq(MentorTrainees.userId, userData.userId))
+      .innerJoin(Trainees, eq(Trainings.trainingId, Trainees.trainingId))
+      .where(eq(Trainees.userId, userData.userId))
       .execute();
   }
 

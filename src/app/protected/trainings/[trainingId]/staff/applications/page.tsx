@@ -19,7 +19,6 @@ export default async function ApplicationsManagementPage({
   // Fetch all applications for this training
   const applications = await db
     .select({
-      applicationId: Applications.applicationId,
       userId: Applications.userId,
       status: Applications.status,
       appliedAt: Applications.appliedAt,

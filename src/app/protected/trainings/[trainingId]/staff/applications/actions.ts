@@ -3,15 +3,14 @@ import { db } from "@/lib/db";
 import { Applications } from "@/lib/db/schema/training/Applications";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { getUserData } from "@/lib/session";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const schema = z.object({
   bulk: z.array(
     z.object({
-      applicationId: z.number().int().positive(),
-      userId: z.string().min(1),
+      userId: z.string().uuid(),
       action: z.enum(["accepted", "rejected", "pending"]),
     }),
   ),
@@ -29,11 +28,11 @@ export async function handleBulkAction(input: z.infer<typeof schema>) {
       throw new Error("User does not have permission to edit applications");
     }
     await db.transaction(async (tx) => {
-      for (const { applicationId, action } of bulk) {
+      for (const { userId, action } of bulk) {
         tx
           .update(Applications)
           .set({ status: action })
-          .where(eq(Applications.applicationId, applicationId))
+          .where(and(eq(Applications.userId, userId), eq(Applications.trainingId, trainingId)))
           .execute();
       }
     });

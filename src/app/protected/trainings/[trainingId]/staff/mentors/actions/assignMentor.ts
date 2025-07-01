@@ -7,7 +7,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { Users } from "@/lib/db/schema/user/Users";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { MentorTrainees } from "@/lib/db/schema/training/MentorTrainees";
-import { Applications } from "@/lib/db/schema/training/Applications";
+import { Trainees } from "@/lib/db/schema/training/Trainees";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 import { revalidatePath } from "next/cache";
@@ -52,12 +52,11 @@ export async function assignMentor(
       (
         await db
           .select()
-          .from(Applications)
+          .from(Trainees)
           .where(
             and(
-              eq(Applications.trainingId, trainingId),
-              eq(Applications.userId, traineeId),
-              eq(Applications.status, "accepted"),
+              eq(Trainees.trainingId, trainingId),
+              eq(Trainees.userId, traineeId),
             ),
           )
       ).length < 1
