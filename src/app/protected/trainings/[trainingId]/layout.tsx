@@ -5,6 +5,8 @@ import React from "react";
 import { TrainingNavigation } from "@/components/training/TrainingNavigation";
 import { getStaffRoles } from "@/dao/getStaffRoles";
 import TrainingProvider from "@/providers/training";
+import { StaffNav } from "./StaffNav";
+import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
 
 function Breadcrumb({
   trainingName,
@@ -34,6 +36,9 @@ export default async function TrainingLayout({
   const trainingIdNumber = Number(trainingId);
   const user = await getUserData();
   const userId = user?.userId;
+  if (!user) {
+    return null;
+  }
 
   // Fetch training data with userId to get userRoles
   const trainingData = await getTrainingFullData({
@@ -48,6 +53,9 @@ export default async function TrainingLayout({
     userId,
     trainingId: trainingIdNumber,
   });
+  const userPermisions = (
+    await getUserTrainingPermissions(user.userId, Number(trainingId))
+  ).filter((x) => x != "View:trainee");
 
   return (
     <div className="container mx-auto py-6">
@@ -61,6 +69,7 @@ export default async function TrainingLayout({
         </h1>
       </header>
       <TrainingNavigation trainingId={trainingIdNumber} userId={userId} />
+      <StaffNav userPermisions={userPermisions} trainingId={Number(trainingId)}></StaffNav>
       <main>
         <TrainingProvider trainingData={trainingData}>
           {children}

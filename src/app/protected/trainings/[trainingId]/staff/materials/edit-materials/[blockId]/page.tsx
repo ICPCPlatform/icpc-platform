@@ -172,7 +172,7 @@ function DynamicForm({
                 toast({
                   variant: "destructive",
                   title: "Error",
-                  description: res.error,
+                  description: res.error || "Failed to update materials",
                 });
               }
             });
