@@ -22,6 +22,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PencilIcon } from "lucide-react";
+import ExpandableMaterialCard from "@/components/ExpandableMaterialCard";
 
 export default async function Page({
   params,
@@ -81,25 +83,19 @@ export default async function Page({
                   <TableCell>
                     <div className="space-y-2">
                       {material.map(({ title, link, des }, index) => (
-                        <Card key={index} className="p-2">
-                          <CardContent className="p-2">
-                            <div className="grid gap-1">
-                              <p className="text-sm font-medium">Material {index + 1}</p>
-                              <p className="text-sm">{title}</p>
-                              <a href={link} className="text-sm text-primary hover:underline" target="_blank" rel="noopener noreferrer">
-                                {link}
-                              </a>
-                              <p className="text-sm text-muted-foreground">{des}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <ExpandableMaterialCard
+                          key={index}
+                          title={title}
+                          link={link}
+                          des={des}
+                        />
                       ))}
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <Button asChild variant="outline">
                       <Link href={`./materials/edit-materials/${blockNumber}`}>
-                        Update Block
+                        <PencilIcon className="h-4 w-4" />
                       </Link>
                     </Button>
                   </TableCell>
