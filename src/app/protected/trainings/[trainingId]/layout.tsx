@@ -37,7 +37,7 @@ export default async function TrainingLayout({
   const user = await getUserData();
   const userId = user?.userId;
   if (!user) {
-    return;
+    return null;
   }
 
   // Fetch training data with userId to get userRoles
