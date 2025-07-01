@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Users, Trophy, Bell } from "lucide-react";
+import { BookOpen, Users, Trophy } from "lucide-react";
 import { TypographyH1 } from "@/components/ui/typography";
 import { useTrainingContext } from "@/providers/training";
 import { useParams } from "next/navigation";
@@ -73,29 +73,8 @@ export default function TrainingOverviewPage() {
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
-              Announcements
-            </CardTitle>
-            <CardDescription>
-              Important updates and news about this training
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No announcements yet.</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Check back later for updates
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="md:col-span-2 lg:col-span-3">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
             <CardDescription>
@@ -103,28 +82,25 @@ export default function TrainingOverviewPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div>
-                  <p className="font-medium">View Materials</p>
-                  <p className="text-sm text-muted-foreground">Access training resources</p>
-                </div>
-                <BookOpen className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div>
-                  <p className="font-medium">Join Contests</p>
-                  <p className="text-sm text-muted-foreground">Participate in competitions</p>
-                </div>
-                <Trophy className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div>
-                  <p className="font-medium">Check Leaderboard</p>
-                  <p className="text-sm text-muted-foreground">See your ranking</p>
-                </div>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </div>
+            <div className="flex flex-col gap-3">
+              <a href={`/protected/trainings/${trainingIdNumber}/materials`}>
+                <button className="flex items-center gap-2 w-full px-4 py-2 rounded border hover:bg-muted transition">
+                  <BookOpen className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-medium">Materials</span>
+                </button>
+              </a>
+              <a href={`/protected/trainings/${trainingIdNumber}/contests`}>
+                <button className="flex items-center gap-2 w-full px-4 py-2 rounded border hover:bg-muted transition">
+                  <Trophy className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-medium">Contests</span>
+                </button>
+              </a>
+              <a href={`/protected/trainings/${trainingIdNumber}/leaderboard`}>
+                <button className="flex items-center gap-2 w-full px-4 py-2 rounded border hover:bg-muted transition">
+                  <Users className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-medium">Leaderboard</span>
+                </button>
+              </a>
             </div>
           </CardContent>
         </Card>

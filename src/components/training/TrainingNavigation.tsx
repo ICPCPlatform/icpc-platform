@@ -3,11 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-export type TrainingNavLink = {
-  href: string;
-  label: string;
-};
+import { Home, BookOpen, Trophy, Users } from "lucide-react";
 
 export async function TrainingNavigation({
   trainingId,
@@ -19,17 +15,11 @@ export async function TrainingNavigation({
   // Fetch permissions for the user
 
   // Define navigation links
-  const links: TrainingNavLink[] = [
-    { href: `/protected/trainings/${trainingId}`, label: "Overview" },
-    {
-      href: `/protected/trainings/${trainingId}/materials`,
-      label: "Materials",
-    },
-    { href: `/protected/trainings/${trainingId}/contests`, label: "Contests" },
-    {
-      href: `/protected/trainings/${trainingId}/leaderboard`,
-      label: "Leaderboard",
-    },
+  const links = [
+    { href: `/protected/trainings/${trainingId}`, label: "Overview", icon: <Home className="w-4 h-4" /> },
+    { href: `/protected/trainings/${trainingId}/materials`, label: "Materials", icon: <BookOpen className="w-4 h-4" /> },
+    { href: `/protected/trainings/${trainingId}/contests`, label: "Contests", icon: <Trophy className="w-4 h-4" /> },
+    { href: `/protected/trainings/${trainingId}/leaderboard`, label: "Leaderboard", icon: <Users className="w-4 h-4" /> },
   ];
 
   // Only show links the user has permission for, or always Overview if any permission
@@ -42,9 +32,11 @@ export async function TrainingNavigation({
           variant="ghost"
           size="sm"
           asChild
-          className="font-medium"
+          className="font-medium flex items-center gap-2"
         >
-          <Link href={link.href}>{link.label}</Link>
+          <Link href={link.href} className="flex items-center gap-2">
+            {link.icon} {link.label}
+          </Link>
         </Button>
       ))}
     </nav>
