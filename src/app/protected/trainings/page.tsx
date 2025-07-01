@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
-import { Trainees } from "@/lib/db/schema/training/Trainees";
+import { MentorTrainees } from "@/lib/db/schema/training/MentorTrainees";
 import { getUserData } from "@/lib/session";
 import {  eq, isNull, and, or, desc, isNotNull} from "drizzle-orm";
 import TrainingsTabs from "./TrainingsTabs";
@@ -38,8 +38,8 @@ export default async function TrainingsPage() {
         status: Trainings.status,
       })
       .from(Trainings)
-      .innerJoin(Trainees, eq(Trainings.trainingId, Trainees.trainingId))
-      .where(eq(Trainees.userId, userData.userId))
+      .innerJoin(MentorTrainees, eq(Trainings.trainingId, MentorTrainees.trainingId))
+      .where(eq(MentorTrainees.userId, userData.userId))
       .execute();
   }
 

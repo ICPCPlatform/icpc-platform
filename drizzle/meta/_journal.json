@@ -8,6 +8,27 @@
       "when": 1751264300822,
       "tag": "0000_soft_thaddeus_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751357080195,
+      "tag": "0001_yielding_scarlet_spider",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751357335079,
+      "tag": "0002_volatile_falcon",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1751358268965,
+      "tag": "0003_steep_reaper",
+      "breakpoints": true
     }
   ]
 }

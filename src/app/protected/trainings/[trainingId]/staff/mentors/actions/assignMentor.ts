@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { and, eq, isNull } from "drizzle-orm";
 import { Users } from "@/lib/db/schema/user/Users";
 import { Staff } from "@/lib/db/schema/training/Staff";
-import { Trainees } from "@/lib/db/schema/training/Trainees";
+import { MentorTrainees } from "@/lib/db/schema/training/MentorTrainees";
 import { Applications } from "@/lib/db/schema/training/Applications";
 import { getUserData } from "@/lib/session";
 import { getUserTrainingPermissions } from "@/lib/permissions/getUserTrainingPermissions";
@@ -104,13 +104,13 @@ export async function assignMentor(
       (
         await db
           .select({})
-          .from(Trainees)
+          .from(MentorTrainees)
           .where(
             and(
-              eq(Trainees.trainingId, trainingId),
-              eq(Trainees.userId, traineeId),
-              eq(Trainees.mentorId, mentorId),
-              isNull(Trainees.deleted),
+              eq(MentorTrainees.trainingId, trainingId),
+              eq(MentorTrainees.userId, traineeId),
+              eq(MentorTrainees.mentorId, mentorId),
+              isNull(MentorTrainees.deleted),
             ),
           )
       ).length >= 1
@@ -130,25 +130,25 @@ export async function assignMentor(
 
     // delete the trainee is in the trainees table (not deleted)
     await db
-      .update(Trainees)
+      .update(MentorTrainees)
       .set({ deleted: new Date() })
       .where(
         and(
-          eq(Trainees.trainingId, trainingId),
-          eq(Trainees.userId, traineeId),
-          isNull(Trainees.deleted),
+          eq(MentorTrainees.trainingId, trainingId),
+          eq(MentorTrainees.userId, traineeId),
+          isNull(MentorTrainees.deleted),
         ),
       );
     
     // Check if trainee is already assigned to *any* mentor
     const existingTrainee = await db
       .select({})
-      .from(Trainees)
+      .from(MentorTrainees)
       .where(
         and(
-          eq(Trainees.trainingId, trainingId),
-          eq(Trainees.userId, traineeId),
-          isNull(Trainees.deleted),
+          eq(MentorTrainees.trainingId, trainingId),
+          eq(MentorTrainees.userId, traineeId),
+          isNull(MentorTrainees.deleted),
         ),
       );
 
@@ -164,30 +164,30 @@ export async function assignMentor(
       (
         await db
           .select({})
-          .from(Trainees)
+          .from(MentorTrainees)
           .where(
             and(
-              eq(Trainees.trainingId, trainingId),
-              eq(Trainees.userId, traineeId),
-              eq(Trainees.mentorId, mentorId),
+              eq(MentorTrainees.trainingId, trainingId),
+              eq(MentorTrainees.userId, traineeId),
+              eq(MentorTrainees.mentorId, mentorId),
             ),
           )
       ).length > 0
     ) {
       // If trainee exists but is marked as deleted, we can reassign them
       await db
-        .update(Trainees)
+        .update(MentorTrainees)
         .set({ deleted: null })
         .where(
           and(
-            eq(Trainees.trainingId, trainingId),
-            eq(Trainees.userId, traineeId),
-            eq(Trainees.mentorId, mentorId),
+            eq(MentorTrainees.trainingId, trainingId),
+            eq(MentorTrainees.userId, traineeId),
+            eq(MentorTrainees.mentorId, mentorId),
           ),
         );
     } else {
       // If trainee does not exist in Trainees table, insert them
-      await db.insert(Trainees).values({
+      await db.insert(MentorTrainees).values({
         userId: traineeId,
         trainingId,
         mentorId: mentorId,

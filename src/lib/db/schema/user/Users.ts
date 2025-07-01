@@ -6,7 +6,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 
-import { citext } from "@/lib/db/util";
+import { citext } from "@/lib/db/schema/util";
 
 type Role = "admin" | "user" | "coach";
 export const Users = pgTable(

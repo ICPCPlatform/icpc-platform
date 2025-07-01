@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
-import { Trainees } from "@/lib/db/schema/training/Trainees";
+import { MentorTrainees } from "@/lib/db/schema/training/MentorTrainees";
 import { Staff } from "@/lib/db/schema/training/Staff";
 import { eq, and, isNull } from "drizzle-orm";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -29,7 +29,7 @@ export default async function AssignMentorsPage({
       .select({
         userId: Users.userId,
         username: Users.username,
-        mentorId: Trainees.mentorId,
+        mentorId: MentorTrainees.mentorId,
       })
       .from(Applications)
       .where(
@@ -39,11 +39,11 @@ export default async function AssignMentorsPage({
         ),
       )
       .leftJoin(
-        Trainees,
+        MentorTrainees,
         and(
-          eq(Applications.userId, Trainees.userId),
-          eq(Trainees.trainingId, Number(trainingId)),
-          isNull(Trainees.deleted),
+          eq(Applications.userId, MentorTrainees.userId),
+          eq(MentorTrainees.trainingId, Number(trainingId)),
+          isNull(MentorTrainees.deleted),
         ),
       )
       .innerJoin(Users, eq(Applications.userId, Users.userId))

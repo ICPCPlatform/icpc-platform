@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { LeaderBoard } from "@/lib/types/Training";
 import { Users } from "../user/Users";
-import { citext } from "@/lib/db/util";
+import { citext } from "@/lib/db/schema/util";
 
 export type Status = "active" | "roadmap" | "private" | "over";
 
