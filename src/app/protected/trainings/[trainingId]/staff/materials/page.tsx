@@ -99,7 +99,7 @@ export default async function Page({
                   <TableCell className="text-right">
                     <Button asChild variant="outline">
                       <Link href={`./materials/edit-materials/${blockNumber}`}>
-                        Update Block
+                        Update Material Block
                       </Link>
                     </Button>
                   </TableCell>
