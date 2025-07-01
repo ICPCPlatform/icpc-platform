@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { Eye, EyeOff, User, IdCard, Globe, MapPin } from "lucide-react";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import React from "react";
 import "@/styles/components/profile/profile-form.css";
 

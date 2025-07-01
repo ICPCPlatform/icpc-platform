@@ -68,8 +68,11 @@ export default async function TrainingLayout({
           </span>
         </h1>
       </header>
-      <TrainingNavigation trainingId={trainingIdNumber} userId={userId} />
-      <StaffNav userPermisions={userPermisions} trainingId={Number(trainingId)}></StaffNav>
+      <TrainingNavigation trainingId={trainingIdNumber} />
+      <StaffNav
+        userPermisions={userPermisions}
+        trainingId={Number(trainingId)}
+      ></StaffNav>
       <main>
         <TrainingProvider trainingData={trainingData}>
           {children}
