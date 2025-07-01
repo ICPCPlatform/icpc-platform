@@ -1,24 +1,19 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TypographyH1, TypographyH2 } from "@/components/ui/typography";
 import { FaUserPlus, FaSignInAlt, FaChalkboardTeacher } from "react-icons/fa";
+import { getUserData } from "@/lib/session";
 
 const iconSize = "text-xl";
 
 export default async function Home() {
-  const cookie = await cookies();
-  const isLoggedIn = !!cookie.get("session");
+  const user = await getUserData();
+  const isLoggedIn = !!user;
   let userName: string | null = null;
 
   if (isLoggedIn) {
-    const session = cookie.get("session")?.value;
-    const { decryptSession } = await import("@/lib/session");
-    const user = await decryptSession(session);
-    if (user) {
-      userName = user.username || null;
-    }
+    userName = user.username || null;
   }
 
   return (
