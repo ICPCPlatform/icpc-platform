@@ -4,6 +4,22 @@ import expectedBody from "../api/create-training/_expectedBody";
 import styles from './page.module.css';
 import { useState } from 'react';
 
+/**
+ * Admin page for creating new training programs
+ * 
+ * @description
+ * Provides a form interface for administrators to create new training programs.
+ * Includes form validation, submission handling, and user feedback.
+ * 
+ * Features:
+ * - Form validation using Zod schema
+ * - Loading state management during submission
+ * - Success/error feedback to users
+ * - Form reset after successful creation
+ * 
+ * @requires Admin authentication (enforced by route group)
+ * @returns JSX element containing the training creation form
+ */
 export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -69,6 +85,23 @@ export default function Page() {
     </div>
   );
 
+  /**
+   * Handles form submission for creating a new training
+   * 
+   * @param event - Form submission event
+   * 
+   * @description
+   * Processes training creation form data through the following steps:
+   * 1. Prevents default form submission
+   * 2. Extracts and validates form data using Zod schema
+   * 3. Sends POST request to training creation API
+   * 4. Provides user feedback and resets form on success
+   * 5. Handles errors with appropriate user messaging
+   * 
+   * @todo Replace alert() calls with proper toast notifications
+   * @todo Add more specific error handling for different failure scenarios
+   * @todo Implement form field validation feedback
+   */
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
