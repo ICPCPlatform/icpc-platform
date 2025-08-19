@@ -3,6 +3,7 @@ import { serialize } from "cookie";
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
 import { encryptSession } from "@/lib/session";
+import { rateLimit } from "@/lib/rate-limit";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
@@ -15,7 +16,8 @@ const errorResponse = NextResponse.json(
   { error: "Invalid username or password" },
   { status: 401 },
 );
-export async function POST(request: NextRequest) {
+
+async function handlePOST(request: NextRequest) {
   try {
     // Extracting credentials from the request body
 
@@ -72,3 +74,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Failed to log in" }, { status: 500 });
   }
 }
+
+// Apply rate limiting to login attempts
+export const POST = rateLimit({ 
+  maxRequests: 5, 
+  windowMs: 60000, // 1 minute
+  skipSuccessfulRequests: true 
+})(handlePOST);
