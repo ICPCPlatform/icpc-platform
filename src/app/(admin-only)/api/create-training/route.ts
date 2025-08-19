@@ -1,11 +1,11 @@
 import { db } from "@/lib/db";
 import { Trainings } from "@/lib/db/schema/training/Trainings";
 import { NextRequest, NextResponse } from "next/server";
-import { userData } from "@/lib/session";
-import adminOnly from "@/middelwares/adminOnly";
+import { withAdminAuth, type AuthenticatedUser } from "@/lib/auth-middleware";
+import { rateLimit } from "@/lib/rate-limit";
 import expectedBody from "./_expectedBody";
 
-async function POSTfn(request: NextRequest, user: userData) {
+async function POSTfn(request: NextRequest, user: AuthenticatedUser) {
   try {
     const { success, data: trainingData } = expectedBody.safeParse(
       await request.json(),
@@ -15,9 +15,9 @@ async function POSTfn(request: NextRequest, user: userData) {
     }
     const training = {
       ...trainingData,
-      headId: user.userId,
+      headId: parseInt(user.id), // Convert string ID to number
     };
-    db.insert(Trainings).values(training).execute();
+    await db.insert(Trainings).values(training).execute();
     return new NextResponse(null, { status: 201 });
   } catch (e) {
     console.log(e);
@@ -25,5 +25,9 @@ async function POSTfn(request: NextRequest, user: userData) {
   }
 }
 
-const POST = adminOnly(POSTfn);
-export { POST } ;
+// Apply rate limiting and admin auth
+const POST = rateLimit({ maxRequests: 5, windowMs: 60000 })(
+  withAdminAuth(POSTfn)
+);
+
+export { POST };

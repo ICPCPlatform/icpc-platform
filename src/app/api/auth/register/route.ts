@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { Users } from "@/lib/db/schema/user/Users";
+import { rateLimit } from "@/lib/rate-limit";
 import { eq, or } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import expectedBody from "./expectedBody";
@@ -8,7 +9,7 @@ import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
 import sendEmail from "@/lib/email/sendEmail";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 
-export async function POST(request: NextRequest) {
+async function handlePOST(request: NextRequest) {
   try {
     const { success, data: registerData } = expectedBody.safeParse(
       await request.json(),
@@ -96,6 +97,13 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// Apply rate limiting to registration attempts
+export const POST = rateLimit({ 
+  maxRequests: 3, 
+  windowMs: 60000, // 1 minute
+  skipSuccessfulRequests: true 
+})(handlePOST);
 
 function emailActivation(
   registerData: typeof Users.$inferInsert,
