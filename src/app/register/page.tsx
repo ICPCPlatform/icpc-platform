@@ -2,7 +2,6 @@
 import expectedBody from "@/app/api/auth/register/expectedBody";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,7 +21,6 @@ import { Card } from "@/components/ui/card";
 export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const router = useRouter();
   const form = useForm<z.infer<typeof expectedBody>>({
     resolver: zodResolver(expectedBody),
     defaultValues: {
@@ -153,13 +151,19 @@ export default function RegisterPage() {
 
         const result = await response.json();
         if (!response.ok) {
-          setError(result.error || "Failed to register");
+          if (response.status === 429) {
+            setError("Too many registration attempts. Please try again later.");
+          } else {
+            setError(result.error || "Failed to register");
+          }
           return;
         }
-        setSuccess("Account created successfully! Redirecting to profile...");
-        setTimeout(() => {
-          router.push("/profile");
-        }, 2000);
+        setSuccess("Account created successfully! Please check your email to verify your account.");
+        // Don't redirect immediately - user needs to verify email first
+      })
+      .catch((error) => {
+        console.error("Registration error:", error);
+        setError("Network error. Please try again.");
       });
   }
 }

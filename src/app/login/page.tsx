@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, } from "react";
+import { Suspense, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,14 +11,14 @@ export default function LoginPage() {
     return <Suspense >
         <Login />
     </Suspense>
-
-
 }
 
 function Login() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const username = searchParams.get("username") ?? "";
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
@@ -51,10 +51,15 @@ function Login() {
                             className="mt-1 border border-gray-300 rounded-md p-2 w-full"
                         />
                     </div>
-                    <Button type="submit" className="w-full bg-black text-white py-2 rounded-md">
-                        Sign In
+                    <Button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="w-full bg-black text-white py-2 rounded-md"
+                    >
+                        {isLoading ? "Signing In..." : "Sign In"}
                     </Button>
                 </form>
+                {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
                 <p className="text-sm text-center mt-6">
                     Don{"'"}t have an account? <Link href="/register" className="text-primary">Sign up</Link>
                 </p>
@@ -62,24 +67,39 @@ function Login() {
         </div>
     )
 
-    function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setIsLoading(true);
+        setError("");
+        
         const form = event.currentTarget;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
-        fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            redirect: "follow",
-            credentials: "include",
-            body: JSON.stringify(data),
-        }).then((response) => {
+        try {
+            const response = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                redirect: "follow",
+                credentials: "include",
+                body: JSON.stringify(data),
+            });
+
             if (response.status === 200 || response.status === 307) {
                 router.push("/profile");
+            } else if (response.status === 429) {
+                setError("Too many login attempts. Please try again later.");
+            } else {
+                const result = await response.json().catch(() => ({}));
+                setError(result.error || "Invalid username or password");
             }
-        });
+        } catch (error) {
+            console.error("Login error:", error);
+            setError("Network error. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     }
 }
