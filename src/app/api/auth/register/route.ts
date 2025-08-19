@@ -8,6 +8,45 @@ import { EmailAuth } from "@/lib/db/schema/user/EmailAuth";
 import sendEmail from "@/lib/email/sendEmail";
 import { UsersFullData } from "@/lib/db/schema/user/UsersFullData";
 
+/**
+ * Handles user registration and account creation
+ * 
+ * @param request - The incoming HTTP request containing user registration data
+ * @returns A NextResponse indicating registration status
+ * 
+ * @description
+ * Creates a new user account by validating input data, checking for existing users,
+ * verifying Codeforces handle, hashing password, and sending email verification.
+ * The registration process includes:
+ * - Input validation using Zod schema
+ * - Duplicate user check (username, email, Codeforces handle)
+ * - Codeforces API validation for handle verification
+ * - Password hashing with bcrypt
+ * - Database insertion for user data
+ * - Email verification token generation and email sending
+ * 
+ * @example
+ * Request body:
+ * ```json
+ * {
+ *   "username": "johndoe",
+ *   "gmail": "john@example.com",
+ *   "cfHandle": "johndoe_cf",
+ *   "password": "securepassword"
+ * }
+ * ```
+ * 
+ * Success response (200):
+ * ```json
+ * {
+ *   "message": "registered"
+ * }
+ * ```
+ * 
+ * Error responses:
+ * - 400: Invalid input, user exists, or invalid Codeforces handle
+ * - 500: Server error during registration
+ */
 export async function POST(request: NextRequest) {
   try {
     const { success, data: registerData } = expectedBody.safeParse(
@@ -97,6 +136,29 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/**
+ * Sends email verification message to newly registered user
+ * 
+ * @param registerData - User registration data containing username and email
+ * @param randomToken - Unique verification token for account activation
+ * 
+ * @description
+ * Sends a styled HTML email with account activation link to the user's Gmail address.
+ * The email includes:
+ * - Welcome message with username personalization
+ * - Platform feature highlights
+ * - Community information about ICPC Assiut University
+ * - Activation button linking to verification endpoint
+ * - Support contact information
+ * 
+ * @example
+ * ```typescript
+ * emailActivation(
+ *   { username: "johndoe", gmail: "john@example.com" },
+ *   "abc123xyz789"
+ * );
+ * ```
+ */
 function emailActivation(
   registerData: typeof Users.$inferInsert,
   randomToken: string,

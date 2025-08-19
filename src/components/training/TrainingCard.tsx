@@ -7,17 +7,57 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CalendarDays, Users } from "lucide-react";
 
+/**
+ * Props interface for TrainingCard component
+ */
 interface TrainingCardProps {
+  /** Training data to display */
   training: Training | UserTraining;
+  /** Whether this is a user's enrolled training (affects display style) */
   isUserTraining?: boolean;
+  /** Callback function when enroll button is clicked */
   onEnroll?: (trainingId: string) => void;
 }
 
+/**
+ * Training card component for displaying training information
+ * 
+ * @param props - Component props
+ * @returns JSX element containing training card with enrollment functionality
+ * 
+ * @description
+ * Displays training information in a card format with:
+ * - Training title, description, and metadata
+ * - Enrollment status and capacity information
+ * - Progress tracking for enrolled trainings
+ * - Level-based color coding
+ * - Enrollment action button
+ * 
+ * @example
+ * ```tsx
+ * <TrainingCard 
+ *   training={trainingData} 
+ *   onEnroll={(id) => handleEnrollment(id)}
+ * />
+ * ```
+ */
 export function TrainingCard({ training, isUserTraining, onEnroll }: TrainingCardProps) {
+  /**
+   * Type guard to check if training is a UserTraining with progress
+   * 
+   * @param training - Training object to check
+   * @returns True if training has progress property (UserTraining)
+   */
   const isUserTrainingType = (training: Training | UserTraining): training is UserTraining => {
     return 'progress' in training;
   };
 
+  /**
+   * Formats date string to human-readable format
+   * 
+   * @param dateString - ISO date string
+   * @returns Formatted date string (e.g., "Jan 15, 2024")
+   */
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -26,6 +66,12 @@ export function TrainingCard({ training, isUserTraining, onEnroll }: TrainingCar
     });
   };
 
+  /**
+   * Returns appropriate color class for training level badge
+   * 
+   * @param level - Training difficulty level
+   * @returns CSS class string for level-specific coloring
+   */
   const getLevelColor = (level: Training['level']) => {
     switch (level) {
       case 'beginner':

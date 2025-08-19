@@ -15,6 +15,40 @@ const errorResponse = NextResponse.json(
   { error: "Invalid username or password" },
   { status: 401 },
 );
+/**
+ * Handles user login authentication
+ * 
+ * @param request - The incoming HTTP request containing login credentials
+ * @returns A NextResponse with authentication status and session cookie
+ * 
+ * @description
+ * Authenticates a user by validating their username and password against the database.
+ * On successful authentication, creates an encrypted session cookie and returns it.
+ * The session contains user ID, username, and role information.
+ * 
+ * @example
+ * Request body:
+ * ```json
+ * {
+ *   "username": "johndoe",
+ *   "password": "userpassword"
+ * }
+ * ```
+ * 
+ * Success response (307):
+ * ```json
+ * {
+ *   "message": "authenticated"
+ * }
+ * ```
+ * 
+ * Error response (401):
+ * ```json
+ * {
+ *   "error": "Invalid username or password"
+ * }
+ * ```
+ */
 export async function POST(request: NextRequest) {
   try {
     // Extracting credentials from the request body

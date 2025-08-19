@@ -6,6 +6,19 @@ import { mockAvailableTrainings } from "@/lib/mock/trainings";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
+/**
+ * Trainings page component for browsing and enrolling in available training programs
+ * 
+ * @description
+ * Displays a searchable list of available training programs with enrollment functionality.
+ * Features include:
+ * - Real-time search filtering by title and description
+ * - Responsive grid layout for training cards
+ * - Training enrollment handling
+ * - Empty state when no trainings match search criteria
+ * 
+ * @returns JSX element containing the trainings browse interface
+ */
 export default function TrainingsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -14,6 +27,14 @@ export default function TrainingsPage() {
     training.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  /**
+   * Handles training enrollment for a user
+   * 
+   * @param trainingId - Unique identifier for the training program
+   * @todo Replace with actual API call to enrollment endpoint
+   * @todo Add error handling and user feedback
+   * @todo Implement enrollment status updates
+   */
   const handleEnroll = async (trainingId: string) => {
     // This will be replaced with actual API call later
     console.log(`Enrolling in training: ${trainingId}`);
