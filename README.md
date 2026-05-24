@@ -1,4 +1,4 @@
-# ICPC Platform[deprecated]
+# ICPC Platform [deprecated]
 
 A full-stack Next.js application for managing ICPC-style programming competitions. Built with modern web technologies and following Next.js 13+ App Router conventions.
 
